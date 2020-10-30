@@ -22,7 +22,6 @@ stages:
               azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
               dockerComposeFile: 'docker-compose.yml'
               action: 'Build services'
-              currentWorkingDirectory: '/azure-vote-app'
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
@@ -30,9 +29,8 @@ stages:
               azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
               dockerComposeFile: 'docker-compose.yml'
               action: 'Push services'
-              currentWorkingDirectory: '/azure-vote-app'
                       
-
+               
               
               
               
