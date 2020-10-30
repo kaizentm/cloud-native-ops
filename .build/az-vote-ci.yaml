@@ -3,6 +3,8 @@ trigger:
   branches:
     include:
       - master
+variables:
+  - group: az-vote-app-dev
 
 pool:
   vmImage: ubuntu-latest
@@ -19,15 +21,15 @@ stages:
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
-              azureSubscription: 'davete-team(0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba)'
-              azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
+              azureSubscription: '$(az_subcription_id)'
+              azureContainerRegistry: '$(az_acr_name)'
               dockerComposeFile: '**/docker-compose.yaml'
               action: 'Build services'
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
-              azureSubscription: 'davete-team(0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba)'
-              azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
+              azureSubscription: '$(az_subcription_id)'
+              azureContainerRegistry: $(az_acr_name)'
               dockerComposeFile: '**/docker-compose.yaml'
               action: 'Push services'
                       
