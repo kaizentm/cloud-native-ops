@@ -21,14 +21,14 @@ stages:
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
-              azureSubscription: '$(az_subcription_id)'
+              azureSubscriptionEndpoint: '$(az_subcription_id)'
               azureContainerRegistry: '$(az_acr_name)'
               dockerComposeFile: '**/docker-compose.yaml'
               action: 'Build services'
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
-              azureSubscription: '$(az_subcription_id)'
+              azureSubscriptionEndpoint: '$(az_subcription_id)'
               azureContainerRegistry: '$(az_acr_name)'
               dockerComposeFile: '**/docker-compose.yaml'
               action: 'Push services'
