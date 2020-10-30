@@ -15,6 +15,10 @@ stages:
       - job: "Build_Push_Vote_App_Image"
         displayName: "Build Push Vote-App Image"
         steps:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: 'ls'
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
