@@ -24,14 +24,16 @@ stages:
               containerregistrytype: 'Azure Container Registry'
               azureSubscription: 'davete-team(0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba)'
               azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
-              dockerComposeFile: 'docker-compose.yml'
+              dockerComposeFile: '$(System.DefaultWorkingDirectory)/docker-compose.yml'
+              projectName: 
               action: 'Build services'
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
               azureSubscription: 'davete-team(0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba)'
               azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
-              dockerComposeFile: 'docker-compose.yml'
+              dockerComposeFile: '$(System.DefaultWorkingDirectory)/docker-compose.yml'
+              projectName: 
               action: 'Push services'
                       
                
