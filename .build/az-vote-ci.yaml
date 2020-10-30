@@ -12,15 +12,15 @@ stages:
   - stage: "Build_Push_Azure_Vote_App_Image"
     displayName: "Build and Push Azure Vote App Image"
     jobs:
-      - job: "Code_Quality_Check"
-        displayName: "Code Quality Check"        
+      - job: "Build_Push_Vote-App_Image"
+        displayName: "Build Push Vote-App Image"
         steps:
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
               azureSubscription: 'davete-team(0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba)'
               azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
-              dockerComposeFile: '**/docker-compose.yml'
+              dockerComposeFile: 'docker-compose.yml'
               action: 'Build services'
               currentWorkingDirectory: '/azure-vote-app'
           - task: DockerCompose@0
@@ -28,7 +28,7 @@ stages:
               containerregistrytype: 'Azure Container Registry'
               azureSubscription: 'davete-team(0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba)'
               azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
-              dockerComposeFile: '**/docker-compose.yml'
+              dockerComposeFile: 'docker-compose.yml'
               action: 'Push services'
               currentWorkingDirectory: '/azure-vote-app'
                       
