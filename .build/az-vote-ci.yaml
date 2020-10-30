@@ -22,14 +22,14 @@ stages:
             inputs:
               containerregistrytype: 'Azure Container Registry'
               azureSubscription: 'gitops-svc-connection'
-              azureContainerRegistry: '$(az_acr_name)'
+              azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
               dockerComposeFile: '**/docker-compose.yaml'
               action: 'Build services'
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
               azureSubscription: 'gitops-svc-connection'
-              azureContainerRegistry: '$(az_acr_name)'
+              azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
               dockerComposeFile: '**/docker-compose.yaml'
               action: 'Push services'
                       
