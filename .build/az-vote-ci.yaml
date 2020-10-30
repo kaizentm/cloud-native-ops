@@ -13,9 +13,7 @@ stages:
     displayName: "Build and Push Azure Vote App Image"
     jobs:
       - job: "Code_Quality_Check"
-        displayName: "Code Quality Check"
-        container: mlops
-        timeoutInMinutes: 0
+        displayName: "Code Quality Check"        
         steps:
           - task: DockerCompose@0
             inputs:
