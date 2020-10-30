@@ -12,7 +12,7 @@ stages:
   - stage: "Build_Push_Azure_Vote_App_Image"
     displayName: "Build and Push Azure Vote App Image"
     jobs:
-      - job: "Build_Push_Vote-App_Image"
+      - job: "Build_Push_Vote_App_Image"
         displayName: "Build Push Vote-App Image"
         steps:
           - task: DockerCompose@0
