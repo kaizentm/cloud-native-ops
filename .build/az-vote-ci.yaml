@@ -18,7 +18,9 @@ stages:
           - task: Bash@3
             inputs:
               targetType: 'inline'
-              script: 'ls'
+              script: |
+                cd $(System.DefaultWorkingDirectory)
+                ls
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
