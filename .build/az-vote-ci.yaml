@@ -29,7 +29,7 @@ stages:
             inputs:
               containerregistrytype: 'Azure Container Registry'
               azureSubscription: '$(az_subcription_id)'
-              azureContainerRegistry: $(az_acr_name)'
+              azureContainerRegistry: '$(az_acr_name)'
               dockerComposeFile: '**/docker-compose.yaml'
               action: 'Push services'
                       
