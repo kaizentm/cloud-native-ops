@@ -10,7 +10,7 @@ services:
 
   azure-vote-front:
     build: ./azure-vote
-    image: gitopsflowacr.azurecr.io/azvote/azure-vote-front:v2
+    image: gitopsflowacr.azurecr.io/azvote/azure-vote-front:v3
     container_name: azure-vote-front
     environment:
       REDIS: azure-vote-back
