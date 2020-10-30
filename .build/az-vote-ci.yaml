@@ -21,14 +21,14 @@ stages:
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
-              azureSubscriptionEndpoint: '$(az_subcription_endpoint)'
+              azureSubscription: 'gitops-svc-connection'
               azureContainerRegistry: '$(az_acr_name)'
               dockerComposeFile: '**/docker-compose.yaml'
               action: 'Build services'
           - task: DockerCompose@0
             inputs:
               containerregistrytype: 'Azure Container Registry'
-              azureSubscriptionEndpoint: '$(az_subcription_endpoint)'
+              azureSubscription: 'gitops-svc-connection'
               azureContainerRegistry: '$(az_acr_name)'
               dockerComposeFile: '**/docker-compose.yaml'
               action: 'Push services'
