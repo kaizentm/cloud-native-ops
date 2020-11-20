@@ -9,7 +9,7 @@ services:
         - "6379:6379"
 
   azure-vote-front:
-    build: ./azure-vote
+    build: .
     image: gitopsflowacr.azurecr.io/azvote/azure-vote-front:v3
     container_name: azure-vote-front
     environment:
