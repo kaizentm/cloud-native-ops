@@ -15,10 +15,9 @@ However, some teams might also choose to set up Argo CD per cluster: 
 ## Argo CD Setup per Cluster 
 ![multicluster](./images/multi-argocd.png)
 
+<br>
 
-## Single vs Multiple ArgoCD Setup in Multi-cluster Deployment 
-
-| Single Argo CD Setup  	| Multiple Argo CD Setup  	|
+| **Single Argo CD Setup**  	| **Multiple Argo CD Setup**  	|
 |---	|---	|
 |   Single dashboard with a unified view across multiple cluster    	|   Separate dashboard per cluster difficult to navigate. Can be mitigated when all cluster feeds to a single monitoring source.	|
 | One place to configure different Argo CD configurations like  SSO, RBAC  	|  Multiple configurations to manage per cluster 	|
