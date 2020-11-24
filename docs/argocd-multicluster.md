@@ -31,11 +31,11 @@ However, some teams might also choose to set up Argo CD per cluster: 
 
 ## Cluster BootStrapping
 
-To quickly deploy apps to the newly added cluster using **apps of apps pattern**. In this pattern we create a single app Argo CD app that on syncing creates multiple child apps that deploys application to multiple kubernetes cluster.
+Using **apps of apps pattern** to quickly deploy apps to the newly added cluster. In implement this pattern create a single app Argo CD app that on syncing creates multiple child apps which deploys your application to single or multiple kubernetes cluster.
 
 [Example Code](https://dev.azure.com/csedevops/GitOps/_git/azure-vote-app-deployment?version=GBmaster&path=%2Fcluster-bootstrapping)
 
-We are using helm chart to create multiple child apps with below structure: 
+This sample code uses helm chart to create multiple child apps with below structure: 
 
 ```bash
 ├── Chart.yaml
@@ -45,16 +45,16 @@ We are using helm chart to create multiple child apps with below structure:
 └── values.yaml
 ```
 
-1. To deploy above Create Argo CD parent app that hold child apps 
+1. Create Argo CD parent app that above helm chart consisting of staging and prod az-vote-app:   
 ```
 argocd app create apps \
     --dest-namespace argocd \
     --dest-server https://kubernetes.default.svc \
     --repo https://csedevops@dev.azure.com/csedevops/GitOps/_git/azure-vote-app-deployment \
-    --path apps \
+    --path cluster-bootstrapping \
     --revision master	  
 ```
-1. Sync Parent App to create child apps
+2. Sync parent App to create child app 
 ```
 argocd app sync apps  
 ```
