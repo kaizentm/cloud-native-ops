@@ -1,9 +1,13 @@
 # Argo CD Setup for Multi-Cluster Deployment
 
-This document highlights different ways to set up Argo CD  for multiple cluster deployment.<br>
-However, out-of-box Argo CD supports multiple cluster deployment from a single cluster that runs Argo CD.<br>
-To add new add a cluster Argo CD using CLI: <br>
-`argocd cluster add [CONTEXTNAME]` 
+This document highlights different ways to set up Argo CD  for multiple cluster deployment. Out-of-box Argo CD supports multiple cluster deployment from a single cluster that runs Argo CD.
+<br>
+
+To add new cluster to Argo CD using CLI: <br>
+
+```
+argocd cluster add [CONTEXTNAME]
+```
 
 **Note:** The above command installs a ServiceAccount (argocd-manager), into the kube-system namespace of that kubectl context, and binds the service account to an admin-level ClusterRole. Argo CD uses this service account token to perform its management tasks (i.e. deploy/monitoring).  
 
