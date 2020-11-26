@@ -1,0 +1,3 @@
+title: "$VOTE_APP_TITLE"
+serviceType: ClusterIP
+imageRepo: $AZURE_VOTE_IMAGE_REPO

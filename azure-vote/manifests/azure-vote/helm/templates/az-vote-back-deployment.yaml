@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-back-{{ .Release.Name}}
+  name: azure-vote-back
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: azure-vote-back-{{ .Release.Name}}
+      app: azure-vote-back
   template:
     metadata:
       labels:
-        app: azure-vote-back-{{ .Release.Name}}
+        app: azure-vote-back
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
       containers:
-      - name: azure-vote-back-{{ .Release.Name}}
-        image: gitopsflowacr.azurecr.io/azvote/redis:6.0.8
+      - name: azure-vote-back
+        image: {{  .Values.imageRepo}}/redis:6.0.8
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
