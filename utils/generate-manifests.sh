@@ -23,7 +23,7 @@
 for file in `find $1 -name '*.yaml'`; do envsubst <"$file" > "$file"1 && mv "$file"1 "$file"; done
 
 # Generate manifests
-for file in `find $1 -type d -maxdepth 1 -mindepth 1`; do \
-  helm template "$file"/helm > "$file"/kustomize/base/manifests.yaml && \
-  kubectl kustomize "$file"/kustomize/base > $2; \
+for app in `find $1 -type d -maxdepth 1 -mindepth 1`; do \
+  helm template "$app"/helm > "$app"/kustomize/base/manifests.yaml && \
+  kubectl kustomize "$app"/kustomize/base > $app-$2; \
 done

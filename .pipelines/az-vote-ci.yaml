@@ -19,27 +19,24 @@ stages:
         steps:
           - template: build-container-template.yaml
             parameters:
-              sourceLocation: $(SRC_FOLDER)
+              sourceLocation: $(SRC_FOLDER)/src/azure-vote-front
               dockerFile: 'Dockerfile'
               acr: $(AZ_ACR_NAME)
-              repository: $(IMAGE_REPO)
-              taskname: 'frontend_container'        
-         
-          # - task: DockerCompose@0
-          #   inputs:
-          #     containerregistrytype: 'Azure Container Registry'
-          #     azureSubscription: 'gitops-svc-connection'
-          #     azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
-          #     dockerComposeFile: '**/docker-compose.yaml'
-          #     action: 'Build services'
-          # - task: DockerCompose@0
-          #   inputs:
-          #     containerregistrytype: 'Azure Container Registry'
-          #     azureSubscription: 'gitops-svc-connection'
-          #     azureContainerRegistry: '{"loginServer":"gitopsflowacr.azurecr.io", "id" : "/subscriptions/0fe1cc35-0cfa-4152-97d7-5dfb45a8d4ba/resourceGroups/gitopsrg/providers/Microsoft.ContainerRegistry/registries/gitopsflowacr"}'
-          #     dockerComposeFile: '**/docker-compose.yaml'
-          #     action: 'Push services'
-                      
+              repository: az-vote-front
+              taskname: 'frontend_image'              
+          - template: build-container-template.yaml
+            parameters:
+              sourceLocation: $(SRC_FOLDER)/src/azure-vote-back
+              dockerFile: 'Dockerfile'
+              acr: $(AZ_ACR_NAME)
+              repository: az-vote-back
+              taskname: 'backend_image'              
+          - publish: $(Pipeline.Workspace)/image_tags
+            artifact: image_tags
+            displayName: "Publish Image Tags"              
+          - publish: $(SRC_FOLDER)/manifests
+            artifact: manifests
+            displayName: "Publish Manifests Templates"              
                
               
               
