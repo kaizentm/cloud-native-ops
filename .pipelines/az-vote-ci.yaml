@@ -22,7 +22,7 @@ stages:
               sourceLocation: $(SRC_FOLDER)
               dockerFile: 'Dockerfile'
               acr: $(AZ_ACR_NAME)
-              repository: $(IMAG_REPO)
+              repository: $(IMAGE_REPO)
               taskname: 'frontend_container'        
          
           # - task: DockerCompose@0
