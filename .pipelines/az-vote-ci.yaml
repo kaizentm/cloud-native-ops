@@ -17,7 +17,7 @@ stages:
       - job: "Build_Push_Vote_App_Image"
         displayName: "Build Push Vote-App Image"
         steps:
-          - template: build-container-template.yml
+          - template: build-container-template.yaml
             parameters:
               sourceLocation: $(SRC_FOLDER)
               dockerFile: 'Dockerfile'
