@@ -46,7 +46,7 @@ steps:
             -r ${{ parameters.acr }} \
             -t "${{ parameters.repository }}:$imageTag" \
             -t "${{ parameters.repository }}:latest" \
-            -f "${{ parameters.dockerFile }}" \
+            -f "${{ parameters.sourceLocation }}/${{ parameters.dockerFile }}" \
             ${{ parameters.customArguments }} \
             ${{ parameters.sourceLocation }}
         else
