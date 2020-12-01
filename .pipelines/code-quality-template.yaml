@@ -6,7 +6,7 @@ steps:
 
   - script: |
 
-      flake8 code --output-file=lint-testresults.xml --format junit-xml
+      flake8 azure-vote --output-file=lint-testresults.xml --format junit-xml
 
     displayName: "Run lint tests"
 
