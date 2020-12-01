@@ -7,11 +7,11 @@
 # 
 
 # For the Azure-Vote sample the following env varuables are supposed to be initialized: 
-# export VOTE_APP_TITLE='Awesome Voting App'
-# export AZURE_VOTE_IMAGE_REPO=gitopsflowacr.azurecr.io/azvote
-# export AZURE_VOTE_FRONT_TAG=v3
-# export AZURE_VOTE_BACK_TAG=6.0.8
-# export TARGET_NAMESPACE=DEV
+export VOTE_APP_TITLE='Awesome Voting App'
+export AZURE_VOTE_IMAGE_REPO=gitopsflowacr.azurecr.io/azvote
+# export FRONTEND_IMAGE=v3
+# export BACKEND_IMAGE=6.0.8
+export TARGET_NAMESPACE=DEV
 
 # Usage:
 # generate-manifests.sh FOLDER_WITH_MANIFESTS GENERATED_MANIFESTS_FILE

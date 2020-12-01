@@ -5,8 +5,8 @@ namespace: $TARGET_NAMESPACE
 
 images:
   - name: $AZURE_VOTE_IMAGE_REPO/azure-vote-front
-    newTag: $AZURE_VOTE_FRONT_TAG
+    newTag: $FRONTEND_IMAGE
   - name: $AZURE_VOTE_IMAGE_REPO/redis
-    newTag: $AZURE_VOTE_BACK_TAG
+    newTag: $BACKEND_IMAGE
 resources:
   - manifests.yaml
