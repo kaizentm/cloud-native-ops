@@ -38,8 +38,8 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: |
-                    ls -ltr $(images_artifact_path)
-
+                    # ls -ltr $(images_artifact_path)
+                    for file in $(images_artifact_path); do cat $file; done
 
         
                
