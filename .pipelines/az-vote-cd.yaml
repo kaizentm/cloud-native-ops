@@ -1,0 +1,71 @@
+trigger: none
+
+resources:
+  pipelines:
+  - pipeline: az-vote-ci
+    source: 'Azure vote app CI'
+
+
+variables:
+  - group: az-vote-app-dev
+  - name: images_artifact_path
+    value: $(Pipeline.Workspace)/az-vote-ci/image_tags/s
+  - name: manifests_artifact_path
+    value: $(Pipeline.Workspace)/az-vote-ci/manifests/s
+
+
+pool:
+  vmImage: ubuntu-latest
+
+
+stages:
+  - stage: "deploy_dev"
+    displayName: "Deploy to Dev"
+    # variables:
+    #   - group: az-vote-app-dev
+    jobs:
+    - deployment: "Deploy_AzureVote"
+      environment: dev
+      strategy:
+        runOnce:
+          deploy:   
+            steps:  
+              - task: Bash@3        
+                name: "Read_Image_tags"
+                displayName: "Read Image Tags"
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                    ls -ltr $(images_artifact_path)
+
+    # jobs:
+    #   - job: "Build_Push_Vote_App_Image"
+    #     displayName: "Build Push Vote-App Image"
+    #     steps:
+    #       - template: build-container-template.yaml
+    #         parameters:
+    #           sourceLocation: $(SRC_FOLDER)/src/azure-vote-front
+    #           dockerFile: 'Dockerfile'
+    #           acr: $(AZ_ACR_NAME)
+    #           repository: az-vote-front
+    #           taskname: 'frontend_image'              
+    #       - template: build-container-template.yaml
+    #         parameters:
+    #           sourceLocation: $(SRC_FOLDER)/src/azure-vote-back
+    #           dockerFile: 'Dockerfile'
+    #           acr: $(AZ_ACR_NAME)
+    #           repository: az-vote-back
+    #           taskname: 'backend_image'              
+    #       - publish: $(Pipeline.Workspace)/image_tags
+    #         artifact: image_tags
+    #         displayName: "Publish Image Tags"              
+    #       - publish: $(SRC_FOLDER)/manifests
+    #         artifact: manifests
+    #         displayName: "Publish Manifests Templates"              
+               
+              
+              
+              
+           
+           
+           
