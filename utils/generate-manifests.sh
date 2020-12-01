@@ -25,8 +25,8 @@ for file in `find $1 -name '*.yaml'`; do envsubst <"$file" > "$file"1 && mv "$fi
 # Generate manifests
 for app in `find $1 -type d -maxdepth 1 -mindepth 1`; do \
   helm template "$app"/helm > "$app"/kustomize/base/manifests.yaml && \
-  kubectl kustomize "$app"/kustomize/base > $app-$2 && \
-  cat $app-$2; \
+  kubectl kustomize "$app"/kustomize/base >> $2 && \
+  cat $2; \
 done
 pwd
 
