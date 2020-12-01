@@ -1,93 +1,39 @@
-
 # Pipeline template to run linting, unit tests with code coverage, and publish the results.
 # Pipeline to run basic code quality tests as part of pull requests to the master branch.
 
-
-
 resources:
-
   containers:
-
     - container: mlops
-
       image: mcr.microsoft.com/mlops/python:latest
-
-
-
 trigger: none
 
 pr:
-
   branches:
-
     include:
-
       - master
 
-
-
 pool:
-
   vmImage: "ubuntu-latest"
-
-
 
 container: mlops
 
-
-
 steps:
-
   - template: code-quality-template.yml
-
   - task: Bash@3
-
     name: "compile_pipeline"
-
     displayName: "Compile Pipeline"
-
-    inputs:
-
-      targetType: 'inline'
-
-      script: |
-
-        pip install kfp --upgrade --user
-
-        python code/pipelineazdo.py
-  - script: |
-
+    - script: |
       flake8 code --output-file=lint-testresults.xml --format junit-xml
-
     displayName: "Run lint tests"
 
 
-
-  # - script: |
-
-  #    python -m pytest . --cov=diabetes_regression --cov-report=html --cov-report=xml --junitxml=unit-testresults.xml
-
-  #   condition: succeededOrFailed()
-
-  #   displayName: 'Run unit tests'
-
-
-
   - task: PublishTestResults@2
-
     condition: succeededOrFailed()
-
     inputs:
-
       testResultsFiles: "*-testresults.xml"
-
       testRunTitle: "Linting & Unit tests"
-
       failTaskOnFailedTests: true
-
     displayName: "Publish test results"
-
-
 
   # - task: PublishCodeCoverageResults@1
 
