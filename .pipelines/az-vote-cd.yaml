@@ -36,32 +36,10 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: |
-                    ls -ltr $(images_artifact_path)
+                    # ls -ltr $(images_artifact_path)
+                    ls -ltr /home/vsts/work/1/az-vote-ci
 
-    # jobs:
-    #   - job: "Build_Push_Vote_App_Image"
-    #     displayName: "Build Push Vote-App Image"
-    #     steps:
-    #       - template: build-container-template.yaml
-    #         parameters:
-    #           sourceLocation: $(SRC_FOLDER)/src/azure-vote-front
-    #           dockerFile: 'Dockerfile'
-    #           acr: $(AZ_ACR_NAME)
-    #           repository: az-vote-front
-    #           taskname: 'frontend_image'              
-    #       - template: build-container-template.yaml
-    #         parameters:
-    #           sourceLocation: $(SRC_FOLDER)/src/azure-vote-back
-    #           dockerFile: 'Dockerfile'
-    #           acr: $(AZ_ACR_NAME)
-    #           repository: az-vote-back
-    #           taskname: 'backend_image'              
-    #       - publish: $(Pipeline.Workspace)/image_tags
-    #         artifact: image_tags
-    #         displayName: "Publish Image Tags"              
-    #       - publish: $(SRC_FOLDER)/manifests
-    #         artifact: manifests
-    #         displayName: "Publish Manifests Templates"              
+        
                
               
               
