@@ -35,4 +35,4 @@ container: mlops
 
 steps:
 
-  - template: code-quality-template.yml
+  - template: code-quality-template.yaml
