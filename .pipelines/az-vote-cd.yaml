@@ -12,7 +12,7 @@ variables:
     value: $(Pipeline.Workspace)/az-vote-ci/image_tags
   - name: manifests_artifact_path
     value: $(Pipeline.Workspace)/az-vote-ci/manifests
-  - name: utils_path
+  - name: utils_artifact_path
     value: $(Pipeline.Workspace)/az-vote-ci/manifests
 
 
@@ -46,6 +46,13 @@ stages:
                   targetType: 'inline'
                   script: |
                     env | grep IMAGE
+              - task: Bash@3        
+                name: "Generate_Manifests"
+                displayName: "Generate Manifests"
+                inputs:
+                  filePath: $(utils_artifact_path)/generate-manifests.sh
+                  arguments: '$(manifests_artifact_path) gen_manifests.yaml'
+                    
 
         
                
