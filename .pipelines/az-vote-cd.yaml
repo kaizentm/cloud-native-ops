@@ -13,7 +13,7 @@ variables:
   - name: manifests_artifact_path
     value: $(Pipeline.Workspace)/az-vote-ci/manifests
   - name: utils_artifact_path
-    value: $(Pipeline.Workspace)/az-vote-ci/manifests
+    value: $(Pipeline.Workspace)/az-vote-ci/utils
 
 
 pool:
