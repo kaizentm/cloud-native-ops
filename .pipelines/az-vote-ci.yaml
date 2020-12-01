@@ -37,7 +37,7 @@ stages:
           - publish: $(SRC_FOLDER)/manifests
             artifact: manifests
             displayName: "Publish Manifests Templates"              
-          - publish: $(SRC_FOLDER)/utils
+          - publish: utils
             artifact: utils
             displayName: "Publish utils"              
                
