@@ -52,6 +52,13 @@ stages:
                 inputs:
                   filePath: $(utils_artifact_path)/generate-manifests.sh
                   arguments: '$(manifests_artifact_path) gen_manifests.yaml'
+              - task: Bash@3        
+                name: "Check_Manifests"
+                displayName: "Check Manifests"
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                    cat gen_manifests.yaml
                     
 
         
