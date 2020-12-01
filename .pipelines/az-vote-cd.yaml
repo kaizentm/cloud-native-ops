@@ -9,9 +9,11 @@ resources:
 variables:
   - group: az-vote-app-dev
   - name: images_artifact_path
-    value: $(Pipeline.Workspace)/az-vote-ci/image_tags/s
+    value: $(Pipeline.Workspace)/az-vote-ci/image_tags
   - name: manifests_artifact_path
-    value: $(Pipeline.Workspace)/az-vote-ci/manifests/s
+    value: $(Pipeline.Workspace)/az-vote-ci/manifests
+  - name: utils_path
+    value: $(Pipeline.Workspace)/az-vote-ci/manifests
 
 
 pool:
