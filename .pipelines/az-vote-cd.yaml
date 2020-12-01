@@ -58,7 +58,7 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: |
-                    ls -ltr
+                    ls -ltr $(utils_artifact_path)
                     cat gen_manifests.yaml
                     
 
