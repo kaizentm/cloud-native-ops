@@ -3,6 +3,7 @@ trigger:
   branches:
     include:
       - master
+      - iefedore/cicd
 variables:
   - group: az-vote-app-dev
 
