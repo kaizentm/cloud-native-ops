@@ -51,16 +51,15 @@ stages:
                 displayName: "Generate Manifests"
                 inputs:
                   filePath: $(utils_artifact_path)/generate-manifests.sh
-                  arguments: '$(manifests_artifact_path) gen_manifests.yaml'
+                  arguments: '$(manifests_artifact_path) $(Pipeline.Workspace)/gen_manifests.yaml'
               - task: Bash@3        
                 name: "Check_Manifests"
                 displayName: "Check Manifests"
                 inputs:
                   targetType: 'inline'
                   script: |
-                    pwd
-                    ls -ltr 
-                    cat gen_manifests.yaml
+                    ls -ltr $(Pipeline.Workspace)
+                    cat $(Pipeline.Workspace)/gen_manifests.yaml
                     
 
         
