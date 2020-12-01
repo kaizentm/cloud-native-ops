@@ -38,8 +38,8 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: |
-                    # ls -ltr $(images_artifact_path)
-                    ls -ltr /home/vsts/work/1/az-vote-ci
+                    ls -ltr $(images_artifact_path)
+
 
         
                
