@@ -45,7 +45,7 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: |
-                    env | grep IMAGE
+                    env
               - task: Bash@3        
                 name: "Generate_Manifests"
                 displayName: "Generate Manifests"
