@@ -58,6 +58,7 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: |
+                    ls -ltr
                     cat gen_manifests.yaml
                     
 
