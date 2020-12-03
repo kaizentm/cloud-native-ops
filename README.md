@@ -1,3 +1,4 @@
+# flake8: noqa
 # DevOps for Cloud Native Applications
 
 A comprehensive guidance, samples and templates on DevOps practices for Cloud Native applications 
