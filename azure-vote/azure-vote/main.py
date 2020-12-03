@@ -63,7 +63,7 @@ def index():
     elif request.method == 'POST':
 
         if request.form['vote'] == 'reset':
-            
+  
             # Empty table and return results
             r.set(button1,0)
             r.set(button2,0) 
