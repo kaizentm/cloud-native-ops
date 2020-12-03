@@ -34,7 +34,7 @@ try:
         r = redis.StrictRedis(host=redis_server,
                         port=6379,
                         password=os.environ['REDIS_PWD'])
-    else:  
+    else: 
         r = redis.Redis(redis_server)
     r.ping()
 except redis.ConnectionError:
