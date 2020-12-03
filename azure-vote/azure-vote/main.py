@@ -1,11 +1,9 @@
-# flake8: noqa
-
 from flask import Flask, request, render_template
 import os
-import random
+# import random
 import redis
 import socket
-import sys
+# import sys
 
 app = Flask(__name__)
 
