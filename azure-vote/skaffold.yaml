@@ -1,0 +1,21 @@
+apiVersion: skaffold/v2beta10
+kind: Config
+build:
+  artifacts:
+  - image: gitopsflowacr.azurecr.io/azvote/azure-vote-front
+    sync:
+      infer:
+        - 'azure-vote/**/*.html'
+        - 'azure-vote/**/*.css'
+        - 'azure-vote/**/*.py'
+deploy:
+  helm:
+    releases:
+    - name: azure-vote
+      chartPath: ../../azure-vote-app-deployment/helm-azure-vote-app-deployment/azure-vote
+      namespace: quickstart
+      artifactOverrides:
+        image: gitopsflowacr.azurecr.io/azvote/azure-vote-front
+      valuesFiles:
+      - ../../azure-vote-app-deployment/helm-azure-vote-app-deployment/azure-vote/values-tcare.yaml
+
