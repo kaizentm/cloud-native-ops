@@ -1,4 +1,4 @@
-# Secured Argo CD Dashboard With Azure AD 
+# Securing Argo CD Dashboard With Azure AD 
 
 Follow instructions on enabling [OIDC auth flow](https://argoproj.github.io/argo-cd/operator-manual/user-management/microsoft/#azure-ad-app-registration-auth-using-oidc) for ArgoCD Dashboard. 
  
