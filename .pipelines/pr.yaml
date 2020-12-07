@@ -5,11 +5,13 @@ resources:
     - container: mlops
       image: mcr.microsoft.com/mlops/python:latest
 
-trigger: none
-pr:
+pr: none
+trigger:
   branches:
     include:
       - master
+variables:
+  - group: az-vote-app-dev
 
 pool:
   vmImage: "ubuntu-latest"
