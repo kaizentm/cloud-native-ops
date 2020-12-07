@@ -18,7 +18,7 @@ Performing Sync operation from Azure DevOps:
    1. From observability aspect its inconvenient to find out find out failed hooks and lineage
    1. Sync failure or success is not visually represented in web hook.
 
-**Option 1: Azure Devops Pipeline**
+**Option 2: Azure Devops Pipeline**
 
    Synchronization can be invoked from Azure Pipelines from both agent and agent less job. 
 
