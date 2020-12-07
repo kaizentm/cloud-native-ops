@@ -5,11 +5,6 @@ steps:
       flake8 azure-vote --output-file=lint-testresults.xml --format junit-xml
     displayName: "Run lint tests"
 
-  # - script: |
-  #    python -m pytest . --cov=diabetes_regression --cov-report=html --cov-report=xml --junitxml=unit-testresults.xml
-  #   condition: succeededOrFailed()
-  #   displayName: 'Run unit tests'
-
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
@@ -17,12 +12,3 @@ steps:
       testRunTitle: "Linting & Unit tests"
       failTaskOnFailedTests: true
     displayName: "Publish test results"
-
-  # - task: PublishCodeCoverageResults@1
-  #   displayName: "Publish coverage report"
-  #   condition: succeededOrFailed()
-  #   inputs:
-  #     codeCoverageTool: Cobertura
-  #     summaryFileLocation: "coverage.xml"
-  #     reportDirectory: "htmlcov"
-  #     failIfCoverageEmpty: true
