@@ -2,7 +2,7 @@
 
 steps:
   - script: |
-      flake8 azure-vote --output-file=lint-testresults.xml --format junit-xml
+      flake8 $(SRC_FOLDER) --output-file=lint-testresults.xml --format junit-xml
     displayName: "Run lint tests"
 
   - task: PublishTestResults@2
