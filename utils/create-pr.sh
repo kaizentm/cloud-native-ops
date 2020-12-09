@@ -10,7 +10,7 @@ while getopts "s:d:r:b:i:t:" option;
         r ) DEST_REPO=${OPTARG};;
         b ) DEST_BRANCH=${OPTARG};;
         i ) DEPLOY_ID=${OPTARG};;
-        t ) PAT=${OPTARG};;
+        t ) TOKEN=${OPTARG};;
     esac
 done
 
@@ -24,7 +24,7 @@ git config --global user.name $PR_USER_NAME
 echo "Clone manifests repo"
 repo_url="${DEST_REPO#http://}"
 repo_url="${DEST_REPO#https://}"
-repo_url="https://automated:$PAT@$repo_url"
+repo_url="https://automated:$TOKEN@$repo_url"
 
 echo "git clone $repo_url -b $dest_branch --depth 1 --single-branch"
 git clone $repo_url -b $dest_branch --depth 1 --single-branch

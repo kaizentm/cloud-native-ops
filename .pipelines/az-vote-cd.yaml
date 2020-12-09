@@ -13,15 +13,26 @@ variables:
     value: $(Pipeline.Workspace)/az-vote-ci/image_tags
   - name: manifests_artifact_path
     value: $(Pipeline.Workspace)/az-vote-ci/manifests
+  # - name: utils_artifact_path
+  #   value: $(Pipeline.Workspace)/az-vote-ci/utils
   - name: utils_artifact_path
-    value: $(Pipeline.Workspace)/az-vote-ci/utils
+    value: $(Pipeline.Workspace)/cd-utils
 
 
 pool:
   vmImage: ubuntu-latest
 
+  
 
 stages:
+  - stage: "Fetch the util code (temp)"
+    jobs: 
+    - job: "publish artifacts"
+      steps:
+      - publish: $(System.DefaultWorkingDirectory)/utils
+        artifact: cd-utils
+
+
   - stage: "deploy_dev"
     displayName: "Deploy to Dev"
     # variables:
@@ -67,7 +78,8 @@ stages:
                 displayName: "Create_PR"
                 inputs:
                   filePath: $(utils_artifact_path)/create-pr.sh
-                  arguments: '-s gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b MANIFESTS_BRANCH -i $(Build.Number) -t $(PAT)'
+                  arguments: '-s gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $(Build.BuildNumber) -t $(PAT)'
+                  
                     
         # d ) DEST_FOLDER=${OPTARG};;
         # r ) DEST_REPO=${OPTARG};;
