@@ -61,13 +61,13 @@ stages:
                   script: |
                     ls -ltr $(Pipeline.Workspace)
                     ls -ltr gen_manifests
-                    cat $(Pipeline.Workspace)/gen_manifests/gen_manifests.yaml
+                    cat gen_manifests/gen_manifests.yaml
               - task: Bash@3        
                 name: "Create_PR"
                 displayName: "Create_PR"
                 inputs:
                   filePath: $(utils_artifact_path)/create-pr.sh
-                  arguments: '-s $(Pipeline.Workspace)/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b MANIFESTS_BRANCH -i $(BuildNumber) -t $(PAT)'
+                  arguments: '-s gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b MANIFESTS_BRANCH -i $(BuildNumber) -t $(PAT)'
                     
         # d ) DEST_FOLDER=${OPTARG};;
         # r ) DEST_REPO=${OPTARG};;
