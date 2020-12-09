@@ -25,7 +25,7 @@ pool:
   
 
 stages:
-  - stage: "Fetch the util code (temp)"
+  - stage: "Fetch_the)util_code_temp"
     jobs: 
     - job: "publish artifacts"
       steps:
@@ -79,7 +79,7 @@ stages:
                 inputs:
                   filePath: $(utils_artifact_path)/create-pr.sh
                   arguments: '-s gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $(Build.BuildNumber) -t $(PAT)'
-                  
+
                     
         # d ) DEST_FOLDER=${OPTARG};;
         # r ) DEST_REPO=${OPTARG};;
