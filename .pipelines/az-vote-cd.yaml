@@ -5,6 +5,7 @@ resources:
   - pipeline: az-vote-ci
     source: 'Azure vote app CI'
 
+name: $(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
   - group: az-vote-app-dev
@@ -51,7 +52,7 @@ stages:
                 displayName: "Generate Manifests"
                 inputs:
                   filePath: $(utils_artifact_path)/generate-manifests.sh
-                  arguments: '$(manifests_artifact_path) $(Pipeline.Workspace)/gen_manifests.yaml'
+                  arguments: '$(manifests_artifact_path) gen_manifests'
               - task: Bash@3        
                 name: "Check_Manifests"
                 displayName: "Check Manifests"
@@ -59,8 +60,19 @@ stages:
                   targetType: 'inline'
                   script: |
                     ls -ltr $(Pipeline.Workspace)
-                    cat $(Pipeline.Workspace)/gen_manifests.yaml
+                    cat $(Pipeline.Workspace)/gen_manifests/gen_manifests.yaml
+              - task: Bash@3        
+                name: "Create_PR"
+                displayName: "Create_PR"
+                inputs:
+                  filePath: $(utils_artifact_path)/create-pr.sh
+                  arguments: '-s $(Pipeline.Workspace)/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b MANIFESTS_BRANCH -i $(BuildNumber) -t $(PAT)'
                     
+        # d ) DEST_FOLDER=${OPTARG};;
+        # r ) DEST_REPO=${OPTARG};;
+        # b ) DEST_BRANCH=${OPTARG};;
+        # i ) DEPLOY_ID=${OPTARG};;
+        # t ) PAT=${OPTARG};;
 
         
                
