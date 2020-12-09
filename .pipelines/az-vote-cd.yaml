@@ -60,6 +60,7 @@ stages:
                   targetType: 'inline'
                   script: |
                     ls -ltr $(Pipeline.Workspace)
+                    ls -ltr gen_manifests
                     cat $(Pipeline.Workspace)/gen_manifests/gen_manifests.yaml
               - task: Bash@3        
                 name: "Create_PR"
