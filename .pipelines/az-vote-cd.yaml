@@ -25,7 +25,7 @@ pool:
   
 
 stages:
-  - stage: "Fetch_the)util_code_temp"
+  - stage: "Fetch_the_util_code_temp"
     jobs: 
     - job: "publish artifacts"
       steps:
