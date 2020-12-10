@@ -55,5 +55,6 @@ git push --set-upstream $repo_url $deploy_branch_name
 
 # Create a PR 
 echo "Create a PR to $DEST_BRANCH" 
+export AZURE_DEVOPS_EXT_PAT=$PAT 
 az repos pr create --description="Deploy to $ENV_NAME" --source-branch=$deploy_branch_name --target-branch=$DEST_BRANCH \
 --org="https://dev.azure.com/csedevops" --project="GitOps" --repository=azure-vote-app-deployment
