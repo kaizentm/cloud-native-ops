@@ -75,11 +75,20 @@ stages:
                     cat gen_manifests/gen_manifests.yaml
                     cd gen_manifests
                     pwd
-              - task: Bash@3        
+              # - task: Bash@3        
+              #   name: "Create_PR"
+              #   displayName: "Create PR"
+              #   inputs:
+              #     filePath: $(utils_artifact_path)/create-pr.sh
+              #     arguments: '-s $(Build.SourcesDirectory)/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $(Build.BuildNumber) -t $(PAT)'
+              - task: AzureCLI@2        
                 name: "Create_PR"
                 displayName: "Create PR"
                 inputs:
-                  filePath: $(utils_artifact_path)/create-pr.sh
+                  azureSubscription: 'gitops-svc-connection'
+                  scriptType: 'bash'
+                  scriptLocation: 'scriptPath'
+                  scriptPath: $(utils_artifact_path)/create-pr.sh
                   arguments: '-s $(Build.SourcesDirectory)/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $(Build.BuildNumber) -t $(PAT)'
 
                     

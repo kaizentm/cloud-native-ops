@@ -2,7 +2,7 @@
 
 #!/usr/bin/env bash
 
-while getopts "s:d:r:b:i:t:" option;
+while getopts "s:d:r:b:i:t:e:" option;
     do
     case "$option" in
         s ) SOURCE_FOLDER=${OPTARG};;
@@ -11,6 +11,7 @@ while getopts "s:d:r:b:i:t:" option;
         b ) DEST_BRANCH=${OPTARG};;
         i ) DEPLOY_ID=${OPTARG};;
         t ) TOKEN=${OPTARG};;
+        e ) ENV_NAME=${OPTARG};;
     esac
 done
 
@@ -44,12 +45,15 @@ git checkout -b $deploy_branch_name
 mkdir -p $DEST_FOLDER
 cp $SOURCE_FOLDER/* $DEST_FOLDER/
 git add -A
-git commit -m "deployment $DEPLOY_ID"
 git status
+git commit -m "deployment $DEPLOY_ID"
 
 # Push to the deploy branch 
 echo "Push to the deploy branch $deploy_branch_name"
 echo "git push --set-upstream $repo_url $deploy_branch_name"
 git push --set-upstream $repo_url $deploy_branch_name
 
-# az repos pr create --description="Deploy to Dev" --source-branch="deploy/test" --target-branch=dev --org="https://dev.azure.com/csedevops" --project="GitOps" --repository=azure-vote-app-deployment
+# Create a PR 
+echo "Create a PR to $DEST_BRANCH" 
+az repos pr create --description="Deploy to $ENV_NAME" --source-branch=$deploy_branch_name --target-branch=$DEST_BRANCH \
+--org="https://dev.azure.com/csedevops" --project="GitOps" --repository=azure-vote-app-deployment
