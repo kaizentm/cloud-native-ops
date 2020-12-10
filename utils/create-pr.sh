@@ -54,9 +54,10 @@ echo "git push --set-upstream $repo_url $deploy_branch_name"
 git push --set-upstream $repo_url $deploy_branch_name
 
 # Create a PR 
+# Old version of Azure CLI
 echo "Create a PR to $DEST_BRANCH" 
+az upgrade --all -y
 export AZURE_DEVOPS_EXT_PAT=$PAT 
-echo tki74xnggmqnmbgaxjizsdfj7jyxqj6e6i4rl5e4lvqud6vaatyq | az devops login --org="https://dev.azure.com/csedevops"  
 az repos pr create --description="Deploy to Dev" --source-branch="deploy/20201209.16" --target-branch=dev --org="https://dev.azure.com/csedevops" --project="GitOps" --repository=azure-vote-app-deployment
 az repos pr create --description="Deploy to $ENV_NAME" --source-branch=$deploy_branch_name --target-branch=$DEST_BRANCH \
 --org="https://dev.azure.com/csedevops" --project="GitOps" --repository=azure-vote-app-deployment
