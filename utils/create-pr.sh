@@ -14,11 +14,11 @@ while getopts "s:d:r:b:i:t:" option;
     esac
 done
 
-export PR_USER_NAME="Git Ops"
-export PR_USER_EMAIL="agent@gitops.com"
+pr_user_name="Git Ops"
+pr_user_emaiL="agent@gitops.com"
 
-git config --global user.email $PR_USER_EMAIL
-git config --global user.name $PR_USER_NAME
+git config --global user.email $pr_user_email
+git config --global user.name $pr_user_name
 
 # Clone manifests repo
 echo "Clone manifests repo"
@@ -34,12 +34,22 @@ cd "$repo_name"
 echo "git status"
 git status
 
+# Create a new branch 
+deploy_branch_name=deploy/$DEPLOY_ID
 
-# git checkout -b deploy/test
-# cd azure-vote-app-deployment
-# echo "Hi there" > test.md
-# git add -A
-# git commit -m 'deployment'
-# git push --set-upstream origin deploy/test
+echo "Create a new branch $deploy_branch_name"
+git checkout -b $deploy_branch_name
+
+# Add generated manifests to the new deploy branch
+mkdir -p $DEST_FOLDER
+cp $SOURCE_FOLDER/* $DEST_FOLDER/
+git add -A
+git commit -m "deployment $DEPLOY_ID"
+git status
+
+# Push to the deploy branch 
+echo "Push to the deploy branch $deploy_branch_name"
+echo "git push --set-upstream $repo_url $deploy_branch_name"
+git push --set-upstream $repo_url $deploy_branch_name
 
 # az repos pr create --description="Deploy to Dev" --source-branch="deploy/test" --target-branch=dev --org="https://dev.azure.com/csedevops" --project="GitOps" --repository=azure-vote-app-deployment
