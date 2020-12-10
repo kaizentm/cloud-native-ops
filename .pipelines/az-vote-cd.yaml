@@ -85,11 +85,11 @@ stages:
                 name: "Create_PR"
                 displayName: "Create PR"
                 inputs:
-                  azureSubscription: 'gitops-svc-connection'
+                  azureSubscription: 'gitops-with-permissions'
                   scriptType: 'bash'
                   scriptLocation: 'scriptPath'
                   scriptPath: $(utils_artifact_path)/create-pr.sh
-                  arguments: '-s $(Build.SourcesDirectory)/gen_manifests -d $(MANIFESTS_FOLDER) -r $(MANIFESTS_REPO) -b $(MANIFESTS_BRANCH) -i $(Build.BuildNumber) -t $(PAT) -e $(ENVIRONMENT_NAME)'
+                  arguments: '-s $(Build.SourcesDirectory)/gen_manifests -d $(MANIFESTS_FOLDER) -r $(MANIFESTS_REPO) -b $(MANIFESTS_BRANCH) -i $(Build.BuildNumber) -t $(PAT) -e $(ENVIRONMENT_NAME)'                
 
                     
         # d ) DEST_FOLDER=${OPTARG};;
