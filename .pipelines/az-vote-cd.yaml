@@ -27,7 +27,7 @@ pool:
 stages:
   - stage: "Fetch_the_util_code_temp"
     jobs: 
-    - job: "publish artifacts"
+    - job: "publish_artifacts"
       steps:
       - publish: $(System.DefaultWorkingDirectory)/utils
         artifact: cd-utils
