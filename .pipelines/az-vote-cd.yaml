@@ -80,7 +80,7 @@ stages:
                 displayName: "Create PR"
                 inputs:
                   filePath: $(utils_artifact_path)/create-pr.sh
-                  arguments: '-s $(Build.SourceDirectory)/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $(Build.BuildNumber) -t $(PAT)'
+                  arguments: '-s $(Build.SourcesDirectory)/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $(Build.BuildNumber) -t $(PAT)'
 
                     
         # d ) DEST_FOLDER=${OPTARG};;
