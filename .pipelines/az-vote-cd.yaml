@@ -71,11 +71,13 @@ stages:
                   targetType: 'inline'
                   script: |
                     ls -ltr $(Pipeline.Workspace)
-                    ls -ltr gen_manifests
+                    ls -ltr gen_manifests                    
                     cat gen_manifests/gen_manifests.yaml
+                    cd gen_manifests
+                    pwd
               - task: Bash@3        
                 name: "Create_PR"
-                displayName: "Create_PR"
+                displayName: "Create PR"
                 inputs:
                   filePath: $(utils_artifact_path)/create-pr.sh
                   arguments: '-s gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $(Build.BuildNumber) -t $(PAT)'
