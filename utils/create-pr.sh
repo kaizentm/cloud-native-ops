@@ -18,7 +18,7 @@ done
 set -euxo pipefail  # fail on error
 
 pr_user_name="Git Ops"
-pr_user_emaiL="agent@gitops.com"
+pr_user_email="agent@gitops.com"
 
 git config --global user.email $pr_user_email
 git config --global user.name $pr_user_name
