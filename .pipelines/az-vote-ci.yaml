@@ -22,14 +22,14 @@ stages:
               sourceLocation: $(SRC_FOLDER)/src/azure-vote-front
               dockerFile: 'Dockerfile'
               acr: $(AZ_ACR_NAME)
-              repository: azvote/az-vote-front
+              repository: azvote/azure-vote-front
               taskname: 'frontend_image'              
           - template: build-container-template.yaml
             parameters:
               sourceLocation: $(SRC_FOLDER)/src/azure-vote-back
               dockerFile: 'Dockerfile'
               acr: $(AZ_ACR_NAME)
-              repository: azvote/az-vote-back
+              repository: azvote/azure-vote-back
               taskname: 'backend_image'              
           - publish: $(Pipeline.Workspace)/image_tags
             artifact: image_tags
