@@ -1,3 +1,5 @@
+# flake8: noqa
+
 pr: none
 trigger:
   branches:
