@@ -16,7 +16,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-back
-        image: {{  .Values.imageRepo}}/redis:6.0.8
+        image: {{  .Values.imageRepo}}/azure-vote-back:6.0.8
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
