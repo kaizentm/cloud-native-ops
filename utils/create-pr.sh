@@ -15,7 +15,7 @@ while getopts "s:d:r:b:i:t:e:" option;
     esac
 done
 
-set -e
+set -euxo pipefail  # fail on error
 
 pr_user_name="Git Ops"
 pr_user_emaiL="agent@gitops.com"
