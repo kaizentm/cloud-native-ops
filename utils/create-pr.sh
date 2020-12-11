@@ -1,5 +1,3 @@
-# See https://github.com/microsoft/bedrock/blob/master/gitops/azure-devops/build.sh
-
 #!/usr/bin/env bash
 
 while getopts "s:d:r:b:i:t:e:" option;
@@ -15,7 +13,7 @@ while getopts "s:d:r:b:i:t:e:" option;
     esac
 done
 
-set -euxo pipefail  # fail on error
+set -euo pipefail  # fail on error
 
 pr_user_name="Git Ops"
 pr_user_email="agent@gitops.com"
@@ -75,6 +73,6 @@ echo "Create a PR to $DEST_BRANCH"
 #        'https://dev.azure.com/csedevops/GitOps/_apis/git/repositories/azure-vote-app-deployment/pullrequests?api-version=6.1-preview.1'              
 
 B64_PAT=$(printf ":$TOKEN" | base64)
-curl -v -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" \
+curl -v -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
         -d '{"sourceRefName":"refs/heads/$deploy_branch_name", "targetRefName":"refs/heads/$DEST_BRANCH", "description":"Deploy to $ENV_NAME", "title":"deployment $DEPLOY_ID"}' \
        $SYSTEM_COLLECTIONURI/$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1      
