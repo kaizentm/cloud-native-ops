@@ -7,11 +7,11 @@
 # 
 
 # For the Azure-Vote sample the following env varuables are supposed to be initialized: 
-export VOTE_APP_TITLE='Awesome Voting App'
-export AZURE_VOTE_IMAGE_REPO=gitopsflowacr.azurecr.io/azvote
+# export VOTE_APP_TITLE='Awesome Voting App'
+# export AZURE_VOTE_IMAGE_REPO=gitopsflowacr.azurecr.io/azvote
 # export FRONTEND_IMAGE=v3
 # export BACKEND_IMAGE=6.0.8
-export TARGET_NAMESPACE=DEV
+# export TARGET_NAMESPACE=dev
 export gen_manifests_file_name='gen_manifests.yaml'
 
 # Usage:
