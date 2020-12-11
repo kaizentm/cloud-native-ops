@@ -75,4 +75,4 @@ echo "Create a PR to $DEST_BRANCH"
 B64_PAT=$(printf ":$TOKEN" | base64)
 curl -v -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
         -d '{"sourceRefName":"refs/heads/$deploy_branch_name", "targetRefName":"refs/heads/$DEST_BRANCH", "description":"Deploy to $ENV_NAME", "title":"deployment $DEPLOY_ID"}' \
-       $SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1      
+       "$SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1"      
