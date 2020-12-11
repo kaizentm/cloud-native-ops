@@ -75,7 +75,6 @@ echo "Create a PR to $DEST_BRANCH"
 #        'https://dev.azure.com/csedevops/GitOps/_apis/git/repositories/azure-vote-app-deployment/pullrequests?api-version=6.1-preview.1'              
 
 B64_PAT=$(printf ":$PAT" | base64)
-curl -v -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" \
-        -d '{"sourceRefName":"refs/heads/$deploy_branch_name", "targetRefName":"refs/heads/$DEST_BRANCH", "description":"Deploy to $ENV_NAME", "title":"deployment $DEPLOY_ID"}' \
-       $SYSTEM_COLLECTIONURI/$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1      
-# check curl response                
+# curl -v -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" \
+#         -d '{"sourceRefName":"refs/heads/$deploy_branch_name", "targetRefName":"refs/heads/$DEST_BRANCH", "description":"Deploy to $ENV_NAME", "title":"deployment $DEPLOY_ID"}' \
+#        $SYSTEM_COLLECTIONURI/$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1      
