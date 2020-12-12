@@ -38,7 +38,7 @@ stages:
     # variables:
     #   - group: az-vote-app-dev
     jobs:
-    - deployment: "Deploy_AzureVote"
+    - deployment: "Deploy_to_dev"
       environment: dev
       strategy:
         runOnce:
@@ -81,18 +81,19 @@ stages:
                 inputs:
                   filePath: $(utils_artifact_path)/create-pr.sh
                   arguments: '-s $(Build.SourcesDirectory)/gen_manifests -d $(MANIFESTS_FOLDER) -r $(MANIFESTS_REPO) -b $(MANIFESTS_BRANCH) -i $(Build.BuildNumber) -t $(PAT) -e $(ENVIRONMENT_NAME)'
-    
+    # Temporary Manual Testing
+    # Will be changed to auto deployment state detection  
     - job: waitForValidation
-      displayName: Wait for Manual Testing  
-      pool: server    
-      timeoutInMinutes: 4320 # job times out in 3 days
+      displayName: Wait for PR to be merged  
+      pool: server          
+      dependsOn: Deploy_to_dev
       steps:   
       - task: ManualValidation@0
         timeoutInMinutes: 1440 # task times out in 1 day
         inputs:
           notifyUsers: |
             iefedore@microsoft.com
-          instructions: 'Please test the deployment and resume'
+          instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
           onTimeout: 'resume'
             
                
