@@ -15,6 +15,16 @@ data:
       - name: sync-operation-running
         condition: app.status.operationState.phase in ['Running']
         template: sync-operation-status-change
+      - name: sync-operation-Progressing
+        condition: app.status.health.status in ['Progressing']
+        template: sync-operation-status-change
+      - name: sync-operation-Healthy
+        condition: app.status.health.status in ['Healthy'] && app.status.operationState.phase in ['Succeeded']
+        template: sync-operation-status-change
+      - name: sync-operation-unhealthy
+        condition: app.status.health.status in ['Unknown', 'Suspended', 'Degraded', 'Missing']
+        template: sync-operation-status-change
+
 
     templates:
       - name: sync-operation-status-change
@@ -23,14 +33,10 @@ data:
             method: POST            
             body: |
               {
-                "path": /repos/{{call .repo.FullNameByRepoURL .app.spec.source.repoURL}}/statuses/{{.app.status.operationState.operation.sync.revision}}
-                {{if eq .app.status.operationState.phase "Running"}} "state": "pending"{{end}}
-                {{if eq .app.status.operationState.phase "Succeeded"}} "state": "success"{{end}}
-                {{if eq .app.status.operationState.phase "Error"}} "state": "error"{{end}}
-                {{if eq .app.status.operationState.phase "Failed"}} "state": "error"{{end}},
-                "description": "ArgoCD",
-                "target_url": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-                "context": "continuous-delivery/{{.app.metadata.name}}"
+                "commitid": "{{.app.status.operationState.operation.sync.revision}}",
+                "state": "{{.app.status.operationState.phase}}",
+                "health": "{{.app.status.health.status}}",
+                "message": "{{.app.status.operationState.message}}"
               }
       # - name: sync-operation-status-change
       #   webhook:
