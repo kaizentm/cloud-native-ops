@@ -4,7 +4,7 @@
 
 var http = require('http');
 const exec = require("child_process").exec
-const request = require('sync-request');
+//const request = require('sync-request');
 
 function executeShell(command) {
     var makeProcess = exec(command,

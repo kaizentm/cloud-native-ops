@@ -15,10 +15,10 @@ data:
       - name: sync-operation-running
         condition: app.status.operationState.phase in ['Running']
         template: sync-operation-status-change
-      - name: sync-operation-Progressing
+      - name: sync-operation-progressing
         condition: app.status.health.status in ['Progressing']
         template: sync-operation-status-change
-      - name: sync-operation-Healthy
+      - name: sync-operation-healthy
         condition: app.status.health.status in ['Healthy'] && app.status.operationState.phase in ['Succeeded']
         template: sync-operation-status-change
       - name: sync-operation-unhealthy
