@@ -44,7 +44,7 @@ stages:
         runOnce:
           deploy:   
             steps:  
-            - template: deploy-backend-template.yml                      
+            - template: deployment-template.yaml                      
 
     # Temporary Manual Testing
     # Will be changed to auto deployment state detection  
