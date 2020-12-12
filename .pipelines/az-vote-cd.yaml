@@ -61,7 +61,8 @@ stages:
           instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
           onTimeout: 'resume'
 
-    - job: "Automated testing"
+    - job: "Automated_testing"
+      displayName: Automated testing 
       steps:
       - task: Bash@3        
         name: "smoke_test"
