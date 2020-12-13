@@ -43,7 +43,7 @@ git checkout -b $deploy_branch_name
 
 # Add generated manifests to the new deploy branch
 mkdir -p $DEST_FOLDER
-cp $SOURCE_FOLDER/* $DEST_FOLDER/
+cp -r $SOURCE_FOLDER/* $DEST_FOLDER/
 git add -A
 git status
 git commit -m "deployment $DEPLOY_ID"
