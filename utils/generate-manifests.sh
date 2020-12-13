@@ -23,12 +23,15 @@ mkdir -p $2
 mkdir -p $2/hld
 
 # Substitute env variables in all yaml files in the manifest folder
-for file in `find $1 -name '*.yaml'`; do envsubst <"$file" > "$file"1 && mv "$file"1 "$2/hld/$file"; done
+for file in `find $1 -name '*.yaml'`; do envsubst <"$file" > "$file"1 && mv "$file"1 "$file"; done
 
 
 
 # Generate manifests
-for app in `find $2/hld -type d -maxdepth 1 -mindepth 1`; do \
+for app in `find $1 -type d -maxdepth 1 -mindepth 1`; do \
+  cp "$app"/helm $2/hld/
+  cp "$app"/kustomize $2/hld/
+
   helm template "$app"/helm > "$app"/kustomize/base/manifests.yaml && \
   kubectl kustomize "$app"/kustomize/base >> $2/$gen_manifests_file_name && \
   cat $2/$gen_manifests_file_name; \
