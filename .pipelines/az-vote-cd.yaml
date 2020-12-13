@@ -34,82 +34,98 @@ stages:
 
 
   - stage: "deploy_dev"
-    displayName: "Deploy to Dev"
+    displayName: "Deploy to Dev"    
     jobs:
-    - deployment: "Deploy_to_dev"
-      environment: dev
-      strategy:
-        runOnce:
-          deploy:   
-            steps:  
-            - template: deployment-template.yaml                      
-
-    # Temporary Manual Testing
-    # Will be changed to auto deployment state detection  
-    - job: waitForValidation
-      displayName: Wait for PR to be merged  
+    - job: deploy_with_gitops
+      displayName: Wait for changes to be applied
       pool: server          
-      dependsOn: Deploy_to_dev
       steps:   
-      - task: ManualValidation@0
-        timeoutInMinutes: 1440 # task times out in 1 day
+      - task: InvokeRESTAPI@1
         inputs:
-          notifyUsers: |
-            iefedore@microsoft.com
-          instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
-          onTimeout: 'resume'
+          connectionType: connectedServiceName # Options: connectedServiceName, connectedServiceNameARM
+          serviceConnection: azdo-gitops-events # Required when connectionType == ConnectedServiceName
+          #azureServiceConnection: # Required when connectionType == ConnectedServiceNameARM
+          method: 'GET' # Options: OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, PATCH
+          #headers: '{Content-Type:application/json, PlanUrl: $(system.CollectionUri), ProjectId: $(system.TeamProjectId), HubName: $(system.HostType), PlanId: $(system.PlanId), JobId: $(system.JobId), TimelineId: $(system.TimelineId), TaskInstanceId: $(system.TaskInstanceId), AuthToken: $(system.AccessToken)}' 
+          #body: # Required when method != GET && Method != HEAD
+          #urlSuffix: # Optional
+          waitForCompletion: Callback
+          #successCriteria: # Optional
 
-    - job: "Automated_testing"
-      displayName: Automated testing 
-      dependsOn: waitForValidation
-      steps:
-      - task: Bash@3        
-        name: "smoke_test"
-        displayName: "Smoke Test"
-        inputs:
-          targetType: 'inline'
-          script: |
-            echo "Place for a smoke test"
-            
-  - stage: "deploy_stage"
-    displayName: "Deploy to Stage"
-    variables:
-      - group: az-vote-app-stage
-    jobs:
-    - deployment: "Deploy_to_stage"
-      environment: stage
-      strategy:
-        runOnce:
-          deploy:   
-            steps:  
-            - template: deployment-template.yaml                      
-            
-    # Temporary Manual Testing
-    # Will be changed to auto deployment state detection  
-    - job: waitForValidation
-      displayName: Wait for PR to be merged  
-      pool: server          
-      dependsOn: Deploy_to_stage
-      steps:   
-      - task: ManualValidation@0
-        timeoutInMinutes: 1440 # task times out in 1 day
-        inputs:
-          notifyUsers: |
-            iefedore@microsoft.com
-          instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
-          onTimeout: 'resume'
+  #   - deployment: "Deploy_to_dev"
+  #     environment: dev
+  #     strategy:
+  #       runOnce:
+  #         deploy:   
+  #           steps:  
+  #           - template: deployment-template.yaml                      
 
-    - job: "Automated_testing"
-      displayName: Automated testing 
-      dependsOn: waitForValidation
-      steps:
-      - task: Bash@3        
-        name: "smoke_test"
-        displayName: "Smoke Test"
-        inputs:
-          targetType: 'inline'
-          script: |
-            echo "Place for a smoke test"               
+  #   # Temporary Manual Testing
+  #   # Will be changed to auto deployment state detection  
+  #   - job: waitForValidation
+  #     displayName: Wait for PR to be merged  
+  #     pool: server          
+  #     dependsOn: Deploy_to_dev
+  #     steps:   
+  #     - task: ManualValidation@0
+  #       timeoutInMinutes: 1440 # task times out in 1 day
+  #       inputs:
+  #         notifyUsers: |
+  #           iefedore@microsoft.com
+  #         instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
+  #         onTimeout: 'resume'
+
+  #   - job: "Automated_testing"
+  #     displayName: Automated testing 
+  #     dependsOn: waitForValidation
+  #     steps:
+  #     - task: Bash@3        
+  #       name: "smoke_test"
+  #       displayName: "Smoke Test"
+  #       inputs:
+  #         targetType: 'inline'
+  #         script: |
+  #           echo "Place for a smoke test"
+            
+  # - stage: "deploy_stage"
+  #   displayName: "Deploy to Stage"
+  #   variables:
+  #     - group: az-vote-app-stage
+  #   jobs:
+  #   - deployment: "Deploy_to_stage"
+  #     environment: stage
+  #     strategy:
+  #       runOnce:
+  #         deploy:   
+  #           steps:  
+  #           - template: deployment-template.yaml                      
+            
+  #   # Temporary Manual Testing
+  #   # Will be changed to auto deployment state detection  
+  #   - job: waitForValidation
+  #     displayName: Wait for PR to be merged  
+  #     pool: server          
+  #     dependsOn: Deploy_to_stage
+  #     steps:   
+  #     - task: ManualValidation@0
+  #       timeoutInMinutes: 1440 # task times out in 1 day
+  #       inputs:
+  #         notifyUsers: |
+  #           iefedore@microsoft.com
+  #         instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
+  #         onTimeout: 'resume'
+
+  #   - job: "Automated_testing"
+  #     displayName: Automated testing 
+  #     dependsOn: waitForValidation
+  #     steps:
+  #     - task: Bash@3        
+  #       name: "smoke_test"
+  #       displayName: "Smoke Test"
+  #       inputs:
+  #         targetType: 'inline'
+  #         script: |
+  #           echo "Place for a smoke test"               
               
                      
            
