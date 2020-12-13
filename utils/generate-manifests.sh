@@ -19,14 +19,16 @@ export gen_manifests_file_name='gen_manifests.yaml'
 # e.g.:
 # generate-manifests.sh cloud-native-ops/azure-vote/manifests gen_manifests.yaml
 
+mkdir -p $2
+mkdir -p $2/hld
 
 # Substitute env variables in all yaml files in the manifest folder
-for file in `find $1 -name '*.yaml'`; do envsubst <"$file" > "$file"1 && mv "$file"1 "$file"; done
+for file in `find $1 -name '*.yaml'`; do envsubst <"$file" > "$file"1 && mv "$file"1 "$2/hld/$file"; done
 
-mkdir -p $2
+
 
 # Generate manifests
-for app in `find $1 -type d -maxdepth 1 -mindepth 1`; do \
+for app in `find $2/hld -type d -maxdepth 1 -mindepth 1`; do \
   helm template "$app"/helm > "$app"/kustomize/base/manifests.yaml && \
   kubectl kustomize "$app"/kustomize/base >> $2/$gen_manifests_file_name && \
   cat $2/$gen_manifests_file_name; \
