@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azdo-gitops-events
+  namespace: argocd
+  labels:
+    app: azdo-gitops-events
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azdo-gitops-events
+  template:
+    metadata:
+      labels:
+        app: azdo-gitops-events
+    spec:
+      containers:
+      - name: bot
+        image: gitopsflowacr.azurecr.io/azdo-gitops-events:latest
+        env:
+        - name: AZDO_ORG_URL
+          valueFrom:
+            secretKeyRef:
+              name: azdo-gitops-events-secret
+              key: AZDO_ORG_URL
+        - name: PAT
+          valueFrom:
+            secretKeyRef:
+              name: azdo-gitops-events-secret
+              key: PAT
+        - name: GITOPS_APP_URL
+          valueFrom:
+            secretKeyRef:
+              name: azdo-gitops-events-secret
+              key: GITOPS_APP_URL
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azdo-gitops-events-svc
+  namespace: argocd
+spec:
+  selector:
+    app: azdo-gitops-events   
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: azdo-gitops-events-secret
+  namespace: argocd
+stringData:
+  AZDO_ORG_URL: https://dev.azure.com/csedevops/GitOps
+  PAT: {PAT}
+  GITOPS_APP_URL: https://argodashboard.westus.cloudapp.azure.com/applications/az-vote-dev
+type: Opaque
