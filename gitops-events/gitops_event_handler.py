@@ -19,7 +19,7 @@ def gitopsphase():
 
 @application.route("/deploy", methods=['POST'])
 def deploy():
-    payload = request.get_json()
+    payload = request.get_json()    
 
     print(f'deploy: {payload}')
     
@@ -27,6 +27,8 @@ def deploy():
     temp_data = payload
 
     return f'deploy: {payload}', 200    
+
+# Add an azdo webhook listener to Invoke argo cd sync on push
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0')
