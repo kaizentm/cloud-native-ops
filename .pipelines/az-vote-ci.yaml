@@ -11,6 +11,23 @@ variables:
 pool:
   vmImage: ubuntu-latest
 
+  steps:
+  - task: Cache@2
+    inputs:
+      key: 'docker | "$(Agent.OS)" | caching-docker.yml'
+      path: $(Pipeline.Workspace)/docker
+      cacheHitVar: DOCKER_CACHE_RESTORED
+    displayName: Caching Docker image
+
+  - script: |
+      docker load < $(Pipeline.Workspace)/docker/cache.tar
+    condition: and(not(canceled()), eq(variables.DOCKER_CACHE_RESTORED, 'true'))
+
+  - script: |
+      mkdir -p $(Pipeline.Workspace)/docker
+      docker pull ubuntu
+      docker save ubuntu > $(Pipeline.Workspace)/docker/cache.tar
+    condition: and(not(canceled()), or(failed(), ne(variables.DOCKER_CACHE_RESTORED, 'true')))
 
 stages:
   - stage: "Build_Push_Azure_Vote_App_Image"
@@ -19,33 +36,13 @@ stages:
       - job: "Build_Push_Vote_App_Image"
         displayName: "Build Push Vote-App Image"
         steps:
-          - template: build-container-template.yaml
-            parameters:
-              sourceLocation: $(SRC_FOLDER)/src/azure-vote-front
-              dockerFile: 'Dockerfile'
-              acr: $(AZ_ACR_NAME)
-              repository: azvote/azure-vote-front
-              taskname: 'frontend_image'              
-          - template: build-container-template.yaml
-            parameters:
-              sourceLocation: $(SRC_FOLDER)/src/azure-vote-back
-              dockerFile: 'Dockerfile'
-              acr: $(AZ_ACR_NAME)
-              repository: azvote/azure-vote-back
-              taskname: 'backend_image'              
-          - publish: $(Pipeline.Workspace)/image_tags
-            artifact: image_tags
-            displayName: "Publish Image Tags"              
-          - publish: $(SRC_FOLDER)/manifests
-            artifact: manifests
-            displayName: "Publish Manifests Templates"              
-          - publish: utils
-            artifact: utils
-            displayName: "Publish utils"              
-               
-              
-              
-              
-           
-           
-           
+          - task: Docker@2
+            displayName: "Build frontend"
+            inputs:
+              command: build
+              Dockerfile: $(SRC_FOLDER)/src/azure-vote-front/Dockerfile
+          - task: Docker@2
+            displayName: "Build backend"
+            inputs:
+              command: build
+              Dockerfile: $(SRC_FOLDER)/src/azure-vote-back/Dockerfile
