@@ -30,13 +30,15 @@ data:
       - name: sync-operation-status-change
         webhook:
           test-receiver:
-            method: POST            
+            method: POST
             body: |
               {
                 "commitid": "{{.app.status.operationState.operation.sync.revision}}",
-                "state": "{{.app.status.operationState.phase}}",
+                "phase": "{{.app.status.operationState.phase}}",
+                "sync_status": "{{.app.status.sync.status}}",
                 "health": "{{.app.status.health.status}}",
-                "message": "{{.app.status.operationState.message}}"
+                "message": "{{.app.status.operationState.message}}",
+                "resources": {{toJson .app.status.resources}}
               }
       # - name: sync-operation-status-change
       #   webhook:
