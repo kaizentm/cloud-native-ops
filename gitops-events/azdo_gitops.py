@@ -125,7 +125,6 @@ class AzureDevOpsGitOps:
             data = {'name': "TaskCompleted", 'taskId': pr_task['taskid'], 'jobid': pr_task['jobid'], 'result': state }
             response = requests.post(url=url, headers=self.headers, json=data)
             print(response.content)
-            assert response.status_code == 204
 
     def update_commit_statuses(self, commitid, phase, sync_status, health, message, resources):
         phase_status = self.map_phase_to_azdo_status(phase)
