@@ -141,7 +141,7 @@ class AzureDevOpsGitOps:
         if phase_status != 'pending' and health_status != 'pending':  
             if phase_status == 'succeeded' and health_status == 'succeeded':
                state = 'succeeded'
-            else 
+            else:
                 state = 'failed'
             self.update_pr_task(state, commitid)
 
