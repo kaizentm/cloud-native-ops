@@ -52,10 +52,9 @@ stages:
       displayName: Wait for changes to be applied
       pool: server          
       variables:
-        pr_num: $[ dependencies.Deploy_to_dev.outputs['Create_PR.PR_NUM'] ]
+        # pr_num: $[ dependencies.Deploy_to_dev.outputs['Create_PR.PR_NUM'] ]
+        pr_num: $[ dependencies ]
       steps:   
-      - script: echo $(pr_num)
-        name: echovar
       - task: InvokeRESTAPI@1
         inputs:
           connectionType: connectedServiceName # Options: connectedServiceName, connectedServiceNameARM
