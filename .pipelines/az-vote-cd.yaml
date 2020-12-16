@@ -37,7 +37,7 @@ stages:
     displayName: "Deploy to Dev"    
     jobs:
 
-    - deployment: "Deploy_to_dev"
+    - deployment: Deploy_to_dev
       environment: dev
       strategy:
         runOnce:
@@ -54,6 +54,8 @@ stages:
       variables:
         pr_num: $[ dependencies.Deploy_to_dev.outputs['Create_PR.PR_NUM'] ]
       steps:   
+      - script: echo $(pr_num)
+        name: echovar
       - task: InvokeRESTAPI@1
         inputs:
           connectionType: connectedServiceName # Options: connectedServiceName, connectedServiceNameARM
@@ -100,7 +102,7 @@ stages:
   #   variables:
   #     - group: az-vote-app-stage
   #   jobs:
-  #   - deployment: "Deploy_to_stage"
+  #   - deployment: Deploy_to_stage
   #     environment: stage
   #     strategy:
   #       runOnce:
