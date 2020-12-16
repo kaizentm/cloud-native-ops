@@ -4,7 +4,6 @@ from azdo_gitops import AzureDevOpsGitOps
 
 application = Flask(__name__)
 
-temp_data = {}
 
 @application.route("/gitopsphase/", methods=['POST'])
 def gitopsphase():
@@ -13,20 +12,21 @@ def gitopsphase():
     print(f'GitOps phase: {payload}')
     
     azdo_gitops = AzureDevOpsGitOps()
-    azdo_gitops.process_gitops_phase(payload, temp_data)
+    azdo_gitops.process_gitops_phase(payload)
 
     return f'GitOps phase: {payload}', 200    
 
-@application.route("/deploy", methods=['POST'])
-def deploy():
+@application.route("/update-pr-task", methods=['POST'])
+def update_pr_task():
     payload = request.get_json()    
 
-    print(f'deploy: {payload}')
+    print(f'update-pr-task: {payload}')
     
-    global temp_data
-    temp_data = payload
-
-    return f'deploy: {payload}', 200    
+    azdo_gitops = AzureDevOpsGitOps()
+    
+    azdo_gitops.update_pr_task_data(payload)
+    
+    return f'update-pr-task: {payload}', 200    
 
 # Add an azdo webhook listener to Invoke argo cd sync on push
 
