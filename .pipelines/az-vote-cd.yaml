@@ -45,22 +45,25 @@ stages:
             steps:  
             - template: deployment-template.yaml                      
 
-    # - job: deploy_with_gitops
-    #   displayName: Wait for changes to be applied
-    #   pool: server          
-    #   steps:   
-    #   - task: InvokeRESTAPI@1
-    #     inputs:
-    #       connectionType: connectedServiceName # Options: connectedServiceName, connectedServiceNameARM
-    #       serviceConnection: azdo-gitops-events # Required when connectionType == ConnectedServiceName
-    #       #azureServiceConnection: # Required when connectionType == ConnectedServiceNameARM
-    #       method: 'POST' # Options: OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, PATCH
-    #       #headers: '{Content-Type:application/json, PlanUrl: $(system.CollectionUri), ProjectId: $(system.TeamProjectId), HubName: $(system.HostType), PlanId: $(system.PlanId), JobId: $(system.JobId), TimelineId: $(system.TimelineId), TaskInstanceId: $(system.TaskInstanceId), AuthToken: $(system.AccessToken)}' 
-    #       body: '{"taskid":"$(System.TaskInstanceId)", "jobid":"$(System.JobId)", "planurl":"$(System.CollectionUri)",  "planid":"$(System.PlanId)", "projectid":"$(system.TeamProjectId)"}'
-    #       #urlSuffix: # Optional
-    #       waitForCompletion: 'true' # Options: true, false
-    #       completionEvent: 'Callback'
-    #       #successCriteria: # Optional
+    - job: deploy_with_gitops
+      dependsOn: Deploy_to_dev
+      displayName: Wait for changes to be applied
+      pool: server          
+      variables:
+        pr_num: $[ dependencies.Deploy_to_dev".outputs['Create_PR.PR_NUM'] ]
+      steps:   
+      - task: InvokeRESTAPI@1
+        inputs:
+          connectionType: connectedServiceName # Options: connectedServiceName, connectedServiceNameARM
+          serviceConnection: azdo-gitops-events # Required when connectionType == ConnectedServiceName
+          #azureServiceConnection: # Required when connectionType == ConnectedServiceNameARM
+          method: 'POST' # Options: OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, PATCH
+          #headers: '{Content-Type:application/json, PlanUrl: $(system.CollectionUri), ProjectId: $(system.TeamProjectId), HubName: $(system.HostType), PlanId: $(system.PlanId), JobId: $(system.JobId), TimelineId: $(system.TimelineId), TaskInstanceId: $(system.TaskInstanceId), AuthToken: $(system.AccessToken)}' 
+          body: '{"taskid":"$(System.TaskInstanceId)", "jobid":"$(System.JobId)", "planurl":"$(System.CollectionUri)",  "planid":"$(System.PlanId)", "projectid":"$(system.TeamProjectId)", "pr_num":"$(pr_num)"}'
+          #urlSuffix: # Optional
+          waitForCompletion: 'true' # Options: true, false
+          completionEvent: 'Callback'
+          #successCriteria: # Optional
 
 
   #   # Temporary Manual Testing
