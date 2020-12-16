@@ -54,7 +54,7 @@ stages:
       displayName: Wait for changes to be applied
       pool: server          
       variables:
-        pr_num: $[ dependencies.Deploy_to_dev.outputs['deploy.Create_PR.PR_NUM'] ]
+        pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
         # pr_num: $[ dependencies ]
       steps:   
       - task: InvokeRESTAPI@1
