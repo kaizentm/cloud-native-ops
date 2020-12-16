@@ -44,10 +44,6 @@ stages:
           deploy:   
             steps:  
             - template: deployment-template.yaml         
-            - script: echo $(Create_PR.PR_NUM)
-              name: echovar             
-            - script: env
-
 
     - job: deploy_with_gitops
       dependsOn: Deploy_to_dev
