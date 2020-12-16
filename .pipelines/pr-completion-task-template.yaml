@@ -1,0 +1,9 @@
+steps:  
+  - task: InvokeRESTAPI@1
+    inputs:
+      connectionType: connectedServiceName
+      serviceConnection: azdo-gitops-events
+      method: 'POST'
+      body: '{"taskid":"$(System.TaskInstanceId)", "jobid":"$(System.JobId)", "planurl":"$(System.CollectionUri)",  "planid":"$(System.PlanId)", "projectid":"$(System.TeamProjectId)", "pr_num":"$(pr_num)"}'
+      waitForCompletion: 'true'
+      completionEvent: 'Callback'

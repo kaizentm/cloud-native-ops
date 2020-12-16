@@ -34,34 +34,29 @@ stages:
 
 
   - stage: "deploy_dev"
-    displayName: "Deploy to Dev"
+    displayName: "Deploy to Dev"    
     jobs:
-    - deployment: "Deploy_to_dev"
+
+    - deployment: Deploy_to_dev
       environment: dev
       strategy:
         runOnce:
           deploy:   
             steps:  
-            - template: deployment-template.yaml                      
+            - template: deployment-template.yaml         
 
-    # Temporary Manual Testing
-    # Will be changed to auto deployment state detection  
-    - job: waitForValidation
-      displayName: Wait for PR to be merged  
-      pool: server          
+    - job: deploy_with_gitops
       dependsOn: Deploy_to_dev
+      displayName: Wait for changes to be applied
+      pool: server          
+      variables:
+        pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
       steps:   
-      - task: ManualValidation@0
-        timeoutInMinutes: 1440 # task times out in 1 day
-        inputs:
-          notifyUsers: |
-            iefedore@microsoft.com
-          instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
-          onTimeout: 'resume'
+      - template: pr-completion-task-template.yaml        
 
     - job: "Automated_testing"
       displayName: Automated testing 
-      dependsOn: waitForValidation
+      dependsOn: deploy_with_gitops
       steps:
       - task: Bash@3        
         name: "smoke_test"
@@ -76,7 +71,7 @@ stages:
     variables:
       - group: az-vote-app-stage
     jobs:
-    - deployment: "Deploy_to_stage"
+    - deployment: Deploy_to_stage
       environment: stage
       strategy:
         runOnce:
@@ -84,24 +79,19 @@ stages:
             steps:  
             - template: deployment-template.yaml                      
             
-    # Temporary Manual Testing
-    # Will be changed to auto deployment state detection  
-    - job: waitForValidation
-      displayName: Wait for PR to be merged  
-      pool: server          
+
+    - job: deploy_with_gitops
       dependsOn: Deploy_to_stage
+      displayName: Wait for changes to be applied
+      pool: server          
+      variables:
+        pr_num: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.PR_NUM'] ]
       steps:   
-      - task: ManualValidation@0
-        timeoutInMinutes: 1440 # task times out in 1 day
-        inputs:
-          notifyUsers: |
-            iefedore@microsoft.com
-          instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
-          onTimeout: 'resume'
+      - template: pr-completion-task-template.yaml                      
 
     - job: "Automated_testing"
       displayName: Automated testing 
-      dependsOn: waitForValidation
+      dependsOn: deploy_with_gitops
       steps:
       - task: Bash@3        
         name: "smoke_test"

@@ -1,5 +1,10 @@
 import os
 import requests
+import json
+
+# Temp storage in memory for a prototype. 
+# To be changed. The connection between the PR and agentless task should be stored in the PR itself
+pr_task_data = {}
 
 
 class AzureDevOpsGitOps:
@@ -86,13 +91,56 @@ class AzureDevOpsGitOps:
         data = {'state': azdo_state, 'description': status_name + ": " + message, 'targetUrl': callback_url + "?noop=" + status_name, 'context': {'name': status_name, 'genre': 'ArgoCD'} }
         response = requests.post(url=url, headers=self.headers, json=data)
         print(response.content)
+        print(response.status_code)
         assert response.status_code == 201
 
+    def get_pr_num(self, commitid):
+        url = self.org_url + f'/_apis/git/repositories/azure-vote-app-deployment/commits/{commitid}?api-version=6.0'
+        response = requests.get(url=url, headers=self.headers)
+        commit = json.loads(response.content)                
+        comment = commit['comment']
+        MERGED_PR="Merged PR "
+        pr_num = None
+        if MERGED_PR in comment:
+            pr_num = comment[comment.index(MERGED_PR) + len(MERGED_PR) : comment.index(":")]
+        return pr_num
+    
+    # These too functions update_pr_task_data and get_pr_task_data will be changed 
+    # when we change how pr_num<->taskid connection is stored
+    def update_pr_task_data(self, payload):
+        global pr_task_data
+        pr_task_data[payload['pr_num']] = payload
+
+    def get_pr_task_data(self, pr_num):        
+        return pr_task_data[pr_num]
+
+    def update_pr_task(self, state, commitid):
+        pr_num = self.get_pr_num(commitid)
+        if pr_num:
+            pr_task = self.get_pr_task_data(pr_num)
+            planurl = pr_task['planurl']
+            projectid = pr_task['projectid']
+            planid = pr_task['planid']
+            url = f'{planurl}{projectid}/_apis/distributedtask/hubs/build/plans/{planid}/events?api-version=2.0-preview.1'
+            data = {'name': "TaskCompleted", 'taskId': pr_task['taskid'], 'jobid': pr_task['jobid'], 'result': state }
+            response = requests.post(url=url, headers=self.headers, json=data)
+            print(response.content)
+
     def update_commit_statuses(self, commitid, phase, sync_status, health, message, resources):
-        self.update_commit_status(commitid, 'Phase', self.map_phase_to_azdo_status(phase), phase + ": " + message)
+        phase_status = self.map_phase_to_azdo_status(phase)
+        self.update_commit_status(commitid, 'Phase', phase_status, phase + ": " + message)
 
         (health_summary, sync_summary) = self.get_deployment_status_summary(resources)
 
         self.update_commit_status(commitid, 'Sync', self.map_sync_status_to_azdo_status(sync_status), sync_summary)
 
-        self.update_commit_status(commitid, 'Health', self.map_health_to_azdo_status(health), health_summary)
+        health_status = self.map_health_to_azdo_status(health)
+        self.update_commit_status(commitid, 'Health', health_status, health_summary)
+                
+        if phase_status != 'pending' and health_status != 'pending':  
+            if phase_status == 'succeeded' and health_status == 'succeeded':
+               state = 'succeeded'
+            else:
+                state = 'failed'
+            self.update_pr_task(state, commitid)
+
