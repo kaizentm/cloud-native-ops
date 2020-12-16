@@ -64,7 +64,7 @@ stages:
 
     - job: "Automated_testing"
       displayName: Automated testing 
-      dependsOn: waitForValidation
+      dependsOn: deploy_with_gitops
       steps:
       - task: Bash@3        
         name: "smoke_test"
@@ -106,7 +106,7 @@ stages:
 
     - job: "Automated_testing"
       displayName: Automated testing 
-      dependsOn: waitForValidation
+      dependsOn: deploy_with_gitops
       steps:
       - task: Bash@3        
         name: "smoke_test"
