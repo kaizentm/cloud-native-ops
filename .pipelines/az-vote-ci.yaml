@@ -36,6 +36,24 @@ stages:
       - job: "Build_Push_Vote_App_Image"
         displayName: "Build Push Vote-App Image"
         steps:
+          - task: Cache@2
+            inputs:
+              key: 'docker | "$(Agent.OS)" | .pipelines/az-vote-ci.yaml'
+              path: $(Pipeline.Workspace)/docker
+              cacheHitVar: DOCKER_CACHE_RESTORED
+            displayName: Caching Docker image
+
+          - script: |
+              mkdir -p $(Pipeline.Workspace)/docker
+              docker pull tiangolo/uwsgi-nginx-flask:python3.6
+              docker pull redis:6.0.8
+              docker save tiangolo/uwsgi-nginx-flask:python3.6 redis:6.0.8 > $(Pipeline.Workspace)/docker/cache.tar
+            condition: and(not(canceled()), or(failed(), ne(variables.DOCKER_CACHE_RESTORED, 'true')))
+
+          - script: |
+              docker load < $(Pipeline.Workspace)/docker/cache.tar
+            condition: and(not(canceled()), eq(variables.DOCKER_CACHE_RESTORED, 'true'))
+
           - task: Docker@2
             displayName: "Build frontend"
             inputs:
