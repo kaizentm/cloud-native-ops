@@ -110,30 +110,30 @@ stages:
             
     # Temporary Manual Testing
     # Will be changed to auto deployment state detection  
-    - job: waitForValidation
-      displayName: Wait for PR to be merged  
-      pool: server          
-      dependsOn: Deploy_to_stage
-      steps:   
-      - task: ManualValidation@0
-        timeoutInMinutes: 1440 # task times out in 1 day
-        inputs:
-          notifyUsers: |
-            iefedore@microsoft.com
-          instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
-          onTimeout: 'resume'
+    # - job: waitForValidation
+    #   displayName: Wait for PR to be merged  
+    #   pool: server          
+    #   dependsOn: Deploy_to_stage
+    #   steps:   
+    #   - task: ManualValidation@0
+    #     timeoutInMinutes: 1440 # task times out in 1 day
+    #     inputs:
+    #       notifyUsers: |
+    #         iefedore@microsoft.com
+    #       instructions: 'Please merge the PR, make sure the deployment is healthy and resume or reject. '
+    #       onTimeout: 'resume'
 
-    - job: "Automated_testing"
-      displayName: Automated testing 
-      dependsOn: waitForValidation
-      steps:
-      - task: Bash@3        
-        name: "smoke_test"
-        displayName: "Smoke Test"
-        inputs:
-          targetType: 'inline'
-          script: |
-            echo "Place for a smoke test"               
+    # - job: "Automated_testing"
+    #   displayName: Automated testing 
+    #   dependsOn: waitForValidation
+    #   steps:
+    #   - task: Bash@3        
+    #     name: "smoke_test"
+    #     displayName: "Smoke Test"
+    #     inputs:
+    #       targetType: 'inline'
+    #       script: |
+    #         echo "Place for a smoke test"               
               
                      
            
