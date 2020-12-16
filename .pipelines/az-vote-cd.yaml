@@ -52,15 +52,7 @@ stages:
       variables:
         pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
       steps:   
-      - task: InvokeRESTAPI@1
-        inputs:
-          connectionType: connectedServiceName
-          serviceConnection: azdo-gitops-events
-          method: 'POST'
-          body: '{"taskid":"$(System.TaskInstanceId)", "jobid":"$(System.JobId)", "planurl":"$(System.CollectionUri)",  "planid":"$(System.PlanId)", "projectid":"$(system.TeamProjectId)", "pr_num":"$(pr_num)"}'
-          waitForCompletion: 'true'
-          completionEvent: 'Callback'
-
+      - template: pr-completion-task-template.yaml        
 
     - job: "Automated_testing"
       displayName: Automated testing 
@@ -95,14 +87,7 @@ stages:
       variables:
         pr_num: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.PR_NUM'] ]
       steps:   
-      - task: InvokeRESTAPI@1
-        inputs:
-          connectionType: connectedServiceName
-          serviceConnection: azdo-gitops-events
-          method: 'POST'
-          body: '{"taskid":"$(System.TaskInstanceId)", "jobid":"$(System.JobId)", "planurl":"$(System.CollectionUri)",  "planid":"$(System.PlanId)", "projectid":"$(system.TeamProjectId)", "pr_num":"$(pr_num)"}'
-          waitForCompletion: 'true'
-          completionEvent: 'Callback'
+      - template: pr-completion-task-template.yaml                      
 
     - job: "Automated_testing"
       displayName: Automated testing 
