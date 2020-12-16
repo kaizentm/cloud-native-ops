@@ -28,6 +28,18 @@ def update_pr_task():
     
     return f'update-pr-task: {payload}', 200    
 
+@application.route("/pr-status-updated", methods=['POST'])
+def pr_status_updated():
+    payload = request.get_json()    
+
+    print(f'update-pr-task: {payload}')
+    
+    azdo_gitops = AzureDevOpsGitOps()
+    
+    azdo_gitops.update_pr_task_data(payload)
+    
+    return f'update-pr-task: {payload}', 200    
+
 # Add an azdo webhook listener to Invoke argo cd sync on push
 
 if __name__ == "__main__":
