@@ -112,12 +112,14 @@ class AzureDevOpsGitOps:
         pr_task_data[payload['pr_num']] = payload
 
     def get_pr_task_data(self, pr_num):        
-        return pr_task_data[pr_num]
+        if pr_num in pr_task_data:
+            return pr_task_data[pr_num]
+        else:
+            return None
 
-    def update_pr_task(self, state, commitid):
-        pr_num = self.get_pr_num(commitid)
-        if pr_num:
-            pr_task = self.get_pr_task_data(pr_num)
+    def update_pr_task(self, state, pr_num):
+        pr_task = self.get_pr_task_data(pr_num)
+        if pr_task:
             planurl = pr_task['planurl']
             projectid = pr_task['projectid']
             planid = pr_task['planid']
@@ -125,6 +127,8 @@ class AzureDevOpsGitOps:
             data = {'name': "TaskCompleted", 'taskId': pr_task['taskid'], 'jobid': pr_task['jobid'], 'result': state }
             response = requests.post(url=url, headers=self.headers, json=data)
             print(response.content)
+        else:
+            print(f'There is no data for pr [{pr_num}]')
 
     def update_commit_statuses(self, commitid, phase, sync_status, health, message, resources):
         phase_status = self.map_phase_to_azdo_status(phase)
@@ -142,5 +146,23 @@ class AzureDevOpsGitOps:
                state = 'succeeded'
             else:
                 state = 'failed'
-            self.update_pr_task(state, commitid)
+            pr_num = self.get_pr_num(commitid)
+            if pr_num:
+                self.update_pr_task(state, pr_num)
+
+    def get_pull_request(self, pr_num):
+        url = self.org_url + f'/_apis/git/pullrequests/{pr_num}?api-version=6.1-preview.1'
+        response = requests.get(url=url, headers=self.headers)
+        pr = json.loads(response.content)                
+        return pr
+    
+    
+    def process_pr_status_updated(self, payload):
+        pr_num = payload['resource']['pullRequestId']
+        print(f'pr_num:[{pr_num}]')
+        pr = self.get_pull_request(pr_num)
+        pr_status = pr['status']
+        if (pr_status == 'abandoned'):
+            self.update_pr_task('failed', str(pr_num))
+
 
