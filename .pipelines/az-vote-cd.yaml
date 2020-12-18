@@ -52,7 +52,8 @@ stages:
       variables:
         pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
       steps:   
-      - template: pr-completion-task-template.yaml        
+      - template: pr-completion-task-template.yaml 
+        condition: $[variables[pr_num]]        
 
     - job: "Automated_testing"
       displayName: Automated testing 
