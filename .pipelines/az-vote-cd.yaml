@@ -51,7 +51,7 @@ stages:
       pool: server          
       variables:
         pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
-        condition: $[variables['pr_num']]
+        condition: $[!eq(variables['pr_num'],'')]
       steps:   
       - template: pr-completion-task-template.yaml                 
 
