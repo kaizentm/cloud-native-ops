@@ -1,0 +1,8 @@
+version: v1.1.0
+stepTimeout: 1200 # quickly needed for some larger image builds; default is 10mins
+steps:
+- build: >-
+    -t $Registry/{{.Values.REPOSITORY_NAME}}:{{.Values.TAG_NAME}} -f {{.Values.DOCKERFILE}} .
+  cache: enabled
+- push:
+  - $Registry/{{.Values.REPOSITORY_NAME}}:{{.Values.TAG_NAME}}

@@ -1,0 +1,9 @@
+version: v1.0.0
+steps:
+  - cmd: >-
+      {{.Run.Registry}}/buildx
+      build
+      --build-arg BUILDKIT_INLINE_CACHE=1
+      --push
+      -t {{.Run.Registry}}/{{.Values.REPOSITORY_NAME}}:{{.Values.TAG_NAME}}
+      .

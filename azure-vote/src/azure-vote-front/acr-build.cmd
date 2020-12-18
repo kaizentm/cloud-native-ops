@@ -1,0 +1,1 @@
+az acr run -f acr-build.yaml -r gitopsflowacr --set REPOSITORY_NAME=azvote/azure-vote-front --set TAG_NAME=tcare-buildx --set DOCKERFILE=Dockerfile .
