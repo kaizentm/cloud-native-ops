@@ -15,9 +15,13 @@
 export gen_manifests_file_name='gen_manifests.yaml'
 
 # Usage:
-# generate-manifests.sh FOLDER_WITH_MANIFESTS GENERATED_MANIFESTS_FILE
+# generate-manifests.sh FOLDER_WITH_MANIFESTS GENERATED_MANIFESTS_FOLDER
 # e.g.:
-# generate-manifests.sh cloud-native-ops/azure-vote/manifests gen_manifests.yaml
+# generate-manifests.sh cloud-native-ops/azure-vote/manifests gen_manifests
+# 
+# the script will put Helm + Kustomize manifests with substituted variable values
+# to gen_manifests/hld folder and plain yaml manifests to gen_manifests/gen_manifests.yaml file
+
 
 mkdir -p $2
 mkdir -p $2/hld
