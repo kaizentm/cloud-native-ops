@@ -46,20 +46,22 @@ mkdir -p $DEST_FOLDER
 cp -r $SOURCE_FOLDER/* $DEST_FOLDER/
 git add -A
 git status
-git commit -m "deployment $DEPLOY_ID"
+if [[ `git status --porcelain | head -1` ]]; then
+    git commit -m "deployment $DEPLOY_ID"
 
-# Push to the deploy branch 
-echo "Push to the deploy branch $deploy_branch_name"
-echo "git push --set-upstream $repo_url $deploy_branch_name"
-git push --set-upstream $repo_url $deploy_branch_name
+    # Push to the deploy branch 
+    echo "Push to the deploy branch $deploy_branch_name"
+    echo "git push --set-upstream $repo_url $deploy_branch_name"
+    git push --set-upstream $repo_url $deploy_branch_name
 
-# Create a PR 
-echo "Create a PR to $DEST_BRANCH" 
+    # Create a PR 
+    echo "Create a PR to $DEST_BRANCH" 
 
-B64_PAT=$(printf ":$TOKEN" | base64)
-pr_response=$(curl -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
-        -d '{"sourceRefName":"refs/heads/'$deploy_branch_name'", "targetRefName":"refs/heads/'$DEST_BRANCH'", "description":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
-       "$SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1")
-echo $pr_response
-export pr_num=$(echo $pr_response | jq '.pullRequestId')
-echo "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num"
+    B64_PAT=$(printf ":$TOKEN" | base64)
+    pr_response=$(curl -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
+            -d '{"sourceRefName":"refs/heads/'$deploy_branch_name'", "targetRefName":"refs/heads/'$DEST_BRANCH'", "description":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
+        "$SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1")
+    echo $pr_response
+    export pr_num=$(echo $pr_response | jq '.pullRequestId')
+    echo "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num"
+fi 
