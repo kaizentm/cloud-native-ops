@@ -35,7 +35,7 @@ steps:
         # in alphabetical order, then another checksum of their names and checksums.
         # Running this command on windows-based infrastructure may return a different result due to CRLF
         pushd ${{ parameters.sourceLocation }}
-        imageTag=$(find ${{ parameters.containerReferences }} -type f -exec md5sum {} \; | LC_COLLATE=C sort -k 2 | md5sum | cut -f1 -d ' ')
+        imageTag=$(git log -n 1 --format="%H" -- ${{ parameters.containerReferences }})
         popd
   
         # If the image with the generated tag doesn't already exist, build it.
