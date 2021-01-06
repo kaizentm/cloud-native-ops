@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import base64
 
 # Temp storage in memory for a prototype. 
 # To be changed. The connection between the PR and agentless task should be stored in the PR itself
@@ -16,7 +17,8 @@ class AzureDevOpsGitOps:
 
     def __init__(self):
         self.org_url = os.getenv("AZDO_ORG_URL")  #https://dev.azure.com/csedevops/GitOps
-        self.token = os.getenv("PAT")
+        # token is supposed to be stored in a secret without any transformations
+        self.token = base64.b64encode(f':{os.getenv("PAT")}'.encode("ascii")).decode("ascii")  
         self.headers = {'authorization': f'Basic {self.token}',
                         'Content-Type' : 'application/json'}
 
@@ -67,8 +69,9 @@ class AzureDevOpsGitOps:
         sync_count = {}
 
         for resource in resources:
-            health = resource['health']['status']
-            health_count[health] = health_count.get(health, 0) + 1
+            if 'health' in resource: #  not every resource has health key
+                health = resource['health']['status']
+                health_count[health] = health_count.get(health, 0) + 1
             sync_count[resource['status']] = sync_count.get(resource['status'], 0) + 1
 
         def summarize(status_count):
