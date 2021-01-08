@@ -9,6 +9,7 @@ COPY gitops_event_handler.py azdo_gitops.py requirements.txt ./
 ENV PYTHONUNBUFFERED=1
 
 ENV AZDO_ORG_URL="https://dev.azure.com/csedevops/GitOps"
+ENV AZDO_GITOPS_REPO_NAME="azure-vote-app-deployment"
 ENV PAT=PAT
 ENV GITOPS_APP_URL="https://argodashboard.westus.cloudapp.azure.com/applications/az-vote-dev"
 
