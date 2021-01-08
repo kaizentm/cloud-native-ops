@@ -59,13 +59,7 @@ stages:
       displayName: Automated testing 
       dependsOn: deploy_with_gitops
       steps:
-      - task: Bash@3        
-        name: "smoke_test"
-        displayName: "Smoke Test"
-        inputs:
-          targetType: 'inline'
-          script: |
-            echo "Place for a smoke test"
+      - template: post-deployment-test-template.yaml
             
   - stage: "deploy_stage"
     displayName: "Deploy to Stage"
@@ -95,13 +89,7 @@ stages:
       displayName: Automated testing 
       dependsOn: deploy_with_gitops
       steps:
-      - task: Bash@3        
-        name: "smoke_test"
-        displayName: "Smoke Test"
-        inputs:
-          targetType: 'inline'
-          script: |
-            echo "Place for a smoke test"               
+      - template: post-deployment-test-template.yaml
               
                      
            
