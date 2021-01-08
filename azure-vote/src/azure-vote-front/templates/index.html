@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='default.css') }}">
+    <!-- the path to the resources should be relative, not absolute-->
+    <link rel="stylesheet" type="text/css" href="static/default.css">
     <title>{{title}}</title>
 
     <script language="JavaScript">
@@ -12,7 +13,8 @@
 </head>
 <body>
     <div id="container">
-        <form id="form" name="form" action="/"" method="post"><center>
+        <!-- the action path should be relative, not absolute-->
+        <form id="form" name="form" action="."" method="post"><center>
         <div id="logo">{{title}}</div>
         <div id="space"></div>
         <div id="form">
