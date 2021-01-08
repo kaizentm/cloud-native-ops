@@ -3,5 +3,5 @@ steps:
     name: "smoke_test"
     displayName: "Smoke Test"
     inputs:
-      filePath: $(utils_artifact_path)/smoke-test.sh
+      filePath: utils/smoke-test.sh
       arguments: '$(CLUSTER_ENTRY_URL)$(DEMO_APP_URL)'
