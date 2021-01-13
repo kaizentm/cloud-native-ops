@@ -1,12 +1,27 @@
 from flask import Flask, request
 from azdo_gitops import AzureDevOpsGitOps
 import logging
+from timeloop import Timeloop
+from datetime import timedelta
+
+# Time in seconds between background PR cleanup jobs
+PR_CLEANUP_INTERVAL = 1 * 60
+DISABLE_POLLING_PR_TASK = False
 
 logging.basicConfig(level=logging.INFO)
 
 application = Flask(__name__)
 
 azdo_gitops = AzureDevOpsGitOps()
+
+# Periodic PR cleanup task
+cleanup_task = Timeloop()
+@cleanup_task.job(interval=timedelta(seconds=PR_CLEANUP_INTERVAL))
+def pr_polling_thread_worker():
+    logging.info("Starting periodic PR cleanup")
+    azdo_gitops.notify_abandoned_pr_tasks()
+    logging.info(f'Finished PR cleanup, sleeping for {PR_CLEANUP_INTERVAL} seconds...')
+
 
 @application.route("/gitopsphase/", methods=['POST'])
 def gitopsphase():
@@ -41,4 +56,10 @@ def pr_status_updated():
 # Add an azdo webhook listener to Invoke argo cd sync on push
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0')
+    try:
+        if not DISABLE_POLLING_PR_TASK:
+            cleanup_task.start()
+        application.run(host='0.0.0.0')
+    finally:
+        if not DISABLE_POLLING_PR_TASK:
+            cleanup_task.stop()

@@ -1,13 +1,22 @@
 import base64
+from datetime import datetime, timedelta
+import dateutil.parser
 import json
 import logging
 import os
 import requests
+from threading import Lock
 
 # We need to store the agentless task ID that is waiting for a PR to complete.
 # The data is stored remotely in the PR metadata, and we also cache it locally.
 PR_METADATA_KEY = "argocd-callback-task-id"
 pr_task_data_cache = {}
+# A lock is needed since we have non-atomic operations, i.e. if-read-then-write.
+pr_cache_lock = Lock()
+
+# Callback task timeout in minutes. PRs abandoned before this time will not be processed.
+MAX_TASK_TIMEOUT = 72 * 60
+TASK_CUTOFF_DURATION = timedelta(minutes=MAX_TASK_TIMEOUT)
 
 
 class AzureDevOpsGitOps:
@@ -104,6 +113,7 @@ class AzureDevOpsGitOps:
             pr_num = comment[comment.index(MERGED_PR) + len(MERGED_PR) : comment.index(":")]
         return pr_num
 
+    # Returns None if no property was found.
     def get_pr_metadata(self, pr_num, key):
         # https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20request%20properties/list?view=azure-devops-rest-6.0
         url = f'{self.org_url}/_apis/git/repositories/{self.gitops_repo_name}/pullRequests/{pr_num}/properties?api-version=6.0-preview'
@@ -152,17 +162,22 @@ class AzureDevOpsGitOps:
     # Read/write for PR->TaskID value in AzDO and local cache.
     def add_pr_task_data(self, payload):
         logging.info(f'PR {payload["pr_num"]}: Storing and caching metadata for task {payload["taskid"]}')
-        pr_task_data_cache[payload['pr_num']] = payload
+        with pr_cache_lock:
+            pr_task_data_cache[payload['pr_num']] = payload
 
         self.add_pr_metadata(payload['pr_num'], PR_METADATA_KEY, payload)
 
-    def get_pr_task_data(self, pr_num):
-        if pr_num in pr_task_data_cache:
-            logging.info(f'PR {pr_num}: Metadata read cache hit')
-            # We only expect to have one callback, so remove the cache entry.
-            return pr_task_data_cache.pop(pr_num)
+    # is_alive: Metadata cache misses are OK if the PR is abandoned.
+    def get_pr_task_data(self, pr_num, is_alive=True):
+        # Lock the cache due to temporal store.
+        with pr_cache_lock:
+            if pr_num in pr_task_data_cache:
+                logging.info(f'PR {pr_num}: Metadata read cache hit')
+                # We only expect to have one callback, so remove the cache entry.
+                return pr_task_data_cache.pop(pr_num)
 
-        logging.warning(f'PR {pr_num}: Metadata cache miss')
+        if is_alive:
+            logging.warning(f'PR {pr_num}: Metadata cache miss')
         return self.get_pr_metadata(pr_num, PR_METADATA_KEY)
 
     # Given a PR task, check if it's parent plan has already completed.
@@ -181,18 +196,20 @@ class AzureDevOpsGitOps:
         return plan_info['state'] == 'completed'
 
     # Update the Azure Pipeline task waiting for the PR to complete.
-    def update_pr_task(self, state, pr_num):
-        logging.info(f'PR {pr_num}: Rollout {state}, attempting task completion callback...')
-        pr_task = self.get_pr_task_data(pr_num)
+    # is_alive: If true, the PR is active and absence of task data is an error.
+    def update_pr_task(self, state, pr_num, is_alive=True):
+        pr_task = self.get_pr_task_data(pr_num, is_alive)
         if not pr_task:
-            logging.error(f'PR {pr_num} has no metadata! Cannot complete task callback.')
-            return
+            if is_alive:
+                logging.error(f'PR {pr_num} has no metadata! Cannot complete task callback.')
+            return False
+        logging.info(f'PR {pr_num}: Rollout {state}, attempting task completion callback...')
 
         # The build task may have been cancelled, timed out, etc.
         # Working with the plan in this state can cause 500 errors.
         # Finish gracefully so ArgoCD doesn't keep calling us.
         if self.plan_already_completed(pr_task):
-            return
+            return False
 
         planurl = pr_task['planurl']
         projectid = pr_task['projectid']
@@ -209,6 +226,7 @@ class AzureDevOpsGitOps:
         response.raise_for_status()
 
         logging.info(f'PR {pr_num}: Successfully completed task {pr_task["taskid"]}')
+        return True
 
     # Update the statuses in Azure DevOps in the commit history view.
     def update_commit_statuses(self, phase_data):
@@ -237,24 +255,81 @@ class AzureDevOpsGitOps:
     def get_pull_request(self, pr_num):
         url = f'{self.org_url}/_apis/git/pullrequests/{pr_num}?api-version=6.1-preview.1'
         response = requests.get(url=url, headers=self.headers)
+        # Throw appropriate exception if request failed
+        response.raise_for_status()
         pr = json.loads(response.content)
         return pr
 
-    def ensure_pr_alive(self, pr_num):
-        pr = self.get_pull_request(pr_num)
+    # Returns False if the PR is no longer alive and we notified the task.
+    def update_abandoned_pr(self, pr_num, pr_data=None):
+        # Skip pulling the PR data if we already have it.
+        if pr_data:
+            pr = pr_data
+        else:
+            pr = self.get_pull_request(pr_num)
+
         pr_status = pr['status']
         if (pr_status == 'abandoned'):
-            self.update_pr_task('failed', str(pr_num))
-            return False
+            # update_pr_task returns True if the task was updated.
+            return not self.update_pr_task('failed', str(pr_num), is_alive=False)
         return True
+
+    # Returns an array of PR dictionaries with an optional status filter
+    # pr_status values: https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20requests?view=azure-devops-rest-6.0#pullrequeststatus
+    def get_prs(self, pr_status): 
+        pr_status_param = ''
+        if pr_status:
+            pr_status_param = f'searchCriteria.status={pr_status}&'
+        url = f'{self.org_url}/_apis/git/repositories/{self.gitops_repo_name}/pullRequests?{pr_status_param}api-version=6.0'
+        response = requests.get(url=url, headers=self.headers)
+        # Throw appropriate exception if request failed
+        response.raise_for_status()
+
+        pr_response = json.loads(response.content)
+        if pr_response['count'] == 0:
+            return None
+
+        return pr_response['value']
+
+    # Returns True if the PR completed within the last TASK_CUTOFF_DURATION.
+    def should_update_abandoned_pr(self, pr_data):
+        closed_date = pr_data.get('closedDate')
+        if not closed_date:
+            return True
+
+        # Azure DevOps returns a ISO 8601 formatted datetime string.
+        closed_datetime = dateutil.parser.isoparse(closed_date)
+
+        # Azure DevOps returns a timezone, so make now() relative to that.
+        now = datetime.now(closed_datetime.tzinfo)
+
+        return now - TASK_CUTOFF_DURATION <= closed_datetime
+
+    # Find abandoned PRs and notify any associated tasks.
+    def notify_abandoned_pr_tasks(self):
+        update_count = 0
+        prs = self.get_prs('abandoned')
+
+        for pr in prs:
+            if not self.should_update_abandoned_pr(pr):
+                continue
+
+            pr_num = pr['pullRequestId']
+            if not self.update_abandoned_pr(pr_num, pr_data=pr):
+                update_count += 1
+                logging.debug(f'Updated abandoned PR {pr_num}')
+
+        if update_count > 0:
+            logging.info(f'Processed {update_count} abandoned PRs via query')
 
     def process_pr_status_updated(self, payload):
         pr_num = payload['resource']['pullRequestId']
-        self.ensure_pr_alive(pr_num)
+        self.update_abandoned_pr(pr_num)
 
     def process_update_pr_task(self, payload):
-        # Before checking if we should add PR data, make sure we're in a good state
-        if not self.ensure_pr_alive(payload["pr_num"]):
+        # Before checking if we should add PR data, make sure it's not abandoned.
+        # If it was, we will trigger the callback without adding the task data.
+        if self.update_abandoned_pr(payload["pr_num"]):
             return
 
         self.add_pr_task_data(payload)
