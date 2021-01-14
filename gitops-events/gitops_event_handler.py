@@ -3,6 +3,7 @@ from azdo_gitops import AzureDevOpsGitOps
 import logging
 from timeloop import Timeloop
 from datetime import timedelta
+import atexit
 
 # Time in seconds between background PR cleanup jobs
 PR_CLEANUP_INTERVAL = 1 * 60
@@ -53,13 +54,16 @@ def pr_status_updated():
 
     return f'pr_status_updated: {payload}', 200
 
+def interrupt():
+    if not DISABLE_POLLING_PR_TASK:
+        cleanup_task.stop()
+
+
 # Add an azdo webhook listener to Invoke argo cd sync on push
 
+if not DISABLE_POLLING_PR_TASK:
+    cleanup_task.start()
+    atexit.register(interrupt)
+
 if __name__ == "__main__":
-    try:
-        if not DISABLE_POLLING_PR_TASK:
-            cleanup_task.start()
-        application.run(host='0.0.0.0')
-    finally:
-        if not DISABLE_POLLING_PR_TASK:
-            cleanup_task.stop()
+    application.run(host='0.0.0.0')
