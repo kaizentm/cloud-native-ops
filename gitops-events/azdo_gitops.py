@@ -327,9 +327,5 @@ class AzureDevOpsGitOps:
         self.update_abandoned_pr(pr_num)
 
     def process_update_pr_task(self, payload):
-        # Before checking if we should add PR data, make sure it's not abandoned.
-        # If it was, we will trigger the callback without adding the task data.
-        if self.update_abandoned_pr(payload["pr_num"]):
-            return
-
+        # Add metadata regardless of PR state for consistency.
         self.add_pr_task_data(payload)
