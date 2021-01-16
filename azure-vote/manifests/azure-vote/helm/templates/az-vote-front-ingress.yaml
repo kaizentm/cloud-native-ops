@@ -2,13 +2,13 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
   name: az-vote-front-ingress
 spec:
   rules:
   - http:
       paths:
-      - path: {{  .Values.demoAppUrl}}
+      - path: {{  .Values.demoAppUrl}}(/|$)(.*)
         pathType: Prefix
         backend:
           service:
