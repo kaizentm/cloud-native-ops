@@ -1,10 +1,5 @@
 # Pipeline to run basic code quality tests as part of pull requests to the master branch.
 
-resources:
-  containers:
-    - container: mlops
-      image: mcr.microsoft.com/mlops/python:latest
-
 pr: none
 trigger:
   branches:
@@ -15,8 +10,6 @@ variables:
 
 pool:
   vmImage: "ubuntu-latest"
-
-container: mlops
 
 steps:
   - template: code-quality-template.yaml

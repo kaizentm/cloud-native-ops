@@ -1,14 +1,40 @@
 # Pipeline template to run linting, unit tests with code coverage, and publish the results.
 
 steps:
-  - script: |
-      flake8 $(SRC_FOLDER) --output-file=lint-testresults.xml --format junit-xml
-    displayName: "Run lint tests"
+  # - task: Bash@3
+  #   displayName: Lint Python code with flake8
+  #   inputs:
+  #     targetType: 'inline'
+  #     script: |
+  #       # Source must be mounted to /apps.
+  #       docker run --rm --name f8 --volume $(pwd):/apps alpine/flake8:3.8.4 flake8 --output-file=/apps/flake8-testresults.xml --format=junit-xml
+  #       cat flake8-testresults.xml
+  #       exit 0
+  #     failOnStderr: false
+
+  - task: Bash@3
+    displayName: Lint Dockerfiles code with hadolint
+    inputs:
+      targetType: 'inline'
+      script: |
+        docker run --rm --name hl --volume $(pwd):/src --workdir /src hadolint/hadolint:v1.19.0 hadolint --format=json gitops-events/Dockerfile > hadolint-testresults.json
+        cat hadolint-testresults.json
+        exit 0
+      failOnStderr: false
+
+  - task: Bash@3
+    displayName: Convert Hadolint results
+    inputs:
+      targetType: 'inline'
+      script: |
+        pip install junit-xml
+        python hadolint2junitxml.py < hadolint-testresults.json
+      failOnStderr: false
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
-      testResultsFiles: "*-testresults.xml"
+      testResultsFiles: "**/*-testresults.xml"
       testRunTitle: "Linting & Unit tests"
       failTaskOnFailedTests: true
     displayName: "Publish test results"
