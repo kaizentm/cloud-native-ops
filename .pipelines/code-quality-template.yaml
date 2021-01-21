@@ -1,16 +1,24 @@
 # Pipeline template to run linting, unit tests with code coverage, and publish the results.
 
 steps:
-  # - task: Bash@3
-  #   displayName: Lint Python code with flake8
-  #   inputs:
-  #     targetType: 'inline'
-  #     script: |
-  #       # Source must be mounted to /apps.
-  #       docker run --rm --name f8 --volume $(pwd):/apps alpine/flake8:3.8.4 flake8 --output-file=/apps/flake8-testresults.xml --format=junit-xml
-  #       cat flake8-testresults.xml
-  #       exit 0
-  #     failOnStderr: false
+  - task: Bash@3
+    displayName: Lint Python code with flake8
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Source must be mounted to /apps.
+        docker run --rm --name f8  --volume $(pwd):/src --workdir /src python:3-alpine sh -c "pip install flake8 flake8-formatter-junit-xml && flake8 --format junit-xml --output-file=flake8-testresults.xml --format=junit-xml"
+        cat flake8-testresults.xml
+        exit 0
+      failOnStderr: false
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: "flake8-testresults.xml"
+      testRunTitle: "Python linting using flake8"
+      failTaskOnFailedTests: false
+    displayName: "Publish flake8 test results"
 
   - task: Bash@3
     displayName: Lint Dockerfiles code with hadolint
@@ -34,7 +42,26 @@ steps:
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
-      testResultsFiles: "**/*-testresults.xml"
-      testRunTitle: "Linting & Unit tests"
-      failTaskOnFailedTests: true
-    displayName: "Publish test results"
+      testResultsFiles: "hadolint-testresults.xml"
+      testRunTitle: "Dockerfile linting using hadolint"
+      failTaskOnFailedTests: false
+    displayName: "Publish hadolint test results"
+
+  - task: Bash@3
+    displayName: Lint markdown code with markdownlint
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo '{ "outputFormatters": [ [ "markdownlint-cli2-formatter-junit", { "name": "markdownlint-testresults.xml" } ] ] }' > .markdownlint-cli2.jsonc
+        docker run --rm --name mdl --volume $(pwd):/src --workdir /src node:12 sh -c "npm install --global markdownlint-cli2 markdownlint-cli2-formatter-junit; markdownlint-cli2 **/*.md"
+        cat markdownlint-testresults.xml
+        exit 0
+      failOnStderr: false
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: "markdownlint-testresults.xml"
+      testRunTitle: "Markdown linting using markdownlint"
+      failTaskOnFailedTests: false
+    displayName: "Publish markdownlint test results"
