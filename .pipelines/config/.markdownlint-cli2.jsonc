@@ -1,0 +1,10 @@
+{
+    "outputFormatters": [
+        [
+            "markdownlint-cli2-formatter-junit",
+            {
+                "name": "markdownlint-testresults.xml"
+            }
+        ]
+    ]
+}

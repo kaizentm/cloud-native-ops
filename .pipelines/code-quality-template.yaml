@@ -5,18 +5,22 @@ steps:
     displayName: Lint Python code with flake8
     inputs:
       targetType: 'inline'
-      script: |
-        # Source must be mounted to /apps.
-        docker run --rm --name f8  --volume $(pwd):/src --workdir /src python:3-alpine sh -c "pip install flake8 flake8-formatter-junit-xml && flake8 --format junit-xml --output-file=flake8-testresults.xml --format=junit-xml"
-        cat flake8-testresults.xml
-        exit 0
+      script: '
+        docker run --rm --name f8 --volume $(pwd):/src --workdir /src
+          python:3-alpine
+          sh -c "
+            pip install flake8==3.8.* flake8-formatter-junit-xml
+            && flake8 --format junit-xml --output-file=flake8-testresults.xml
+          "
+
+        exit 0'
       failOnStderr: false
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
       testResultsFiles: "flake8-testresults.xml"
-      testRunTitle: "Python linting using flake8"
+      testRunTitle: "Python linting (flake8)"
       failTaskOnFailedTests: false
     displayName: "Publish flake8 test results"
 
@@ -24,10 +28,13 @@ steps:
     displayName: Lint Dockerfiles code with hadolint
     inputs:
       targetType: 'inline'
-      script: |
-        docker run --rm --name hl --volume $(pwd):/src --workdir /src hadolint/hadolint:v1.19.0 hadolint --format=json gitops-events/Dockerfile > hadolint-testresults.json
-        cat hadolint-testresults.json
+      script: '
+        docker run --rm --name hl --volume $(pwd):/src --workdir /src
+          hadolint/hadolint:v1.19.0
+          hadolint --format=json gitops-events/Dockerfile > hadolint-testresults.json
+
         exit 0
+        '
       failOnStderr: false
 
   - task: Bash@3
@@ -51,11 +58,20 @@ steps:
     displayName: Lint markdown code with markdownlint
     inputs:
       targetType: 'inline'
-      script: |
-        echo '{ "outputFormatters": [ [ "markdownlint-cli2-formatter-junit", { "name": "markdownlint-testresults.xml" } ] ] }' > .markdownlint-cli2.jsonc
-        docker run --rm --name mdl --volume $(pwd):/src --workdir /src node:12 sh -c "npm install --global markdownlint-cli2 markdownlint-cli2-formatter-junit; markdownlint-cli2 **/*.md"
-        cat markdownlint-testresults.xml
+      script: '
+        cp .pipelines/config/.markdownlint-cli2.jsonc .
+
+        docker run --rm --name mdl --volume $(pwd):/src --workdir /src
+          node:12
+          sh -c "
+            npm install --global markdownlint-cli2 markdownlint-cli2-formatter-junit
+            && markdownlint-cli2 **/*.md
+          "
+
+        rm .markdownlint-cli2.jsonc
+
         exit 0
+        '
       failOnStderr: false
 
   - task: PublishTestResults@2
