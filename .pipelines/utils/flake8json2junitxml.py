@@ -37,4 +37,3 @@ ts = TestSuite("Flake8 Python Linter", test_cases)
 print(TestSuite.to_xml_string([ts]))
 with open('flake8-testresults.xml', 'w') as f:
     TestSuite.to_file(f, [ts], prettyprint=False)
-

@@ -109,6 +109,48 @@ steps:
     displayName: "Publish markdownlint test results"
 
   #
+  # YAML
+  #
+  - task: Bash@3
+    displayName: Lint YAML with yamllint
+    inputs:
+      targetType: 'inline'
+      script: '
+        docker run --rm --name yl --volume $(pwd):/src --workdir /src
+          cytopia/yamllint:1.23
+          --format parsable .pipelines clusters-config-templates/argocd/notifications > yamllint-testresults.json
+
+        cat yamllint-testresults.json
+
+        exit 0
+        '
+      failOnStderr: false
+
+  - task: Bash@3
+    displayName: Convert yamllint results
+    inputs:
+      targetType: 'inline'
+      script: '
+        docker run --rm --name f8 --volume $(pwd):/src --workdir /src
+          python:3-alpine
+          sh -c "
+            pip install junit-xml
+            && python .pipelines/utils/yamllint2junitxml.py < yamllint-testresults.json
+          "
+
+        exit 0'
+      failOnStderr: false
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: "yamllint-testresults.xml"
+      testRunTitle: "YAML linting (yamllint)"
+      failTaskOnFailedTests: false
+    displayName: "Publish yamllint test results"
+
+
+  #
   # Kubernetes
   #
   - task: Bash@3
