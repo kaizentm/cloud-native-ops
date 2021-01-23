@@ -85,19 +85,27 @@ steps:
     inputs:
       targetType: 'inline'
       script: '
-        cp .pipelines/config/.markdownlint-cli2.jsonc .
-
-        docker run --rm --name mdl --volume $(pwd):/src --workdir /src
-          node:12
-          sh -c "
-            npm install --global markdownlint-cli2 markdownlint-cli2-formatter-junit
-            && markdownlint-cli2 **/*.md
-          "
-
-        rm .markdownlint-cli2.jsonc
+       docker run --rm --name mdl --volume $(pwd):/src --workdir /src
+          pipelinecomponents/markdownlint:0.6.1
+          mdl --json **/*.md > markdownlint-testresults.json
 
         exit 0
         '
+      failOnStderr: false
+
+  - task: Bash@3
+    displayName: Convert Markdownlint results
+    inputs:
+      targetType: 'inline'
+      script: '
+        docker run --rm --name f8 --volume $(pwd):/src --workdir /src
+          python:3-alpine
+          sh -c "
+            pip install junit-xml
+            && python .pipelines/utils/markdownlint2junitxml.py < markdownlint-testresults.json
+          "
+
+        exit 0'
       failOnStderr: false
 
   - task: PublishTestResults@2
