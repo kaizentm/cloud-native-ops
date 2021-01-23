@@ -10,6 +10,7 @@ test_cases = []
 
 for entries in input.values():
     for entry in entries:
+        entry['filename'] = entry['filename'].removeprefix("./")
         location = f"{entry['filename']}:{entry['line_number']}:{entry['column_number']}"
 
         # Azure DevOps JUnit field mapping: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=junit%2Cyaml
