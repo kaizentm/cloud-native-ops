@@ -47,7 +47,7 @@ steps:
       script: '
         docker run --rm --name hl --volume $(pwd):/src --workdir /src
           hadolint/hadolint:v1.19.0
-          hadolint --format=json gitops-events/Dockerfile > hadolint-testresults.json
+          hadolint --format=json **/Dockerfile > hadolint-testresults.json
 
         exit 0
         '
@@ -126,7 +126,7 @@ steps:
       script: '
         docker run --rm --name yl --volume $(pwd):/src --workdir /src
           cytopia/yamllint:1.23
-          --format parsable .pipelines clusters-config-templates/argocd/notifications > yamllint-testresults.json
+          --format parsable . > yamllint-testresults.json
 
         cat yamllint-testresults.json
 
