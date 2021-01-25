@@ -2,7 +2,8 @@
 
 pr:
   branches:
-    include: master
+    include:
+    - master
 
 variables:
   - group: az-vote-app-dev
