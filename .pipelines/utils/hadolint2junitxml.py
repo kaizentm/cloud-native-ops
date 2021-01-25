@@ -1,4 +1,3 @@
-import argparse
 import json
 from junit_xml import TestSuite, TestCase
 import sys
@@ -29,4 +28,3 @@ ts = TestSuite("Docker File Linter", test_cases)
 print(TestSuite.to_xml_string([ts]))
 with open('hadolint-testresults.xml', 'w') as f:
     TestSuite.to_file(f, [ts], prettyprint=False)
-

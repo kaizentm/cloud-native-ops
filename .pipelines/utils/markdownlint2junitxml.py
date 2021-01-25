@@ -1,4 +1,3 @@
-import argparse
 import json
 from junit_xml import TestSuite, TestCase
 import sys

@@ -1,4 +1,3 @@
-import argparse
 import json
 from junit_xml import TestSuite, TestCase
 import sys
@@ -46,4 +45,3 @@ ts = TestSuite("Kubernetes YAML Linter", test_cases)
 print(TestSuite.to_xml_string([ts]))
 with open('kubescore-testresults.xml', 'w') as f:
     TestSuite.to_file(f, [ts], prettyprint=False)
-
