@@ -198,3 +198,14 @@ steps:
       testRunTitle: "Kubernetes YAML linting (kube-score)"
       failTaskOnFailedTests: false
     displayName: "Publish kube-score test results"
+
+  - task: Bash@3
+    displayName: Print new failures
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    inputs:
+      targetType: 'inline'
+      script: '
+        python .pipelines/utils/check_new_failures.py
+        '
+      failOnStderr: false
