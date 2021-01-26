@@ -12,10 +12,13 @@ github_gitops = GitHubGitOps()
 @application.route("/", methods=['POST'])
 def commitstatus():
     payload = request.get_json()
+    logging.debug(f'Commit status: {payload}')
 
-    logging.debug(f'GitOps phase: {payload}')
+    kind = payload'involvedObject']['kind']
+    logging.debug(f'Kind: {kind}')
 
-    github_gitops.update_commit_statuses(payload)
+    if kind == 'Kustomization':
+        github_gitops.update_commit_statuses(payload)
 
     return f'GitHub state: {payload}', 200
 
