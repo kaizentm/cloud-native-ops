@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1
 
 ENV AZDO_ORG_URL="https://api.github.com/repos/kaizentm"
 ENV AZDO_GITOPS_REPO_NAME="gitops-manifests"
-ENV PAT="2594fc4cff2d8bbd2d295da6ddc6388235c5ded8" 
+ENV PAT=PAT
 
 RUN pip install --no-cache-dir -r ./requirements.txt
 
