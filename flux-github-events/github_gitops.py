@@ -10,8 +10,8 @@ class GitHubGitOps:
 #      https://api.github.com/repos/kaizentm/gitops-manifests/statuses/c0ca84a63e42797618313a5245a659c736f5ff81
 
     def __init__(self):
-        self.org_url = os.getenv("AZDO_ORG_URL")  #https://api.github.com/repos/kaizentm
-        self.gitops_repo_name = os.getenv("AZDO_GITOPS_REPO_NAME") #gitops-manifest
+        self.org_url = os.getenv("GITHUB_ORG_URL")  #https://api.github.com/repos/kaizentm
+        self.gitops_repo_name = os.getenv("GITHUB_GITOPS_REPO_NAME") #gitops-manifest
         # token is supposed to be stored in a secret without any transformations
         self.token = os.getenv("PAT")
         self.headers = {'Authorization': f'token {self.token}'}

@@ -8,8 +8,8 @@ WORKDIR $APP_HOME
 COPY gitops_event_handler.py github_gitops.py requirements.txt ./
 ENV PYTHONUNBUFFERED=1
 
-ENV AZDO_ORG_URL="https://api.github.com/repos/kaizentm"
-ENV AZDO_GITOPS_REPO_NAME="gitops-manifests"
+ENV GITHUB_ORG_URL="https://api.github.com/repos/kaizentm"
+ENV GITHUB_GITOPS_REPO_NAME="gitops-manifests"
 ENV PAT=PAT
 
 RUN pip install --no-cache-dir -r ./requirements.txt

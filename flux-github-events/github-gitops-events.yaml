@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: github-gitops-events
+  namespace: flux-system
+  labels:
+    app: github-gitops-events
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: github-gitops-events
+  template:
+    metadata:
+      labels:
+        app: github-gitops-events
+    spec:
+      containers:
+      - name: bot
+        image: gitopsflowacr.azurecr.io/github-gitops-events:latest
+        env:
+        - name: GITHUB_ORG_URL
+          valueFrom:
+            secretKeyRef:
+              name: github-gitops-events-secret
+              key: GITHUB_ORG_URL
+        - name: GITHUB_GITOPS_REPO_NAME
+          valueFrom:
+            secretKeyRef:
+              name: github-gitops-events-secret
+              key: GITHUB_GITOPS_REPO_NAME
+        - name: PAT
+          valueFrom:
+            secretKeyRef:
+              name: github-gitops-events-secret
+              key: PAT
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: github-gitops-events-svc
+  namespace: flux-system
+spec:
+  selector:
+    app: github-gitops-events   
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-gitops-events-secret
+  namespace: flux-system
+stringData:
+  GITHUB_ORG_URL: "https://api.github.com/repos/kaizentm"
+  GITHUB_GITOPS_REPO_NAME: "gitops-manifests" 
+  PAT: {PAT}
+type: Opaque
