@@ -1,0 +1,52 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  push:
+    branches:
+      - master
+      - 'brysmith/**'
+
+jobs:
+  Build_Push_Azure_Vote_App_Image:
+    name: "Build and Push Azure Vote App Image"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Create Frontend Image Tags
+      uses: azure/CLI@v1
+      with:
+        inlineScript:  |
+          set -euxo pipefail  # fail on error
+  
+          # Generate an tag with a reproducible checksum of all files in . by doing a checksum of all files
+          # in alphabetical order, then another checksum of their names and checksums.
+          # Running this command on windows-based infrastructure may return a different result due to CRLF
+          pushd $(SRC_FOLDER)/src/azure-vote-front}
+          imageTag=$(git log -n 1 --format="%H" -- '.')
+          popd
+  
+          # If the image with the generated tag doesn't already exist, build it.
+          if ! az acr repository show -n $(AZ_ACR_NAME) --image "azvote/azure-vote-front:$imageTag" -o table; then
+            echo No match found. Container will be built.
+            echo Tag for new container: $imageTag
+            az acr build \
+              -r $(AZ_ACR_NAME) \
+              -t "azvote/azure-vote-front:$imageTag" \
+              -t "azvote/azure-vote-front:latest" \
+              -f "$(SRC_FOLDER)/src/azure-vote-front/Dockerfile" \
+              $(SRC_FOLDER)/src/azure-vote-front}
+          else
+            echo "The existing image with tag "$imageTag" is found."
+          fi
+          set +x
+          echo "setting IMAGE_TAG output for task frontend_image"
+          echo "##vso[task.setvariable variable=IMAGE_TAG;isOutput=true]$imageTag"
+
+          # write a file containing the image tag
+          mkdir -p $(Pipeline.Workspace)/image_tags      
