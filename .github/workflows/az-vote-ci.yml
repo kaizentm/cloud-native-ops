@@ -30,7 +30,7 @@ jobs:
           # Generate an tag with a reproducible checksum of all files in . by doing a checksum of all files
           # in alphabetical order, then another checksum of their names and checksums.
           # Running this command on windows-based infrastructure may return a different result due to CRLF
-          pushd env.SRC_FOLDER/src/azure-vote-front}
+          pushd env.SRC_FOLDER/src/azure-vote-front
           imageTag=$(git log -n 1 --format="%H" -- '.')
           popd
   
@@ -52,4 +52,4 @@ jobs:
           echo "##vso[task.setvariable variable=IMAGE_TAG;isOutput=true]$imageTag"
 
           # write a file containing the image tag
-          mkdir -p GITHUB_WORKSPACE/image_tags      
+          mkdir -p $GITHUB_WORKSPACE/image_tags      
