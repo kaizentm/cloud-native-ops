@@ -13,6 +13,9 @@ jobs:
   Build_Push_Azure_Vote_App_Image:
     name: "Build and Push Azure Vote App Image"
     runs-on: ubuntu-latest
+    env:
+      SRC_FOLDER: azure-vote
+      AZ_ACR_NAME: gitopsflowacr
     steps:
     - name: Azure Login
       uses: azure/login@v1
