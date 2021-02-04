@@ -30,20 +30,20 @@ jobs:
           # Generate an tag with a reproducible checksum of all files in . by doing a checksum of all files
           # in alphabetical order, then another checksum of their names and checksums.
           # Running this command on windows-based infrastructure may return a different result due to CRLF
-          pushd $(SRC_FOLDER)/src/azure-vote-front}
+          pushd env.SRC_FOLDER/src/azure-vote-front}
           imageTag=$(git log -n 1 --format="%H" -- '.')
           popd
   
           # If the image with the generated tag doesn't already exist, build it.
-          if ! az acr repository show -n $(AZ_ACR_NAME) --image "azvote/azure-vote-front:$imageTag" -o table; then
+          if ! az acr repository show -n env.AZ_ACR_NAME --image "azvote/azure-vote-front:$imageTag" -o table; then
             echo No match found. Container will be built.
             echo Tag for new container: $imageTag
             az acr build \
-              -r $(AZ_ACR_NAME) \
+              -r env.AZ_ACR_NAME \
               -t "azvote/azure-vote-front:$imageTag" \
               -t "azvote/azure-vote-front:latest" \
-              -f "$(SRC_FOLDER)/src/azure-vote-front/Dockerfile" \
-              $(SRC_FOLDER)/src/azure-vote-front}
+              -f "env.SRC_FOLDER/src/azure-vote-front/Dockerfile" \
+              env.SRC_FOLDER/src/azure-vote-front}
           else
             echo "The existing image with tag "$imageTag" is found."
           fi
@@ -52,4 +52,4 @@ jobs:
           echo "##vso[task.setvariable variable=IMAGE_TAG;isOutput=true]$imageTag"
 
           # write a file containing the image tag
-          mkdir -p $(Pipeline.Workspace)/image_tags      
+          mkdir -p GITHUB_WORKSPACE/image_tags      
