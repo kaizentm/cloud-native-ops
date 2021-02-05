@@ -13,7 +13,7 @@ jobs:
     name: "Build and Push Azure Vote App Image"
     runs-on: ubuntu-latest
     env:
-      SRC_FOLDER: cloud-native-ops/azure-vote
+      SRC_FOLDER: kaizentm/cloud-native-ops/azure-vote
       AZ_ACR_NAME: gitopsflowacr
     steps:
     - name: Azure Login
@@ -41,7 +41,7 @@ jobs:
               -r $AZ_ACR_NAME \
               -t "azvote/azure-vote-front:$imageTag" \
               -t "azvote/azure-vote-front:latest" \
-              -f "env.SRC_FOLDER/src/azure-vote-front/Dockerfile" \
+              -f "$SRC_FOLDER/src/azure-vote-front/Dockerfile" \
               $SRC_FOLDER/src/azure-vote-front}
           else
             echo "The existing image with tag "$imageTag" is found."
