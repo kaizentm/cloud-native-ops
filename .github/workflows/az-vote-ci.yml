@@ -23,13 +23,14 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Create Frontend Image Tags
+      env:
+        SOURCE_LOCATION: $SRC_FOLDER/src/azure-vote-front 
+        DOCKER_FILE: Dockerfile
+        REPOSITORY: azvote/azure-vote-front
+        TASKNAME: frontend_image   
       uses: Azure/cli@1.0.4
       with:
         inlineScript:  |
-          cd $GITHUB_WORKSPACE
-          echo 'Before ls'
-          ls
-          echo 'After ls'
           set -euxo pipefail  # fail on error
   
           # Generate an tag with a reproducible checksum of all files in . by doing a checksum of all files
@@ -40,21 +41,22 @@ jobs:
           popd
   
           # If the image with the generated tag doesn't already exist, build it.
-          if ! az acr repository show -n $AZ_ACR_NAME --image "azvote/azure-vote-front:$imageTag" -o table; then
+          if ! az acr repository show -n $AZ_ACR_NAME --image "$REPOSITORY:$imageTag" -o table; then
             echo No match found. Container will be built.
             echo Tag for new container: $imageTag
             az acr build \
               -r $AZ_ACR_NAME \
-              -t "azvote/azure-vote-front:$imageTag" \
-              -t "azvote/azure-vote-front:latest" \
-              -f "$GITHUB_WORKSPACE/$SRC_FOLDER/src/azure-vote-front/Dockerfile" \
-              $GITHUB_WORKSPACE/$SRC_FOLDER/src/azure-vote-front
+              -t "$REPOSITORY:$imageTag" \
+              -t "$REPOSITORY:latest" \
+              -f "$SOURCE_LOCATION/$DOCKER_FILE" \
+              $SOURCE_LOCATION
           else
             echo "The existing image with tag "$imageTag" is found."
           fi
           set +x
-          echo "setting IMAGE_TAG output for task frontend_image"
+          echo "setting IMAGE_TAG output for task $TASKNAME"
           echo "##vso[task.setvariable variable=IMAGE_TAG;isOutput=true]$imageTag"
 
           # write a file containing the image tag
           mkdir -p $GITHUB_WORKSPACE/image_tags      
+          echo "$imageTag" > $GITHUB_WORKSPACE/image_tags/$TASKNAME
