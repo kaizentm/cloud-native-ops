@@ -24,6 +24,7 @@ jobs:
       uses: Azure/cli@1.0.4
       with:
         inlineScript:  |
+          ls
           set -euxo pipefail  # fail on error
   
           # Generate an tag with a reproducible checksum of all files in . by doing a checksum of all files
