@@ -48,7 +48,7 @@ jobs:
               -t "azvote/azure-vote-front:$imageTag" \
               -t "azvote/azure-vote-front:latest" \
               -f "$GITHUB_WORKSPACE/$SRC_FOLDER/src/azure-vote-front/Dockerfile" \
-              $GITHUB_WORKSPACE/$SRC_FOLDER/src/azure-vote-front}
+              $GITHUB_WORKSPACE/$SRC_FOLDER/src/azure-vote-front
           else
             echo "The existing image with tag "$imageTag" is found."
           fi
