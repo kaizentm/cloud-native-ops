@@ -56,3 +56,8 @@ jobs:
                                                            -r $REPOSITORY \
                                                            -t $TASKNAME \
                                                            -d $DOCKER_FILE
+    - name: Publish Image Tags
+      uses: actions/upload-artifact@2
+      with:
+        name: image_tags
+        path: $GITHUB_WORKSPACE/image_tags 
