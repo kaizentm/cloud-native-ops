@@ -16,6 +16,8 @@ jobs:
       SRC_FOLDER: azure-vote
       AZ_ACR_NAME: gitopsflowacr
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
     - name: Azure Login
       uses: azure/login@v1
       with:
@@ -24,11 +26,10 @@ jobs:
       uses: Azure/cli@1.0.4
       with:
         inlineScript:  |
-          echo $GITHUB_WORKSPACE
-          echo 'Test'
           cd $GITHUB_WORKSPACE
+          echo 'Before ls'
           ls
-          echo 'Files'
+          echo 'After ls'
           set -euxo pipefail  # fail on error
   
           # Generate an tag with a reproducible checksum of all files in . by doing a checksum of all files
