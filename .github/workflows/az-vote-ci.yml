@@ -13,7 +13,7 @@ jobs:
     name: "Build and Push Azure Vote App Image"
     runs-on: ubuntu-latest
     env:
-      SRC_FOLDER: kaizentm/cloud-native-ops/azure-vote
+      SRC_FOLDER: azure-vote
       AZ_ACR_NAME: gitopsflowacr
     steps:
     - name: Azure Login
@@ -21,7 +21,7 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Create Frontend Image Tags
-      uses: azure/CLI@v1
+      uses: Azure/cli@1.0.4
       with:
         inlineScript:  |
           set -euxo pipefail  # fail on error
