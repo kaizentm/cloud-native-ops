@@ -39,3 +39,20 @@ jobs:
                                                            -r $REPOSITORY \
                                                            -t $TASKNAME \
                                                            -d $DOCKER_FILE
+    - name: Create Backend Image Tags
+      env:
+        SOURCE_LOCATION: src/azure-vote-back
+        DOCKER_FILE: Dockerfile
+        REPOSITORY: azvote/azure-vote-back
+        TASKNAME: backend_image   
+      uses: Azure/cli@1.0.4
+      with:
+        inlineScript:  |
+          chmod +x $GITHUB_WORKSPACE/code/buildContainerTemplate.sh
+          $GITHUB_WORKSPACE/code/buildContainerTemplate.sh -f $SRC_FOLDER \
+                                                           -g $GITHUB_WORKSPACE \
+                                                           -s $SOURCE_LOCATION \
+                                                           -u $AZ_ACR_NAME \
+                                                           -r $REPOSITORY \
+                                                           -t $TASKNAME \
+                                                           -d $DOCKER_FILE
