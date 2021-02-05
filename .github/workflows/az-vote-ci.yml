@@ -24,7 +24,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Create Frontend Image Tags
       env:
-        SOURCE_LOCATION: $GITHUB_WORKSPACE/azure_vote/src/azure-vote-front 
+        SOURCE_LOCATION: src/azure-vote-front 
         DOCKER_FILE: Dockerfile
         REPOSITORY: azvote/azure-vote-front
         TASKNAME: frontend_image   
@@ -48,8 +48,8 @@ jobs:
               -r $AZ_ACR_NAME \
               -t "$REPOSITORY:$imageTag" \
               -t "$REPOSITORY:latest" \
-              -f "$SOURCE_LOCATION/$DOCKER_FILE" \
-              $SOURCE_LOCATION
+              -f "$GITHUB_WORKSPACE/$SRC_FOLDER/$SOURCE_LOCATION/$DOCKER_FILE" \
+              $GITHUB_WORKSPACE/$SRC_FOLDER/$SOURCE_LOCATION
           else
             echo "The existing image with tag "$imageTag" is found."
           fi
