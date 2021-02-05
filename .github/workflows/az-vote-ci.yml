@@ -24,7 +24,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Create Frontend Image Tags
       env:
-        SOURCE_LOCATION: $SRC_FOLDER/src/azure-vote-front 
+        SOURCE_LOCATION: azure_vote/src/azure-vote-front 
         DOCKER_FILE: Dockerfile
         REPOSITORY: azvote/azure-vote-front
         TASKNAME: frontend_image   
