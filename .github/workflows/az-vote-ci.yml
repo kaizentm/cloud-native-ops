@@ -26,6 +26,9 @@ jobs:
         inlineScript:  |
           echo $GITHUB_WORKSPACE
           echo 'Test'
+          cd $GITHUB_WORKSPACE
+          ls
+          echo 'Files'
           set -euxo pipefail  # fail on error
   
           # Generate an tag with a reproducible checksum of all files in . by doing a checksum of all files
