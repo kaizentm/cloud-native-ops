@@ -31,11 +31,11 @@ jobs:
       uses: Azure/cli@1.0.4
       with:
         inlineScript:  |
-          cd $GITHUB_WORKSPACE/code
-          ./buildContainerTemplate.sh -f $SRC_FOLDER \
-                                   -g $GITHUB_WORKSPACE \
-                                   -s $SOURCE_LOCATION \
-                                   -u $AZ_ACR_NAME \
-                                   -r $REPOSITORY \
-                                   -t $TASKNAME \
-                                   -d $DOCKER_FILE
+          chmod +x $GITHUB_WORKSPACE/code/buildContainerTemplate.sh
+          $GITHUB_WORKSPACE/code/buildContainerTemplate.sh -f $SRC_FOLDER \
+                                                           -g $GITHUB_WORKSPACE \
+                                                           -s $SOURCE_LOCATION \
+                                                           -u $AZ_ACR_NAME \
+                                                           -r $REPOSITORY \
+                                                           -t $TASKNAME \
+                                                           -d $DOCKER_FILE
