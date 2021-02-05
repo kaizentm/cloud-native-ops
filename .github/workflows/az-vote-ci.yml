@@ -31,6 +31,7 @@ jobs:
       uses: Azure/cli@1.0.4
       with:
         inlineScript:  |
+          cd $GITHUB_WORKSPACE/code
           ./buildContainerTemplate.sh -f $SRC_FOLDER \
                                    -g $GITHUB_WORKSPACE \
                                    -s $SOURCE_LOCATION \
