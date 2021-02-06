@@ -60,4 +60,9 @@ jobs:
       uses: actions/upload-artifact@v2.2.2
       with:
         name: image_tags
-        path: $GITHUB_WORKSPACE/image_tags 
+        path: $GITHUB_WORKSPACE/image_tags
+    - name: Publish Manifests Templates
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        name: manifests
+        path: $GITHUB_WORKSPACE/$SRC_FOLDER/manifests
