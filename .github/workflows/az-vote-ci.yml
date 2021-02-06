@@ -66,3 +66,8 @@ jobs:
       with:
         name: manifests
         path: $GITHUB_WORKSPACE/$SRC_FOLDER/manifests
+    - name: Publish utils
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        name: utils
+        path: $GITHUB_WORKSPACE/utils
