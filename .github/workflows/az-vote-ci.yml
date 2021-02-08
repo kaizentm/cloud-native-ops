@@ -75,9 +75,9 @@ jobs:
     name: "Deploy to Dev"
     runs-on: ubuntu-latest
     env:
-      IMAGE_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote-ci/image_tags
-      MANIFEST_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote-ci/manifest
-      UTILS_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote-ci/utils
+      IMAGE_ARTIFACT_PATH: $GITHUB_WORKSPACE/image_tags
+      MANIFEST_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote/manifests
+      UTILS_ARTIFACT_PATH: $GITHUB_WORKSPACE/utils
     steps:
     - name: Read Image Tags
       run: |
