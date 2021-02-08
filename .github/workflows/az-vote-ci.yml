@@ -71,7 +71,8 @@ jobs:
       with:
         name: utils
         path: $GITHUB_WORKSPACE/utils
-  Deploy to Dev:
+  Deploy_to_Dev:
+    name: "Deploy to Dev"
     runs-on: ubuntu-latest
     env:
       IMAGE_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote-ci/image_tags
