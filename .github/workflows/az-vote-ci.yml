@@ -11,7 +11,6 @@ on:
 
 jobs:
   Build_Push_Azure_Vote_App_Image:
-    name: "Build and Push Azure Vote App Image"
     runs-on: ubuntu-latest
     env:
       SRC_FOLDER: azure-vote
@@ -72,3 +71,21 @@ jobs:
       with:
         name: utils
         path: $GITHUB_WORKSPACE/utils
+  Deploy to Dev:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote-ci/image_tags
+      MANIFEST_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote-ci/manifest
+      UTILS_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote-ci/utils
+    steps:
+    - name: Read Image Tags
+      run: |
+        for file in $IMAGE_ARTIFACT_PATH/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done 
+    # - name: Generate Manifests
+    #   inputs:
+    #      filePath: $UTILS_ARTIFACT_PATH/generate-manifests.sh
+    #      arguments: '$GITHUB_WORKSPACE/az-vote-ci/manifest gen_manifests'
+    # - name: Create PR
+    #   inputs:
+    #      filePath: $UTILS_ARTIFACT_PATH/create-pr.sh
+    #      arguments: '-s $(Build.SourcesDirectory)/gen_manifests -d $(MANIFESTS_FOLDER) -r $(MANIFESTS_REPO) -b $(MANIFESTS_BRANCH) -i $(Build.BuildNumber) -t $(PAT) -e $(ENVIRONMENT_NAME)'
