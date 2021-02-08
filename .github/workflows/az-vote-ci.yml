@@ -6,7 +6,8 @@ name: CI
 on:
   push:
     branches:
-      - master
+      # - master
+      - 'brysmith/**'
 
 jobs:
   Build_Push_Azure_Vote_App_Image:
