@@ -71,17 +71,17 @@ jobs:
       with:
         name: utils
         path: $GITHUB_WORKSPACE/utils
-  Deploy_to_Dev:
-    name: "Deploy to Dev"
-    runs-on: ubuntu-latest
-    env:
-      IMAGE_ARTIFACT_PATH: $GITHUB_WORKSPACE/image_tags
-      MANIFEST_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote/manifests
-      UTILS_ARTIFACT_PATH: $GITHUB_WORKSPACE/utils
-    steps:
+  #Deploy_to_Dev:
+  #  name: "Deploy to Dev"
+  #  runs-on: ubuntu-latest
+  #  env:
+  #    IMAGE_ARTIFACT_PATH: $GITHUB_WORKSPACE/image_tags
+  #    MANIFEST_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote/manifests
+  #    UTILS_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote-ci/utils
+  #  steps:
     - name: Read Image Tags
       run: |
-        for file in $IMAGE_ARTIFACT_PATH/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done 
+        for file in $GITHUB_WORKSPACE/image_tags/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done 
     # - name: Generate Manifests
     #   inputs:
     #      filePath: $UTILS_ARTIFACT_PATH/generate-manifests.sh
