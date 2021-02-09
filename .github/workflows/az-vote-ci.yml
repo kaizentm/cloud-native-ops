@@ -92,4 +92,4 @@ jobs:
         $GITHUB_WORKSPACE/utils/generate-manifests.sh $GITHUB_WORKSPACE/$SRC_FOLDER/manifests gen_manifests
     - name: Create PR
       run: |
-        $GITHUB_WORKSPACE/utils/create-pr.sh -s $GITHUB_WORKSPACE/$SRC_FOLDER/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME
+        $GITHUB_WORKSPACE/utils/create-pr.sh -s $GITHUB_WORKSPACE/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME
