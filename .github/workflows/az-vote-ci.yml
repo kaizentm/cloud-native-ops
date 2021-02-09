@@ -16,7 +16,7 @@ jobs:
       SRC_FOLDER: azure-vote
       AZ_ACR_NAME: gitopsflowacr
       MANIFESTS_FOLDER: azure-vote-manifests
-      MANIFESTS_REPO: gitopsflow
+      MANIFESTS_REPO: https://dev.azure.com/csedevops/GitOps/_git/azure-vote-app-deployment
       MANIFESTS_BRANCH: dev
       PAT: ${{ secrets.PAT }}
       ENVIRONMENT_NAME: Dev
