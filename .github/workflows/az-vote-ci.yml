@@ -97,7 +97,7 @@ jobs:
       with:
         name: manifests
         path: ${{ github.workspace }}/env.$MANIFEST_ARTIFACT_PATH
-    - name: Download utils
+    - name: Download Utils
       uses: actions/download-artifact@v2.0.8
       with:
         name: utils
