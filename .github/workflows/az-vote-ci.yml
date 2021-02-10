@@ -79,7 +79,7 @@ jobs:
         path: $UTILS_ARTIFACT_PATH
   Deploy_to_Dev:
     name: "Deploy to Dev"
-    runs-on: ubuntu-
+    runs-on: ubuntu-latest
     needs: Build_Push_Azure_Vote_App_Image
     env:
       MANIFESTS_BRANCH: dev
