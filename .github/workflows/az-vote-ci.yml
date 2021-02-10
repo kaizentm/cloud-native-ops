@@ -66,7 +66,7 @@ jobs:
       uses: actions/upload-artifact@v2.2.2
       with:
         name: image_tags
-        path: ${{ github.workspace }}/${{ env.$IMAGE_ARTIFACT_PATH }}
+        path: ${{ github.workspace }}/${{ env.IMAGE_ARTIFACT_PATH }}
     - name: Upload Manifests Templates
       uses: actions/upload-artifact@v2.2.2
       with:
@@ -91,7 +91,7 @@ jobs:
       uses: actions/download-artifact@v2.0.8
       with:
         name: image_tags
-        path: ${{ github.workspace }}/${{ env.$IMAGE_ARTIFACT_PATH }}
+        path: ${{ github.workspace }}/${{ env.IMAGE_ARTIFACT_PATH }}
     - name: Download Manifests Templates
       uses: actions/download-artifact@v2.0.8
       with:
