@@ -15,11 +15,12 @@ jobs:
     env:
       SRC_FOLDER: azure-vote
       AZ_ACR_NAME: gitopsflowacr
+      IMAGE_ARTIFACT_PATH: $GITHUB_WORKSPACE/image_tags
+      MANIFEST_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote/manifests
+      UTILS_ARTIFACT_PATH: $GITHUB_WORKSPACE/utils
       MANIFESTS_FOLDER: azure-vote-manifests
       MANIFESTS_REPO: https://dev.azure.com/csedevops/GitOps/_git/azure-vote-app-deployment
-      MANIFESTS_BRANCH: dev
       PAT: ${{ secrets.PAT }}
-      ENVIRONMENT_NAME: Dev
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
@@ -61,35 +62,51 @@ jobs:
                                                            -r $REPOSITORY \
                                                            -t $TASKNAME \
                                                            -d $DOCKER_FILE
-    - name: Publish Image Tags
+    - name: Upload Image Tags
       uses: actions/upload-artifact@v2.2.2
       with:
         name: image_tags
-        path: $GITHUB_WORKSPACE/image_tags
-    - name: Publish Manifests Templates
+        path: $IMAGE_ARTIFACT_PATH
+    - name: Upload Manifests Templates
       uses: actions/upload-artifact@v2.2.2
       with:
         name: manifests
-        path: $GITHUB_WORKSPACE/$SRC_FOLDER/manifests
-    - name: Publish utils
+        path: $MANIFEST_ARTIFACT_PATH
+    - name: Upload utils
       uses: actions/upload-artifact@v2.2.2
       with:
         name: utils
-        path: $GITHUB_WORKSPACE/utils
-  #Deploy_to_Dev:
-  #  name: "Deploy to Dev"
-  #  runs-on: ubuntu-latest
-  #  env:
-  #    IMAGE_ARTIFACT_PATH: $GITHUB_WORKSPACE/image_tags
-  #    MANIFEST_ARTIFACT_PATH: $GITHUB_WORKSPACE/az-vote/manifests
-  #    UTILS_ARTIFACT_PATH: $GITHUB_WORKSPACE/utils
-  #  steps:
+        path: $UTILS_ARTIFACT_PATH
+  Deploy_to_Dev:
+    name: "Deploy to Dev"
+    runs-on: ubuntu-latest
+    env:
+      MANIFESTS_BRANCH: dev
+      ENVIRONMENT_NAME: Dev
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+    - name: Download Image Tags
+      uses: actions/download-artifact@v2.0.8
+      with:
+        name: image_tags
+        path: $IMAGE_ARTIFACT_PATH
+    - name: Download Manifests Templates
+      uses: actions/download-artifact@v2.0.8
+      with:
+        name: manifests
+        path: $MANIFEST_ARTIFACT_PATH
+    - name: Download utils
+      uses: actions/download-artifact@v2.0.8
+      with:
+        name: utils
+        path: $UTILS_ARTIFACT_PATH
     - name: Read Image Tags
       run: |
-        for file in $GITHUB_WORKSPACE/image_tags/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done 
+        for file in $IMAGE_ARTIFACT_PATH/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done 
     - name: Generate Manifests
       run: |
-        $GITHUB_WORKSPACE/utils/generate-manifests.sh $GITHUB_WORKSPACE/$SRC_FOLDER/manifests gen_manifests
-    - name: Create PR
-      run: |
-        $GITHUB_WORKSPACE/utils/create-pr.sh -s $GITHUB_WORKSPACE/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME
+        $UTILS_ARTIFACT_PATH/generate-manifests.sh $MANIFEST_ARTIFACT_PATH gen_manifests
+  #  - name: Create PR
+  #    run: |
+  #      $GITHUB_WORKSPACE/utils/create-pr.sh -s $GITHUB_WORKSPACE/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME
