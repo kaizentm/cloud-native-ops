@@ -13,6 +13,7 @@ while getopts "s:d:r:b:i:t:e:p" option;
         p ) PLATFORM=${OPTARG};;
     esac
 done
+echo "List input params"
 echo SOURCE_FOLDER
 echo DEST_FOLDER
 echo DEST_REPO
@@ -20,6 +21,7 @@ echo DEST_BRANCH
 echo DEPLOY_ID
 echo ENV_NAME
 echo PLATFORM
+echo "end of list"
 
 set -euo pipefail  # fail on error
 
