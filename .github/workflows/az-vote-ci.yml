@@ -16,7 +16,7 @@ jobs:
       SRC_FOLDER: azure-vote
       AZ_ACR_NAME: gitopsflowacr
       IMAGE_ARTIFACT_PATH: image_tags
-      MANIFEST_ARTIFACT_PATH: az-vote/manifests
+      MANIFEST_ARTIFACT_PATH: az-vote/manifests/az-vote
       UTILS_ARTIFACT_PATH: utils
       MANIFESTS_FOLDER: azure-vote-manifests
       MANIFESTS_REPO: https://dev.azure.com/csedevops/GitOps/_git/azure-vote-app-deployment
