@@ -19,7 +19,7 @@ jobs:
       MANIFEST_ARTIFACT_PATH: azure-vote/manifests
       UTILS_ARTIFACT_PATH: utils
       MANIFESTS_FOLDER: azure-vote-manifests
-      MANIFESTS_REPO: https://dev.azure.com/csedevops/GitOps/_git/azure-vote-app-deployment
+      MANIFESTS_REPO: https://github.com/kaizentm/gitops-manifests
       PAT: ${{ secrets.PAT }}
     steps:
     - name: Checkout
