@@ -107,6 +107,7 @@ jobs:
         for file in $GITHUB_WORKSPACE/$IMAGE_ARTIFACT_PATH/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done 
     - name: Generate Manifests
       run: |
+        chmod +x $GITHUB_WORKSPACE/$UTILS_ARTIFACT_PATH/generate-manifests.sh
         $GITHUB_WORKSPACE/$UTILS_ARTIFACT_PATH/generate-manifests.sh $MANIFEST_ARTIFACT_PATH gen_manifests
   #  - name: Create PR
   #    run: |
