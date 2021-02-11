@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-while getopts "s:d:r:b:i:t:e:" option;
+while getopts "s:d:r:b:i:t:e:p" option;
     do
     case "$option" in
         s ) SOURCE_FOLDER=${OPTARG};;
@@ -10,6 +10,7 @@ while getopts "s:d:r:b:i:t:e:" option;
         i ) DEPLOY_ID=${OPTARG};;
         t ) TOKEN=${OPTARG};;
         e ) ENV_NAME=${OPTARG};;
+        p ) PLATFORM=${OPTARG};;
     esac
 done
 
@@ -55,13 +56,21 @@ if [[ `git status --porcelain | head -1` ]]; then
     git push --set-upstream $repo_url $deploy_branch_name
 
     # Create a PR 
-    echo "Create a PR to $DEST_BRANCH" 
+    echo "Create a PR to $DEST_BRANCH"
 
-    B64_PAT=$(printf ":$TOKEN" | base64)
-    pr_response=$(curl -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
+    B64_PAT=$(printf ":$TOKEN" | base64) 
+    if $PLATFORM == "AzDO" then 
+        pr_response=$(curl -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
             -d '{"sourceRefName":"refs/heads/'$deploy_branch_name'", "targetRefName":"refs/heads/'$DEST_BRANCH'", "description":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
-        "$SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1")
-    echo $pr_response
-    export pr_num=$(echo $pr_response | jq '.pullRequestId')
-    echo "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num"
+            "$SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1")
+        echo $pr_response
+        export pr_num=$(echo $pr_response | jq '.pullRequestId')
+        echo "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num"
+    else 
+        if $PLATFORM == "GitHub" then
+            pr_response=$(curl -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
+               -d '{"head":"refs/heads/'$deploy_branch_name'", "base":"refs/heads/'$DEST_BRANCH'", "body":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
+               "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls")
+            echo $pr_response
+    fi
 fi 
