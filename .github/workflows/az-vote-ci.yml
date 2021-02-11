@@ -67,17 +67,17 @@ jobs:
       uses: actions/upload-artifact@v2.2.2
       with:
         name: image_tags
-        path: ${{ github.workspace }}/${{ IMAGE_ARTIFACT_PATH }}
+        path: ${{ github.workspace }}/${{ env.IMAGE_ARTIFACT_PATH }}
     - name: Upload Manifests Templates
       uses: actions/upload-artifact@v2.2.2
       with:
         name: manifests
-        path: ${{ github.workspace }}/${{ MANIFEST_ARTIFACT_PATH }}
+        path: ${{ github.workspace }}/${{ env.MANIFEST_ARTIFACT_PATH }}
     - name: Upload utils
       uses: actions/upload-artifact@v2.2.2
       with:
         name: utils
-        path: ${{ github.workspace }}/${{ UTILS_ARTIFACT_PATH }}
+        path: ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}
   Deploy_to_Dev:
     name: "Deploy to Dev"
     runs-on: ubuntu-latest
@@ -92,25 +92,25 @@ jobs:
       uses: actions/download-artifact@v2.0.8
       with:
         name: image_tags
-        path: ${{ github.workspace }}/${{ IMAGE_ARTIFACT_PATH }}
+        path: ${{ github.workspace }}/${{ env.IMAGE_ARTIFACT_PATH }}
     - name: Download Manifests Templates
       uses: actions/download-artifact@v2.0.8
       with:
         name: manifests
-        path: ${{ github.workspace }}/${{ MANIFEST_ARTIFACT_PATH }}
+        path: ${{ github.workspace }}/${{ env.MANIFEST_ARTIFACT_PATH }}
     - name: Download Utils
       uses: actions/download-artifact@v2.0.8
       with:
         name: utils
-        path: ${{ github.workspace }}/${{ UTILS_ARTIFACT_PATH }}
+        path: ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}
     - name: Read Image Tags
       run: |
-        for file in ${{ github.workspace }}/${{ IMAGE_ARTIFACT_PATH }}/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done 
+        for file in ${{ github.workspace }}/${{ env.IMAGE_ARTIFACT_PATH }}/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done 
     - name: Generate Manifests
       run: |
-        chmod +x ${{ github.workspace }}/${{ UTILS_ARTIFACT_PATH }}/generate-manifests.sh
-        ${{ github.workspace }}/${{ UTILS_ARTIFACT_PATH }}/generate-manifests.sh $MANIFEST_ARTIFACT_PATH gen_manifests
+        chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/generate-manifests.sh
+        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/generate-manifests.sh $MANIFEST_ARTIFACT_PATH gen_manifests
     - name: Create PR
       run: |
-        chmod +x ${{ github.workspace }}/${{ UTILS_ARTIFACT_PATH }}/create-pr.sh
-        ${{ github.workspace }}/${{ UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d env.$MANIFESTS_FOLDER -r env.$MANIFESTS_REPO -b env.$MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t env.$PAT -e $ENVIRONMENT_NAME -p 'GitHub'
+        chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh
+        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d env.$MANIFESTS_FOLDER -r env.$MANIFESTS_REPO -b env.$MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t env.$PAT -e $ENVIRONMENT_NAME -p 'GitHub'
