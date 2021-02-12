@@ -85,7 +85,7 @@ jobs:
     env:
       MANIFESTS_BRANCH: dev
       ENVIRONMENT_NAME: Dev
-      PLATFORM: GitHub
+      PLATFORM: "GitHub"
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
