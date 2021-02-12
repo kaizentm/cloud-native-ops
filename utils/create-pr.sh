@@ -73,11 +73,9 @@ if [[ `git status --porcelain | head -1` ]]; then
     echo "Create a PR to $DEST_BRANCH"
     
     if [ "$PLATFORM" = "GitHub" ]; then
-        echo "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls"
-        echo $GITHUB_REPOSITORY
         pr_response=$(curl -H -H "Authorization: token $TOKEN" -H "Content-Type: application/json" --fail \
             -d '{"head":"refs/heads/'$deploy_branch_name'", "base":"refs/heads/'$DEST_BRANCH'", "body":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls")
+            "https://api.github.com/repos/kaizentm/gitops-manifests/pulls")
         echo $pr_response
     else 
         B64_PAT=$(printf ":$TOKEN" | base64)  
