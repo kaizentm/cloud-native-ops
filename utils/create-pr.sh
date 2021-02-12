@@ -35,7 +35,13 @@ git config --global user.name $pr_user_name
 echo "Clone manifests repo"
 repo_url="${DEST_REPO#http://}"
 repo_url="${DEST_REPO#https://}"
-repo_url="https://automated:$TOKEN@$repo_url"
+if [$PLATFORM == "AzDO"]; then
+   repo_url="https://automated:$TOKEN@$repo_url"
+else
+  if [$PLATFORM == "GitHub"]; then
+     repo_url="https://eedorenko:$TOKEN@$repo_url"
+  fi
+fi
 
 echo "git clone $repo_url -b $DEST_BRANCH --depth 1 --single-branch"
 git clone $repo_url -b $DEST_BRANCH --depth 1 --single-branch
