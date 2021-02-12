@@ -35,7 +35,7 @@ git config --global user.name $pr_user_name
 echo "Clone manifests repo"
 repo_url="${DEST_REPO#http://}"
 repo_url="${DEST_REPO#https://}"
-if ["$PLATFORM"== "GitHub"]; then
+if [ "$PLATFORM"== "GitHub" ]; then
     repo_url="https://eedorenko:$TOKEN@$repo_url"
 else
     repo_url="https://automated:$TOKEN@$repo_url"
@@ -71,7 +71,7 @@ if [[ `git status --porcelain | head -1` ]]; then
     # Create a PR 
     echo "Create a PR to $DEST_BRANCH"
     
-    if ["$PLATFORM" == "GitHub"]; then
+    if [ "$PLATFORM" == "GitHub" ]; then
         pr_response=$(curl -H -H "Authorization: token $TOKEN" -H "Content-Type: application/json" --fail \
             -d '{"head":"refs/heads/'$deploy_branch_name'", "base":"refs/heads/'$DEST_BRANCH'", "body":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
             "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls")
