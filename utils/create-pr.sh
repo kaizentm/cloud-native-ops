@@ -36,7 +36,7 @@ echo "Clone manifests repo"
 repo_url="${DEST_REPO#http://}"
 repo_url="${DEST_REPO#https://}"
 if [ "$PLATFORM" = "GitHub" ]; then
-    repo_url="https://eedorenko:$TOKEN@$repo_url"
+    repo_url="https://bjcmit:$TOKEN@$repo_url"
     echo "PLATFORM is GitHub"
 else
     repo_url="https://automated:$TOKEN@$repo_url"
