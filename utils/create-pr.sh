@@ -35,10 +35,10 @@ git config --global user.name $pr_user_name
 echo "Clone manifests repo"
 repo_url="${DEST_REPO#http://}"
 repo_url="${DEST_REPO#https://}"
-if [$PLATFORM == 'AzDO']; then
+if [$PLATFORM == "AzDO"]; then
    repo_url="https://automated:$TOKEN@$repo_url"
 else
-  if [$PLATFORM == 'GitHub']; then
+  if [$PLATFORM == "GitHub"]; then
      repo_url="https://eedorenko:$TOKEN@$repo_url"
   fi
 fi
