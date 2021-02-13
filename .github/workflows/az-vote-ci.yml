@@ -114,8 +114,8 @@ jobs:
     - name: Create PR
       run: |
         chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh
-        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME -p $PLATFORM
-    Deploy_to_Stage:
+        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME -p $PLATFORM 
+  Deploy_to_Stage:
       name: "Deploy to Stage"
       runs-on: ubuntu-latest
       needs: Deploy_to_Dev
