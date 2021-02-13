@@ -75,10 +75,10 @@ if [[ `git status --porcelain | head -1` ]]; then
     if [ "$PLATFORM" = "GitHub" ]; then
         owner_repo="${DEST_REPO#https://github.com/}"
         echo $owner_repo
-        #pr_response=$(curl -H "Authorization: token $TOKEN" -H "Content-Type: application/json" --fail \
-        #    -d '{"head":"refs/heads/'$deploy_branch_name'", "base":"refs/heads/'$DEST_BRANCH'", "body":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
-        #    "https://api.github.com/repos/kaizentm/gitops-manifests/pulls")
-        #echo $pr_response
+        pr_response=$(curl -H "Authorization: token $TOKEN" -H "Content-Type: application/json" --fail \
+            -d '{"head":"refs/heads/'$deploy_branch_name'", "base":"refs/heads/'$DEST_BRANCH'", "body":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
+            "https://api.github.com/repos/$owner_repo/pulls")
+        echo $pr_response
     else 
         B64_PAT=$(printf ":$TOKEN" | base64)  
         pr_response=$(curl -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
