@@ -73,7 +73,7 @@ if [[ `git status --porcelain | head -1` ]]; then
     echo "Create a PR to $DEST_BRANCH"
     
     if [ "$PLATFORM" = "GitHub" ]; then
-        owner_repo=${DEST_REPO#http://github.com/}
+        owner_repo="${DEST_REPO#https://github.com/}"
         echo $owner_repo
         #pr_response=$(curl -H "Authorization: token $TOKEN" -H "Content-Type: application/json" --fail \
         #    -d '{"head":"refs/heads/'$deploy_branch_name'", "base":"refs/heads/'$DEST_BRANCH'", "body":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
