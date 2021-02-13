@@ -115,3 +115,40 @@ jobs:
       run: |
         chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh
         ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME -p $PLATFORM
+    Deploy_to_Stage:
+      name: "Deploy to Stage"
+      runs-on: ubuntu-latest
+      needs: Deploy_to_Dev
+      env:
+        MANIFESTS_BRANCH: stage
+        ENVIRONMENT_NAME: Stage
+        PLATFORM: "GitHub"
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+      - name: Download Image Tags
+        uses: actions/download-artifact@v2.0.8
+        with:
+          name: image_tags
+          path: ${{ github.workspace }}/${{ env.IMAGE_ARTIFACT_PATH }}
+      - name: Download Manifests Templates
+        uses: actions/download-artifact@v2.0.8
+        with:
+          name: manifests
+          path: ${{ github.workspace }}/${{ env.MANIFEST_ARTIFACT_PATH }}
+      - name: Download Utils
+        uses: actions/download-artifact@v2.0.8
+        with:
+          name: utils
+          path: ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}
+      - name: Read Image Tags
+        run: |
+          for file in ${{ github.workspace }}/${{ env.IMAGE_ARTIFACT_PATH }}/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done 
+      - name: Generate Manifests
+        run: |
+          chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/generate-manifests.sh
+          ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/generate-manifests.sh $MANIFEST_ARTIFACT_PATH gen_manifests
+      - name: Create PR
+        run: |
+          chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh
+          ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME -p $PLATFORM
