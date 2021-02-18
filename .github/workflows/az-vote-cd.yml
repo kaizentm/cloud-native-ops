@@ -40,19 +40,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Download Image Tags
-        uses: actions/download-artifact@v2.0.8
+        uses: dawidd6/action-download-artifact@v2
         with:
           name: image_tags
+          workflow: az-vote-cicd.yml
           path: ${{ github.workspace }}/${{ env.IMAGE_ARTIFACT_PATH }}
       - name: Download Manifests Templates
-        uses: actions/download-artifact@v2.0.8
+        uses: dawidd6/action-download-artifact@v2
         with:
           name: manifests
+          workflow: az-vote-cicd.yml
           path: ${{ github.workspace }}/${{ env.MANIFEST_ARTIFACT_PATH }}
       - name: Download Utils
-        uses: actions/download-artifact@v2.0.8
+        uses: dawidd6/action-download-artifact@v2
         with:
           name: utils
+          workflow: az-vote-cicd.yml
           path: ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}
       - name: Read Image Tags
         run: |
