@@ -4,10 +4,8 @@ name: CD_Stage
 
 # Controls when the action will run. 
 on:
-  push:
-    branches:
-      # - master
-      - 'brysmith/**'
+  repository_dispatch:
+    types: [dev-sync-success]
 env:
   IMAGE_ARTIFACT_PATH: image_tags
   MANIFEST_ARTIFACT_PATH: azure-vote/manifests
