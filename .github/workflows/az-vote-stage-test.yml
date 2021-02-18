@@ -1,0 +1,24 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Stage_Test
+
+# Controls when the action will run. 
+on:
+  repository_dispatch:
+    types: [stage-sync-success]
+
+jobs:
+  Test_Dev:
+    name: "Test Stage"
+    runs-on: ubuntu-latest
+    env:
+      CLUSTER_ENTRY_URL: http://13.88.133.114
+      DEMO_APP_URL: /azvote-stage
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+    - name: Automated test
+      run: |
+        chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/smoke-test.sh
+        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/smoke-test.sh ${{ env.CLUSTER_ENTRY_URL }}${{ env.DEMO_APP_URL }}
+  
