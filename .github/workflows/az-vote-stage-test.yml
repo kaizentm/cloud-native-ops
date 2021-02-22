@@ -4,9 +4,7 @@ name: Stage_Test
 on:
   repository_dispatch:
     types: [stage-sync-success]
-env:
-  UTILS_ARTIFACT_PATH: utils
-  
+
 jobs:
   Test_Dev:
     name: "Test Stage"
@@ -17,6 +15,6 @@ jobs:
       uses: actions/checkout@v2.3.4
     - name: Automated test
       run: |
-        chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/smoke-test.sh
-        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/smoke-test.sh ${{ secrets.CLUSTER_ENTRY_URL }}${{ secrets.DEMO_APP_URL }}
+        chmod +x ${{ github.workspace }}/${{ secrets.UTILS_ARTIFACT_PATH }}/smoke-test.sh
+        ${{ github.workspace }}/${{ secrets.UTILS_ARTIFACT_PATH }}/smoke-test.sh ${{ secrets.CLUSTER_ENTRY_URL }}${{ secrets.DEMO_APP_URL }}
   
