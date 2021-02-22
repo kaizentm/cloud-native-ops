@@ -1,8 +1,6 @@
-# This is a basic workflow to help you get started with Actions
 
 name: CD_Stage
-
-# Controls when the action will run. 
+ 
 on:
   repository_dispatch:
     types: [dev-sync-success]
@@ -18,24 +16,19 @@ jobs:
   Test_Dev:
     name: "Test Dev"
     runs-on: ubuntu-latest
-    env:
-      CLUSTER_ENTRY_URL: http://13.88.133.114
-      DEMO_APP_URL: /azvote-dev
+    environment: az-vote-app-dev
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
     - name: Automated test
       run: |
         chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/smoke-test.sh
-        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/smoke-test.sh ${{ env.CLUSTER_ENTRY_URL }}${{ env.DEMO_APP_URL }}
+        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/smoke-test.sh ${{ secrets.CLUSTER_ENTRY_URL }}${{ secrets.DEMO_APP_URL }}
   Deploy_to_Stage:
       name: "Deploy to Stage"
       runs-on: ubuntu-latest
       needs: Test_Dev
-      env:
-        MANIFESTS_BRANCH: stage
-        ENVIRONMENT_NAME: Stage
-        PLATFORM: "GitHub"
+      environment: az-vote-app-stage
       steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -67,4 +60,4 @@ jobs:
       - name: Create PR
         run: |
           chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh
-          ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME -p $PLATFORM
+          ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b ${{ secrets.$MANIFESTS_BRANCH }} -i $GITHUB_RUN_ID -t $PAT -e ${{ secrets.ENVIRONMENT_NAME }} -p ${{ secrets.$PLATFORM }}

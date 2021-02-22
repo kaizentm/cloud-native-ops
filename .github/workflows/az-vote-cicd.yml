@@ -1,12 +1,10 @@
-# This is a basic workflow to help you get started with Actions
 
 name: CI_CD_Dev
 
-# Controls when the action will run. 
 on:
   push:
     branches:
-      # - master
+ #     - master
       - 'brysmith/**'
 env:
   IMAGE_ARTIFACT_PATH: image_tags
@@ -82,10 +80,7 @@ jobs:
     name: "Deploy to Dev"
     runs-on: ubuntu-latest
     needs: Build_Push_Azure_Vote_App_Image
-    env:
-      MANIFESTS_BRANCH: dev
-      ENVIRONMENT_NAME: Dev
-      PLATFORM: "GitHub"
+    environment: az-vote-app-dev
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
@@ -114,4 +109,4 @@ jobs:
     - name: Create PR
       run: |
         chmod +x ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh
-        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b $MANIFESTS_BRANCH -i $GITHUB_RUN_ID -t $PAT -e $ENVIRONMENT_NAME -p $PLATFORM 
+        ${{ github.workspace }}/${{ env.UTILS_ARTIFACT_PATH }}/create-pr.sh -s ${{ github.workspace }}/gen_manifests -d $MANIFESTS_FOLDER -r $MANIFESTS_REPO -b ${{ secrets.$MANIFESTS_BRANCH }} -i $GITHUB_RUN_ID -t $PAT -e ${{ secrets.ENVIRONMENT_NAME }} -p ${{ secrets.$PLATFORM }}
