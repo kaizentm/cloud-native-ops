@@ -4,8 +4,7 @@ name: CI_CD_Dev
 on:
   push:
     branches:
- #     - master
-      - 'brysmith/**'
+      - master
 
 jobs:
   Build_Push_Azure_Vote_App_Image:
