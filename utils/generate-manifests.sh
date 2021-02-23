@@ -5,6 +5,8 @@
 #   - kubectl
 #   - envsubst (https://command-not-found.com/envsubst)
 # 
+echo $1
+echo $2
 
 # For the Azure-Vote sample the following env varuables are supposed to be initialized: 
 # export VOTE_APP_TITLE='Awesome Voting App'
