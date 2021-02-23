@@ -26,7 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
         with:
-          ref: ${{ github.event.sha }}
+          ref: ${{ github.event.client_payload.sha }}
       - name: Download Image Tags
         uses: dawidd6/action-download-artifact@v2
         with:
