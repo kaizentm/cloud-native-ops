@@ -27,7 +27,7 @@ export gen_manifests_file_name='gen_manifests.yaml'
 
 mkdir -p $2
 mkdir -p $2/hld
-mldir -p $2/manifest
+mkgfvfvfvdir -p $2/manifest
 
 # Substitute env variables in all yaml files in the manifest folder
 for file in `find $1 -name '*.yaml'`; do envsubst <"$file" > "$file"1 && mv "$file"1 "$file"; done
