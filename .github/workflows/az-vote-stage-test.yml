@@ -6,7 +6,7 @@ on:
     types: [stage-sync-success]
 
 jobs:
-  Test_Dev:
+  Test_Stage:
     name: "Test Stage"
     runs-on: ubuntu-latest
     environment: az-vote-app-stage
