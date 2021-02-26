@@ -63,7 +63,7 @@ jobs:
       with:
         name: manifests
         path: ${{ github.workspace }}/${{ secrets.MANIFEST_ARTIFACT_PATH }}
-    - name: Upload utils
+    - name: Upload Utils
       uses: actions/upload-artifact@v2.2.2
       with:
         name: utils
