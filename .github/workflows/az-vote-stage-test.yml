@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v2.3.4
       with:
         ref: ${{ github.event.client_payload.sha }}
-    - name: Automated Test
+    - name: Automated test
       run: |
         chmod +x ${{ github.workspace }}/${{ secrets.UTILS_ARTIFACT_PATH }}/smoke-test.sh
         ${{ github.workspace }}/${{ secrets.UTILS_ARTIFACT_PATH }}/smoke-test.sh ${{ secrets.CLUSTER_ENTRY_URL }}${{ secrets.DEMO_APP_URL }}
