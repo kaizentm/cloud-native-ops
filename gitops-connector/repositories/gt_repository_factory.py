@@ -1,8 +1,6 @@
 import os
 import logging
-from operators.argo_gitops_operator import ArgoGitopsOperator
-from operators.flux_gitops_operator import FluxGitopsOperator
-from operators.gitops_operator import GitopsOperatorInterface
+from repositories.git_repository import GitRepositoryInterface
 
 FLUX_TYPE = "FLUX"
 ARGOCD_TYPE = "ARGOCD"

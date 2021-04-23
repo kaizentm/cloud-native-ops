@@ -6,7 +6,7 @@ class ArgoGitopsOperator(GitopsOperatorInterface):
     def extract_commit_statuses(self, phase_data):
         commit_statuses = []
 
-        commit_id = self.get_commit_id(get_commit_id)
+        commit_id = self.get_commit_id(phase_data)
         phase_status, sync_status, health_status = self._get_statuses(phase_data)
 
         phase_status = GitCommitStatus(commit_id = commit_id, status_name = 'Phase',
@@ -27,8 +27,6 @@ class ArgoGitopsOperator(GitopsOperatorInterface):
 
     def is_finished(self, phase_data):
         phase_status, _, health_status = self._get_statuses(phase_data)
-        is_finished = False
-        is_successful = False
 
         is_finished = phase_status != 'Inconclusive' and phase_status != 'Running' and \
                       health_status != 'Progressing' 
@@ -37,7 +35,7 @@ class ArgoGitopsOperator(GitopsOperatorInterface):
 
         return is_finished, is_successful
 
-    def get_commit_id(self, c) -> str:
+    def get_commit_id(self, phase_data) -> str:
         return phase_data['commitid']
 
     def _get_statuses(self, phase_data):

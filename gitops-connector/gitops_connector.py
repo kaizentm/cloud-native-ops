@@ -5,7 +5,7 @@ class GitopsConnector:
 
     def __init__(self):
         self._gitops_operator = GitopsOperatorFactory.new_gitops_operator()
-    #     self._git_repository = GitRepository.new_git_repository()
+        self._git_repository = GitRepositoryFactory.new_git_repository()
     #     self._cicd_orchestrator = CicdOrchestrator.new_git_repository(self._git_repository)
 
 
