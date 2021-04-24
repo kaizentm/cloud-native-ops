@@ -12,8 +12,9 @@ class FluxGitopsOperator(GitopsOperatorInterface):
         
         reason_state = phase_data['reason']
         reason_message = self._map_reason_to_description(reason_state)
+        kind = self._get_message_kind(phase_data)
 
-        status = GitCommitStatus(commit_id = commit_id, status_name = 'Phase',
+        status = GitCommitStatus(commit_id = commit_id, status_name = kind,
              state = reason_state, message = reason_message, callback_url=self.callback_url, gitops_operator='Flux')
         commit_statuses.append(status) 
 
@@ -35,9 +36,12 @@ class FluxGitopsOperator(GitopsOperatorInterface):
         return commit_id
     
     def is_supported_message(self, phase_data) -> bool:
-        kind = phase_data['involvedObject']['kind']
+        kind = self._get_message_kind(phase_data)
         logging.debug(f'Kind: {kind}')
         return (kind == 'Kustomization')
+
+    def _get_message_kind(self, phase_data) -> str:
+        return phase_data['involvedObject']['kind']
 
     def _map_reason_to_description(self, reason):
         reason_descrptn_map = {
