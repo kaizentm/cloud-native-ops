@@ -30,7 +30,6 @@ def pr_polling_thread_worker():
 @application.route("/gitopsphase", methods=['POST'])
 def gitopsphase():
     payload = request.get_json()
-    print(payload)
 
     logging.debug(f'GitOps phase: {payload}')
 
