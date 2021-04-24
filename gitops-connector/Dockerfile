@@ -5,7 +5,7 @@ ENV WORKERS 1
 ENV THREADS 8
 ENV PREDICTIVE_UNIT_SERVICE_PORT 8080
 WORKDIR $APP_HOME
-COPY clients/* operators/* repositories/* gitops_event_handler.py azdo_gitops.py requirements.txt ./
+COPY . ./
 ENV PYTHONUNBUFFERED=1
 
 # FLUX or ARGOCD
