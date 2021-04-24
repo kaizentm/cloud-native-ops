@@ -1,5 +1,6 @@
-from operators.gitops_operator import GitopsOperatorInterface
+import logging
 from operators.gitops_operator_factory import GitopsOperatorFactory
+from repositories.git_repository_factory import GitRepositoryFactory
 
 class GitopsConnector:
 
@@ -9,14 +10,17 @@ class GitopsConnector:
     #     self._cicd_orchestrator = CicdOrchestrator.new_git_repository(self._git_repository)
 
 
-    # def process_gitops_phase(self, phase_data):
-    #     _post_commit_statuses(phase_data)
-    #     _notify_orchestrator(phase_data)
+    def process_gitops_phase(self, phase_data):
+        if self._gitops_operator.is_supported_message(phase_data):
+            self._post_commit_statuses(phase_data)
+            # self._notify_orchestrator(phase_data)
+        else:
+            logging.debug(f'Message is not supported: {phase_data}')
 
-    # def _post_commit_statuses(self, phase_data):    
-    #     commit_statuses = self._gitops_operator.extract_commit_statuses(phase_data)
-    #     for commit_status in commit_statuses:
-    #         self._git_repository.post_commit_status(commit_status)
+    def _post_commit_statuses(self, phase_data):    
+        commit_statuses = self._gitops_operator.extract_commit_statuses(phase_data)
+        for commit_status in commit_statuses:
+            self._git_repository.post_commit_status(commit_status)
         
     # def _notify_orchestrator(self, phase_data):    
     #     is_finished, is_successful = self._gitops_operator.is_finished(phase_data)

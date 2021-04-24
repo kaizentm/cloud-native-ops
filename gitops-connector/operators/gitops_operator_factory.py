@@ -1,4 +1,4 @@
-import os
+import utils
 import logging
 from operators.argo_gitops_operator import ArgoGitopsOperator
 from operators.flux_gitops_operator import FluxGitopsOperator
@@ -11,7 +11,7 @@ class GitopsOperatorFactory:
 
     @staticmethod
     def new_gitops_operator() -> GitopsOperatorInterface:
-        gitops_operator_type = os.getenv("GITOPS_OPERATOR_TYPE", FLUX_TYPE)
+        gitops_operator_type = utils.getenv("GITOPS_OPERATOR_TYPE", FLUX_TYPE)
 
         if gitops_operator_type == FLUX_TYPE:
             return FluxGitopsOperator()

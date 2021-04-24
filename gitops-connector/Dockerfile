@@ -5,13 +5,21 @@ ENV WORKERS 1
 ENV THREADS 8
 ENV PREDICTIVE_UNIT_SERVICE_PORT 8080
 WORKDIR $APP_HOME
-COPY gitops_event_handler.py azdo_gitops.py requirements.txt ./
+COPY clients/* operators/* repositories/* gitops_event_handler.py azdo_gitops.py requirements.txt ./
 ENV PYTHONUNBUFFERED=1
 
-ENV AZDO_ORG_URL="https://dev.azure.com/csedevops/GitOps"
-ENV AZDO_GITOPS_REPO_NAME="azure-vote-app-deployment"
-ENV PAT=PAT
-ENV GITOPS_APP_URL="https://argodashboard.westus.cloudapp.azure.com/applications/az-vote-dev"
+# FLUX or ARGOCD
+env GITOPS_OPERATOR_TYPE=FLUX
+
+# AZDO or GITHUB
+env GIT_REPOSITORY_TYPE=AZDO
+
+# Required if either Git repository or CI/CD orchestrator is Azure DevOps
+ENV AZDO_ORG_URL=
+ENV AZDO_GITOPS_REPO_NAME=
+
+ENV PAT=
+ENV GITOPS_APP_URL=
 
 RUN pip install --no-cache-dir -r ./requirements.txt
 

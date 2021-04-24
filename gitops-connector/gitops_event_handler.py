@@ -4,6 +4,7 @@ import logging
 from timeloop import Timeloop
 from datetime import timedelta
 import atexit
+from gitops_connector import GitopsConnector
 
 # Time in seconds between background PR cleanup jobs
 PR_CLEANUP_INTERVAL = 1 * 60
@@ -15,6 +16,8 @@ application = Flask(__name__)
 
 azdo_gitops = AzureDevOpsGitOps()
 
+gitops_connector = GitopsConnector()
+
 # Periodic PR cleanup task
 cleanup_task = Timeloop()
 @cleanup_task.job(interval=timedelta(seconds=PR_CLEANUP_INTERVAL))
@@ -24,13 +27,14 @@ def pr_polling_thread_worker():
     logging.info(f'Finished PR cleanup, sleeping for {PR_CLEANUP_INTERVAL} seconds...')
 
 
-@application.route("/gitopsphase/", methods=['POST'])
+@application.route("/gitopsphase", methods=['POST'])
 def gitopsphase():
     payload = request.get_json()
+    print(payload)
 
     logging.debug(f'GitOps phase: {payload}')
 
-    azdo_gitops.update_commit_statuses(payload)
+    gitops_connector.process_gitops_phase(payload)
 
     return f'GitOps phase: {payload}', 200
 

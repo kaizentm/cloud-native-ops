@@ -6,3 +6,5 @@ class GitCommitStatus:
     status_name: str
     state: str
     message: str
+    callback_url: str
+    gitops_operator: str
