@@ -10,7 +10,7 @@ from gitops_connector import GitopsConnector
 PR_CLEANUP_INTERVAL = 1 * 60
 DISABLE_POLLING_PR_TASK = False
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 application = Flask(__name__)
 
