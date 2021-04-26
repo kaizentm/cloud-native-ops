@@ -3,7 +3,7 @@ trigger: none
 resources:
   pipelines:
   - pipeline: az-vote-ci
-    source: 'Azure vote app CI'
+    source: 'Azure vote app CI GH'
 
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
