@@ -1,10 +1,11 @@
-- task: InvokeRESTAPI@1
-  inputs:
-    connectionType: connectedServiceName
-    serviceConnection: azdo-pr-connection
-    method: 'PATCH'
-    urlSuffix: '/pullRequests/$(pr_num)/properties?api-version=6.0-preview.1'
-    headers: '{"Content-Type":"application/json-patch+json", "Authorization": "Basic $(token)"}'
-    body: '[{"op":"add","path":"/argocd-callback-task-id","from":null,"value":"{\"taskid\":\"$(System.TaskInstanceId)\", \"jobid\":\"$(System.JobId)\", \"planurl\":\"$(System.CollectionUri)\",  \"planid\":\"$(System.PlanId)\", \"projectid\":\"$(System.TeamProjectId)\", \"pr_num\":\"$(pr_num)\"}"}]'
-    waitForCompletion: 'true'
-    completionEvent: 'Callback'
+steps:  
+  - task: InvokeRESTAPI@1
+    inputs:
+      connectionType: connectedServiceName
+      serviceConnection: azdo-pr-connection
+      method: 'PATCH'
+      urlSuffix: '/pullRequests/$(pr_num)/properties?api-version=6.0-preview.1'
+      headers: '{"Content-Type":"application/json-patch+json", "Authorization": "Basic $(token)"}'
+      body: '[{"op":"add","path":"/argocd-callback-task-id","from":null,"value":"{\"taskid\":\"$(System.TaskInstanceId)\", \"jobid\":\"$(System.JobId)\", \"planurl\":\"$(System.CollectionUri)\",  \"planid\":\"$(System.PlanId)\", \"projectid\":\"$(System.TeamProjectId)\", \"pr_num\":\"$(pr_num)\"}"}]'
+      waitForCompletion: 'true'
+      completionEvent: 'Callback'
