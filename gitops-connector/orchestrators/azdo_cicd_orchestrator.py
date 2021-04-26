@@ -6,7 +6,7 @@ from clients.azdo_client import AzdoClient
 class AzdoCicdOrchestrator(CicdOrchestratorInterface):
 
     def __init__(self, git_repository: GitRepositoryInterface):    
-        
+        super().__init__(git_repository)
         self.azdo_client = AzdoClient()
         self.headers = self.azdo_client.get_rest_api_headers()
 
