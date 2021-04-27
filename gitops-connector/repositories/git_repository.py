@@ -13,3 +13,11 @@ class GitRepositoryInterface(ABC):
     @abstractmethod
     def get_pr_metadata(self, commit_id):
         pass
+
+    @abstractmethod
+    def get_pull_request(self, pr_num):
+        pass
+
+    @abstractmethod
+    def get_prs(self, pr_status):
+        pass

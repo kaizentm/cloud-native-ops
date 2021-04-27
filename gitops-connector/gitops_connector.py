@@ -30,6 +30,9 @@ class GitopsConnector:
             commit_id = self._gitops_operator.get_commit_id(phase_data)
             self._cicd_orchestrator.notify_on_deployment_completion(commit_id, is_successful)
 
+    def notify_abandoned_pr_tasks(self):
+        self._cicd_orchestrator.notify_abandoned_pr_tasks()
+
 
 if __name__ == "__main__":
      git_ops_connector = GitopsConnector()  

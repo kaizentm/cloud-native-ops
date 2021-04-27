@@ -11,3 +11,6 @@ class CicdOrchestratorInterface(ABC):
     def notify_on_deployment_completion(self, commit_id, is_successful):
         pass
 
+    @abstractmethod
+    def notify_abandoned_pr_tasks(self):
+        pass

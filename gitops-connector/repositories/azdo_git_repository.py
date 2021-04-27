@@ -46,8 +46,32 @@ class AzdoGitRepository(GitRepositoryInterface):
                 return json.loads(entry['$value'])
         return None
     
+    def get_pull_request(self, pr_num):
+        url = f'{self.repository_api}/pullRequests/{pr_num}?api-version=6.1-preview.1'
+        response = requests.get(url=url, headers=self.headers)
+        # Throw appropriate exception if request failed
+        response.raise_for_status()
+        pr = json.loads(response.content)
+        return pr
 
     
+    # Returns an array of PR dictionaries with an optional status filter
+    # pr_status values: https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20requests?view=azure-devops-rest-6.0#pullrequeststatus
+    def get_prs(self, pr_status): 
+        pr_status_param = ''
+        if pr_status:
+            pr_status_param = f'searchCriteria.status={pr_status}&'
+        url = f'{self.repository_api}/pullRequests?{pr_status_param}api-version=6.0'
+        response = requests.get(url=url, headers=self.headers)
+        # Throw appropriate exception if request failed
+        response.raise_for_status()
+
+        pr_response = json.loads(response.content)
+        if pr_response['count'] == 0:
+            return None
+
+        return pr_response['value']
+
     def _map_to_azdo_status(self, status):
         status_map = {
             "Succeeded": "succeeded",
