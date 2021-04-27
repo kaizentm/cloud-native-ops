@@ -82,5 +82,6 @@ if [[ `git status --porcelain | head -1` ]]; then
         echo $pr_response
         export pr_num=$(echo $pr_response | jq '.pullRequestId')
         echo "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num"
+        echo "##vso[task.setvariable variable=TOKEN;isOutput=true]$B64_PAT"
     fi
 fi 
