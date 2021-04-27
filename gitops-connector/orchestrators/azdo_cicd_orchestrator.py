@@ -8,10 +8,6 @@ from orchestrators.cicd_orchestrator import CicdOrchestratorInterface
 from repositories.git_repository import GitRepositoryInterface
 from clients.azdo_client import AzdoClient
 
-pr_task_data_cache = {}
-# A lock is needed since we have non-atomic operations, i.e. if-read-then-write.
-pr_cache_lock = Lock()
-
 # Callback task timeout in minutes. PRs abandoned before this time will not be processed.
 MAX_TASK_TIMEOUT = 72 * 60
 TASK_CUTOFF_DURATION = timedelta(minutes=MAX_TASK_TIMEOUT)
@@ -62,23 +58,14 @@ class AzdoCicdOrchestrator(CicdOrchestratorInterface):
             'result': state
         }
         response = requests.post(url=url, headers=self.headers, json=data)
+        logging.debug(f'Update PR task response content{response.content}')
         # Throw appropriate exception if request failed
         response.raise_for_status()
 
         logging.info(f'PR {pr_num}: Successfully completed task {pr_task["taskid"]}')
         return True
 
-    # is_alive: Metadata cache misses are OK if the PR is abandoned.
     def _get_pr_task_data(self, pr_num, is_alive=True):
-        # Lock the cache due to temporal store.
-        with pr_cache_lock:
-            if pr_num in pr_task_data_cache:
-                logging.info(f'PR {pr_num}: Metadata read cache hit')
-                # We only expect to have one callback, so remove the cache entry.
-                return pr_task_data_cache.pop(pr_num)
-
-        if is_alive:
-            logging.warning(f'PR {pr_num}: Metadata cache miss')
         return self.git_repository.get_pr_metadata(pr_num)
 
     # Given a PR task, check if it's parent plan has already completed.
