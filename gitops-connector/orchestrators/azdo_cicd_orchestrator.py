@@ -1,6 +1,14 @@
+import json
+from threading import Lock
+import logging
+import requests
 from orchestrators.cicd_orchestrator import CicdOrchestratorInterface 
 from repositories.git_repository import GitRepositoryInterface
 from clients.azdo_client import AzdoClient
+
+pr_task_data_cache = {}
+# A lock is needed since we have non-atomic operations, i.e. if-read-then-write.
+pr_cache_lock = Lock()
 
 
 class AzdoCicdOrchestrator(CicdOrchestratorInterface):
@@ -13,7 +21,7 @@ class AzdoCicdOrchestrator(CicdOrchestratorInterface):
     def notify_on_deployment_completion(self, commit_id, is_successful):
         pr_num = self.git_repository.get_pr_num(commit_id)        
         if pr_num:
-            self._update_pr_task(state, pr_num)
+            self._update_pr_task(is_successful, pr_num)
 
     # Update the Azure Pipeline task waiting for the PR to complete.
     # is_alive: If true, the PR is active and absence of task data is an error.
@@ -23,7 +31,7 @@ class AzdoCicdOrchestrator(CicdOrchestratorInterface):
             if is_alive:
                 logging.error(f'PR {pr_num} has no metadata! Cannot complete task callback.')
             return False
-        logging.info(f'PR {pr_num}: Rollout {state}, attempting task completion callback...')
+        logging.info(f'PR {pr_num}: Rollout {is_successful}, attempting task completion callback...')
 
         if is_successful:
             state = 'succeeded'

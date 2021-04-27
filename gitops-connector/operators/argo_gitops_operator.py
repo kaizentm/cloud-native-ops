@@ -9,17 +9,17 @@ class ArgoGitopsOperator(GitopsOperatorInterface):
         commit_id = self.get_commit_id(phase_data)
         phase_status, sync_status, health_status = self._get_statuses(phase_data)
 
-        phase_status = _new_git_commit_status(commit_id = commit_id, status_name = 'Phase',
+        phase_status = self._new_git_commit_status(commit_id = commit_id, status_name = 'Phase',
              state = phase_status, message = phase_data['phase'] + ": " + phase_data['message'])
         commit_statuses.append(phase_status) 
 
         (health_summary, sync_summary) = self._get_deployment_status_summary(phase_data['resources'])
 
-        sync_status = _new_git_commit_status(commit_id = commit_id, status_name = 'Sync',
+        sync_status = self._new_git_commit_status(commit_id = commit_id, status_name = 'Sync',
              state = sync_status, message = sync_summary)
         commit_statuses.append(sync_status)
 
-        health_status = _new_git_commit_status(commit_id = commit_id, status_name = 'Health',
+        health_status = self._new_git_commit_status(commit_id = commit_id, status_name = 'Health',
              state = health_status, message = health_summary)
         commit_statuses.append(health_status)
 
@@ -41,9 +41,9 @@ class ArgoGitopsOperator(GitopsOperatorInterface):
     def _get_statuses(self, phase_data):
         return phase_data['phase'], phase_data['sync_status'], phase_data['health']
 
-    def _new_git_commit_status(commit_id, status_name, state, message: str):
+    def _new_git_commit_status(self, commit_id, status_name, state, message: str):
         return GitCommitStatus(commit_id=commit_id, status_name=status_name,
              state=state, message=message, callback_url=self.callback_url, gitops_operator='ArgoCD') 
 
     def is_supported_message(self, phase_data) -> bool:
-        return true
+        return True

@@ -15,7 +15,7 @@ class GitRepositoryFactory:
 
         if git_repository_type == AZDO_TYPE:
             return AzdoGitRepository()
-        elif gitops_operator_type == GITHUB_TYPE:
+        elif git_repository_type == GITHUB_TYPE:
             return AzdoGitRepository()
         else:
             raise NotImplementedError(f'The Git repository {git_repository_type} is not supported')
