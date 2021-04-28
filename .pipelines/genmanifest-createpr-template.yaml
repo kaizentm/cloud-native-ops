@@ -1,0 +1,61 @@
+steps:
+- checkout: self
+- checkout: Manifest
+  persistCredentials: true
+
+- task: Bash@3        
+  name: "Generate_Manifests"
+  displayName: "Generate Manifests"
+  inputs:
+    filePath: $(utils_artifact_path)/generate-manifests.sh
+    arguments: '$(manifests_artifact_path) gen_manifests'
+
+- script: git config --global user.email $PR_USER_EMAIL & git config --global user.name $PR_USER_NAME
+  displayName: Configure Git
+  env:
+    PR_USER_NAME: "Git Ops"
+    PR_USER_EMAIL: "agent@gitops.com"
+  workingDirectory: $(MANIFEST_DIR)
+
+- script: |
+   echo "Create a new branch $(DEPLOY_BRANCH_NAME)"   
+   git checkout -b $(DEPLOY_BRANCH_NAME)
+  displayName: Create New Branch
+  workingDirectory: $(MANIFEST_DIR)
+
+- script: git branch
+  displayName: Display Current Branch
+  workingDirectory: $(MANIFEST_DIR)
+
+- script: |
+   cd $(Build.SourcesDirectory)
+   ls
+  displayName: Check Contents of Build.SourcesDirectory
+
+- script: |
+   rm -f .git/index.lock
+   mkdir -p $(MANIFESTS_FOLDER)
+   cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
+   git add -A
+   git commit -m "deployment $(Build.BuildNumber)"
+  displayName: Add Generated Manifest to New Branch
+  workingDirectory: $(MANIFEST_DIR)
+
+- script: |    
+   git push --set-upstream origin $(DEPLOY_BRANCH_NAME)
+  displayName: Push Branch
+  workingDirectory: $(MANIFEST_DIR)
+
+- script: |
+   echo $(System.AccessToken) | az devops login
+  env:
+    AZURE_DEVOPS_CLI_PAT: $(System.AccessToken)
+  displayName: 'Login Azure DevOps Extension'
+
+- script: | 
+   az devops configure --defaults organization=https://dev.azure.com/$(OrganizationName) project="$(PROJECT_NAME)" --use-git-aliases true
+  displayName: 'Set default Azure DevOps organization and project'         
+
+- script: |
+   az repos pr create --project $(PROJECT_NAME) --repository $(REPO_NAME) --target-branch $(MANIFESTS_BRANCH) --source-branch $DEPLOY_BRANCH_NAME --title "deployment $(Build.BuildNumber)" --auto-complete --squash
+  displayName: Create Pull Request    

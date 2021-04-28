@@ -1,0 +1,34 @@
+trigger: none
+
+resources:
+  repositories:
+  - repository: Manifest
+    type: git # Set to 'github' for a GitHub repository 
+    name: azure-vote-app-deployment
+    ref: 'refs/heads/dev'
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+ - group: az-vote-app-dev
+ - name: manifests_artifact_path
+   value: $(System.DefaultWorkingDirectory)/cloud-native-ops/azure-vote/manifests
+ - name: utils_artifact_path
+   value: $(System.DefaultWorkingDirectory)/cloud-native-ops/utils
+ - name: REPO_URL 
+   value: https://csedevops@dev.azure.com/csedevops/GitOps/_git/azure-vote-app-deployment
+ - name: OrganizationName
+   value: csedevops
+ - name: MANIFEST_DIR
+   value: $(System.DefaultWorkingDirectory)/azure-vote-app-deployment
+ - name: DEPLOY_BRANCH_NAME
+   value: deploy/$(Build.BuildNumber)/$(MANIFESTS_BRANCH)
+ - name: PROJECT_NAME
+   value: GitOps
+ - name: REPO_NAME
+   value: azure-vote-app-deployment
+
+steps:
+  - template: genmanifest-createpr-template.yaml 
+
