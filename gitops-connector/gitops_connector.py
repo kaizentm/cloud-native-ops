@@ -31,7 +31,10 @@ class GitopsConnector:
             self._cicd_orchestrator.notify_on_deployment_completion(commit_id, is_successful)
 
     def notify_abandoned_pr_tasks(self):
-        self._cicd_orchestrator.notify_abandoned_pr_tasks()
+        try:
+            self._cicd_orchestrator.notify_abandoned_pr_tasks()
+        except Exception as e:
+            logging.error(f'Failed to notify abandoned PRs: {e}')
 
 
 if __name__ == "__main__":

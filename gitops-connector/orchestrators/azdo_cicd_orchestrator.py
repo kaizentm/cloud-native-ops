@@ -87,14 +87,15 @@ class AzdoCicdOrchestrator(CicdOrchestratorInterface):
         update_count = 0
         prs = self.git_repository.get_prs('abandoned')
 
-        for pr in prs:
-            if not self._should_update_abandoned_pr(pr):
-                continue
+        if prs:
+            for pr in prs:
+                if not self._should_update_abandoned_pr(pr):
+                    continue
 
-            pr_num = pr['pullRequestId']
-            if not self._update_abandoned_pr(pr_num, pr_data=pr):
-                update_count += 1
-                logging.debug(f'Updated abandoned PR {pr_num}')
+                pr_num = pr['pullRequestId']
+                if not self._update_abandoned_pr(pr_num, pr_data=pr):
+                    update_count += 1
+                    logging.debug(f'Updated abandoned PR {pr_num}')
 
         if update_count > 0:
             logging.info(f'Processed {update_count} abandoned PRs via query')

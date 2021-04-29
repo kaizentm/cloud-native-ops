@@ -11,8 +11,10 @@ class AzdoGitRepository(GitRepositoryInterface):
     
     def __init__(self):
         self.gitops_repo_name = os.getenv("AZDO_GITOPS_REPO_NAME")
+        self.pr_repo_name = os.getenv("AZDO_PR_REPO_NAME", self.gitops_repo_name)
         self.azdo_client = AzdoClient()
         self.repository_api = f'{self.azdo_client.get_rest_api_url()}/_apis/git/repositories/{self.gitops_repo_name}'
+        self.pr_repository_api = f'{self.azdo_client.get_rest_api_url()}/_apis/git/repositories/{self.pr_repo_name}'
         self.headers = self.azdo_client.get_rest_api_headers()
         
 
@@ -30,7 +32,7 @@ class AzdoGitRepository(GitRepositoryInterface):
 
     def get_pr_metadata(self, pr_num):
         # https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20request%20properties/list?view=azure-devops-rest-6.0
-        url = f'{self.repository_api}/pullRequests/{pr_num}/properties?api-version=6.0-preview'
+        url = f'{self.pr_repository_api}/pullRequests/{pr_num}/properties?api-version=6.0-preview'
 
         response = requests.get(url=url, headers=self.headers)
         # Throw appropriate exception if request failed
@@ -47,7 +49,7 @@ class AzdoGitRepository(GitRepositoryInterface):
         return None
     
     def get_pull_request(self, pr_num):
-        url = f'{self.repository_api}/pullRequests/{pr_num}?api-version=6.1-preview.1'
+        url = f'{self.pr_repository_api}/pullRequests/{pr_num}?api-version=6.1-preview.1'
         response = requests.get(url=url, headers=self.headers)
         # Throw appropriate exception if request failed
         response.raise_for_status()
@@ -61,7 +63,7 @@ class AzdoGitRepository(GitRepositoryInterface):
         pr_status_param = ''
         if pr_status:
             pr_status_param = f'searchCriteria.status={pr_status}&'
-        url = f'{self.repository_api}/pullRequests?{pr_status_param}api-version=6.0'
+        url = f'{self.pr_repository_api}/pullRequests?{pr_status_param}api-version=6.0'
         response = requests.get(url=url, headers=self.headers)
         # Throw appropriate exception if request failed
         response.raise_for_status()
