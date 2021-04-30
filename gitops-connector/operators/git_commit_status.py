@@ -8,3 +8,4 @@ class GitCommitStatus:
     message: str
     callback_url: str
     gitops_operator: str
+    genre: str

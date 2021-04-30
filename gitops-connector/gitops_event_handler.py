@@ -6,7 +6,7 @@ import atexit
 from gitops_connector import GitopsConnector
 
 # Time in seconds between background PR cleanup jobs
-PR_CLEANUP_INTERVAL = 1 * 60
+PR_CLEANUP_INTERVAL = 1 * 30
 DISABLE_POLLING_PR_TASK = False
 
 logging.basicConfig(level=logging.DEBUG)

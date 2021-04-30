@@ -23,8 +23,8 @@ class AzdoGitRepository(GitRepositoryInterface):
 
         azdo_status = self._map_to_azdo_status(commit_status.state)
         data = {'state': azdo_status, 'description': commit_status.status_name + ": " + commit_status.message, \
-                'targetUrl': commit_status.callback_url + "?noop=" + commit_status.status_name, \
-                'context': {'name': commit_status.status_name, 'genre': commit_status.gitops_operator} }
+                'targetUrl': commit_status.callback_url, \
+                'context': {'name': commit_status.status_name, 'genre': commit_status.genre} }
         response = requests.post(url=url, headers=self.headers, json=data)
 
         # Throw appropriate exception if request failed
