@@ -15,9 +15,16 @@ class FluxGitopsOperator(GitopsOperatorInterface):
         reason_message = self._map_reason_to_description(reason_state)
         kind = self._get_message_kind(phase_data)
 
-        status = GitCommitStatus(commit_id = commit_id, status_name = kind,
-             state = reason_state, message = reason_message, callback_url=self.callback_url, gitops_operator='Flux')
-        commit_statuses.append(status) 
+        status = GitCommitStatus(commit_id = commit_id, status_name = 'Status',
+             state = reason_state, message = reason_message, callback_url=self.callback_url + "?noop=status", gitops_operator='Flux', genre=kind)
+        commit_statuses.append(status)
+
+        progression_summary = self._parse_kustomization_progression_summary(phase_data)
+        if progression_summary:
+            for (resource_name, status_msg) in progression_summary.items():
+                status = GitCommitStatus(commit_id = commit_id, status_name = resource_name,
+                    state = reason_state, message = status_msg, callback_url=self.callback_url + "?noop=" + resource_name, gitops_operator='Flux',genre=kind)
+                commit_statuses.append(status)
 
         return commit_statuses
 
@@ -25,7 +32,7 @@ class FluxGitopsOperator(GitopsOperatorInterface):
         status = phase_data['reason']
 
         is_finished = status != 'Progressing'
-        
+
         is_successful = status == 'ReconciliationSucceeded'
 
         return is_finished, is_successful
@@ -39,6 +46,7 @@ class FluxGitopsOperator(GitopsOperatorInterface):
     def is_supported_message(self, phase_data) -> bool:
         kind = self._get_message_kind(phase_data)
         logging.debug(f'Kind: {kind}')
+
         return (kind == 'Kustomization')
 
     def _get_message_kind(self, phase_data) -> str:
@@ -61,8 +69,9 @@ class FluxGitopsOperator(GitopsOperatorInterface):
     # Build and return an array of progression summaries.
     # For example, ["service: 6 configured"]
     def _parse_kustomization_progression_summary(self, phase_data):
-        if phase_data != "Progressing":
-            raise RuntimeError("Expected progressing state for parsing")
+        if phase_data['reason'] != "Progressing":
+            return []
+            #raise RuntimeError("Expected progressing state for parsing")
 
         # The message contains kubectl output of newline separated
         # resources and states. May contain a trailing newline.
@@ -94,7 +103,7 @@ class FluxGitopsOperator(GitopsOperatorInterface):
             status_map[resource_type][status] += 1
 
         # Build the status string array
-        status_arr = []
+        status_arr = {}
         for (resource_name, statuses) in status_map.items():
             ## service:
             summary = resource_name + ": "
@@ -105,9 +114,9 @@ class FluxGitopsOperator(GitopsOperatorInterface):
                     first = False
                 # E.g. "5 configured"
                 summary += f'{status_count} {status_name}'
-            status_arr.append(summary)
+            status_arr[resource_name] = summary
 
         if warning_count > 0:
-            status_arr.append(f'Warnings: {warning_count}')
+            status_arr['warnings'] = f'Warnings: {warning_count}'
 
         return status_arr

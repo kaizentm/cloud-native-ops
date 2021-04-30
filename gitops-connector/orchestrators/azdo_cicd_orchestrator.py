@@ -87,6 +87,9 @@ class AzdoCicdOrchestrator(CicdOrchestratorInterface):
         update_count = 0
         prs = self.git_repository.get_prs('abandoned')
 
+        if not prs:
+            return
+
         for pr in prs:
             if not self._should_update_abandoned_pr(pr):
                 continue
