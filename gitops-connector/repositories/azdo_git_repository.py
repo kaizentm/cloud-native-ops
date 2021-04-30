@@ -114,6 +114,7 @@ class AzdoGitRepository(GitRepositoryInterface):
         MERGED_PR="Merged PR "
         pr_num = None
         if MERGED_PR in comment:
-            pr_num = comment[comment.index(MERGED_PR) + len(MERGED_PR) : comment.index(":")]
+            merged_pr_index = comment.index(MERGED_PR) 
+            pr_num = comment[merged_pr_index + len(MERGED_PR) : comment.index(":", merged_pr_index)]
         return pr_num
 
