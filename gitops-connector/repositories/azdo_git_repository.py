@@ -97,7 +97,8 @@ class AzdoGitRepository(GitRepositoryInterface):
             "ArtifactFailed": "failed",
             "BuildFailed": "failed",
             "HealthCheckFailed": "failed",
-            "ValidationFailed": "failed"
+            "ValidationFailed": "failed",
+            "_": "notApplicable"
         }
         return status_map[status]
 

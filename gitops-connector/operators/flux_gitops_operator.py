@@ -12,7 +12,7 @@ class FluxGitopsOperator(GitopsOperatorInterface):
         commit_id = self.get_commit_id(phase_data)
 
         reason_state = phase_data['reason']
-        reason_message = self._map_reason_to_description(reason_state)
+        reason_message = self._map_reason_to_description(reason_state, phase_data['message'])
         kind = self._get_message_kind(phase_data)
 
         status = GitCommitStatus(commit_id = commit_id, status_name = 'Status',
@@ -23,7 +23,7 @@ class FluxGitopsOperator(GitopsOperatorInterface):
         if progression_summary:
             for (resource_name, status_msg) in progression_summary.items():
                 status = GitCommitStatus(commit_id = commit_id, status_name = resource_name,
-                    state = reason_state, message = status_msg, callback_url=self.callback_url + "?noop=" + resource_name, gitops_operator='Flux',genre=kind)
+                    state = "_", message = status_msg, callback_url=self.callback_url + "?noop=" + resource_name, gitops_operator='Flux',genre=kind)
                 commit_statuses.append(status)
 
         return commit_statuses
@@ -52,17 +52,17 @@ class FluxGitopsOperator(GitopsOperatorInterface):
     def _get_message_kind(self, phase_data) -> str:
         return phase_data['involvedObject']['kind']
 
-    def _map_reason_to_description(self, reason):
+    def _map_reason_to_description(self, reason, original_message):
         reason_description_map = {
-            "ReconciliationSucceeded": "Reconcilation succeeded.",
-            "ReconciliationFailed": "Reconcilation failed.",
+            "ReconciliationSucceeded": original_message,
+            "ReconciliationFailed": original_message,
             "Progressing": "Reconcilation underway.",
-            "DependencyNotReady": "Dependency not ready.",
-            "PruneFailed": "Pruning failed.",
-            "ArtifactFailed": "Artifact download failed.",
-            "BuildFailed": "Build failed.",
-            "HealthCheckFailed": "A health check failed.",
-            "ValidationFailed": "Manifests validation failed."
+            "DependencyNotReady": original_message,
+            "PruneFailed": original_message,
+            "ArtifactFailed": original_message,
+            "BuildFailed": original_message,
+            "HealthCheckFailed": original_message,
+            "ValidationFailed": original_message
         }
         return reason_description_map[reason]
 
