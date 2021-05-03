@@ -15,16 +15,6 @@ class FluxGitopsOperator(GitopsOperatorInterface):
         reason_message = self._map_reason_to_description(reason_state, phase_data['message'])
         kind = self._get_message_kind(phase_data)
 
-        # Generic status message regardless of kind.
-        status = GitCommitStatus(
-            commit_id = commit_id,
-            status_name = 'Status',
-            state = reason_state,
-            message = reason_message,
-            callback_url=self.callback_url,
-            gitops_operator='Flux',
-            genre=kind)
-        commit_statuses.append(status)
 
         # For Kustomization we have more detailed data to parse in addition to status.
         if self._get_message_kind(phase_data) == "Kustomization":
@@ -43,6 +33,17 @@ class FluxGitopsOperator(GitopsOperatorInterface):
                         gitops_operator='Flux',
                         genre=kind)
                     commit_statuses.append(status)
+
+        # Generic status message regardless of kind.
+        status = GitCommitStatus(
+            commit_id = commit_id,
+            status_name = 'Status',
+            state = reason_state,
+            message = reason_message,
+            callback_url=self.callback_url,
+            gitops_operator='Flux',
+            genre=kind)
+        commit_statuses.append(status)
 
         return commit_statuses
 

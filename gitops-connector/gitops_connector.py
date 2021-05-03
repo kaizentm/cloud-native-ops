@@ -21,8 +21,8 @@ class GitopsConnector:
 
     def _post_commit_statuses(self, phase_data):
         #TODO: To handle various operator bugs and weird behavior:
-        # commit_id = self._gitops_operator.get_commit_id(phase_data)
-        # sumbitted_commit_statuses = self._git_repository.post_commit_status(commitid)
+        # commit_id = self._gitops_operator.get_commit_id(phase_data)        
+        # sumbitted_commit_statuses = self._git_repository.get_commit_status(commitid)
         # commit_statuses = self._gitops_operator.extract_commit_statuses(sumbitted_commit_statuses, phase_data)
 
         commit_statuses = self._gitops_operator.extract_commit_statuses(phase_data)
