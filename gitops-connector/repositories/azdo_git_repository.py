@@ -22,9 +22,19 @@ class AzdoGitRepository(GitRepositoryInterface):
         url = f'{self.repository_api}/commits/{commit_status.commit_id}/statuses?api-version=6.0'
 
         azdo_status = self._map_to_azdo_status(commit_status.state)
-        data = {'state': azdo_status, 'description': commit_status.status_name + ": " + commit_status.message, \
-                'targetUrl': commit_status.callback_url, \
-                'context': {'name': commit_status.status_name, 'genre': commit_status.genre} }
+
+        # Context and targetUrl must be unique for multiple statuses to appear,
+        # otherwise the previous context/targetUrl message will be replaced.
+        data = {
+            'state': azdo_status,
+            'description': commit_status.status_name + ": " + commit_status.message,
+            'targetUrl': commit_status.callback_url + "?noop=" + commit_status.status_name,
+            # Shows up as "genre/name" underneath the message and status.
+            'context': {
+                'name': commit_status.status_name,
+                'genre': commit_status.genre
+            }
+        }
         response = requests.post(url=url, headers=self.headers, json=data)
 
         # Throw appropriate exception if request failed
@@ -98,7 +108,9 @@ class AzdoGitRepository(GitRepositoryInterface):
             "BuildFailed": "failed",
             "HealthCheckFailed": "failed",
             "ValidationFailed": "failed",
-            "_": "notApplicable"
+            "NotApplicable": "notApplicable",
+            "info": "pending",
+            "error": "failed"
         }
         return status_map[status]
 
