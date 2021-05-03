@@ -15,9 +15,6 @@ class FluxGitopsOperator(GitopsOperatorInterface):
         reason_message = self._map_reason_to_description(reason_state, phase_data['message'])
         kind = self._get_message_kind(phase_data)
 
-        status = GitCommitStatus(commit_id = commit_id, status_name = 'Status',
-             state = reason_state, message = reason_message, callback_url=self.callback_url + "?noop=status", gitops_operator='Flux', genre=kind)
-        commit_statuses.append(status)
 
         progression_summary = self._parse_kustomization_progression_summary(phase_data)
         if progression_summary:
@@ -25,6 +22,10 @@ class FluxGitopsOperator(GitopsOperatorInterface):
                 status = GitCommitStatus(commit_id = commit_id, status_name = resource_name,
                     state = "_", message = status_msg, callback_url=self.callback_url + "?noop=" + resource_name, gitops_operator='Flux',genre=kind)
                 commit_statuses.append(status)
+
+        status = GitCommitStatus(commit_id = commit_id, status_name = 'Status',
+            state = reason_state, message = reason_message, callback_url=self.callback_url + "?noop=status", gitops_operator='Flux', genre=kind)
+        commit_statuses.append(status)
 
         return commit_statuses
 
