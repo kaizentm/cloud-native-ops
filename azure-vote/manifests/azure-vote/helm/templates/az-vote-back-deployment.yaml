@@ -20,6 +20,8 @@ spec:
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
+        - name: TEST
+          value: "test"
         ports:
         - containerPort: 6379
           name: redis
