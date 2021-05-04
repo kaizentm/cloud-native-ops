@@ -20,6 +20,7 @@ steps:
 - script: |
    echo "Create a new branch $(DEPLOY_BRANCH_NAME)"   
    git checkout -b $(DEPLOY_BRANCH_NAME)
+   rm -f .git/index.lock
    mkdir -p $(MANIFESTS_FOLDER)
    cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
    git add -A
