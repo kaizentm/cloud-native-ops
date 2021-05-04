@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         app: azure-vote-back
+        tag: test
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
