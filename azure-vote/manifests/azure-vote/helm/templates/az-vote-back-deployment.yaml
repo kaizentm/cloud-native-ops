@@ -11,7 +11,6 @@ spec:
     metadata:
       labels:
         app: azure-vote-back
-        tag: test
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
@@ -21,8 +20,6 @@ spec:
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
-        - name: TEST
-          value: "test"
         ports:
         - containerPort: 6379
           name: redis

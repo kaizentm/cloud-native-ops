@@ -10,4 +10,3 @@ images:
     newTag: $BACKEND_IMAGE
 resources:
   - manifests.yaml
-# Comment

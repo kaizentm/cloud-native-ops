@@ -1,6 +1,6 @@
 apiVersion: v2
 name: azure-vote
-description: A Helm chart for azure-vote App
+description: A Helm chart for azure-vote app
 
 # A chart can be either an 'application' or a 'library' chart.
 #
