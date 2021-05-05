@@ -98,10 +98,10 @@ class AzdoGitRepository(GitRepositoryInterface):
             "Degraded": "error",
             "Healthy": "succeeded",
             "Missing": "failed",
+
             "Suspended": "error",
             "ReconciliationSucceeded": "succeeded",
             "ReconciliationFailed": "failed",
-            "Progressing": "pending",
             "DependencyNotReady": "error",
             "PruneFailed": "failed",
             "ArtifactFailed": "failed",

@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         app: azure-vote-back
+        system: {{  .Values.systemLabel}} 
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
