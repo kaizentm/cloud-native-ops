@@ -1,5 +1,6 @@
 steps:  
   - task: InvokeRESTAPI@1
+    displayName: "Wait for deployment completion"
     inputs:
       connectionType: connectedServiceName
       serviceConnection: azdo-pr-connection
