@@ -70,15 +70,21 @@ if [[ `git status --porcelain | head -1` ]]; then
     if [ "$PLATFORM" = "GitHub" ]; then
         owner_repo="${DEST_REPO#https://github.com/}"
         echo $owner_repo
-        pr_response=$(curl -H "Authorization: token $TOKEN" -H "Content-Type: application/json" --fail \
-            -d '{"head":"refs/heads/'$deploy_branch_name'", "base":"refs/heads/'$DEST_BRANCH'", "body":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
-            "https://api.github.com/repos/$owner_repo/pulls")
+        #pr_response=$(curl -H "Authorization: token $TOKEN" -H "Content-Type: application/json" --fail \
+        #    -d '{"head":"refs/heads/'$deploy_branch_name'", "base":"refs/heads/'$DEST_BRANCH'", "body":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
+        #    "https://api.github.com/repos/$owner_repo/pulls")
+        echo $(System.AccessToken) | gh auth login
+        pr_response=$(gh pr create --base $DEST_BRANCH --head $deploy_branch_name --title "deployment '$DEPLOY_ID'")
         echo $pr_response
     else 
         B64_PAT=$(printf ":$TOKEN" | base64)  
-        pr_response=$(curl -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
-            -d '{"sourceRefName":"refs/heads/'$deploy_branch_name'", "targetRefName":"refs/heads/'$DEST_BRANCH'", "description":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
-            "$SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1")
+        #pr_response=$(curl -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
+        #    -d '{"sourceRefName":"refs/heads/'$deploy_branch_name'", "targetRefName":"refs/heads/'$DEST_BRANCH'", "description":"Deploy to '$ENV_NAME'", "title":"deployment '$DEPLOY_ID'"}' \
+        #    "$SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$repo_name/pullrequests?api-version=6.1-preview.1")
+        echo $(System.AccessToken) | az devops login
+        az devops configure --defaults organization=$SYSTEM_COLLECTIONURI project="$SYSTEM_TEAMPROJECT" --use-git-aliases true
+        pr_response=$(az repos pr create --project $SYSTEM_TEAMPROJECT --repository $repo_name --target-branch $DEST_BRANCH --source-branch $deploy_branch_name \
+            --title "deployment '$DEPLOY_ID'" --squash -o json)
         echo $pr_response
         export pr_num=$(echo $pr_response | jq '.pullRequestId')
         echo "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num"
