@@ -1,0 +1,9 @@
+steps:  
+  - task: Bash@3        
+    name: "Read_Image_tags"
+    displayName: "Read Image Tags"
+    inputs:
+      targetType: 'inline'
+      script: |
+        for file in $(images_artifact_path)/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done
+  - template: genmanifest-createpr-template.yaml 
