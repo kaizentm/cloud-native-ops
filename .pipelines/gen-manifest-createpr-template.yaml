@@ -16,7 +16,6 @@ steps:
 
   
 - checkout: Manifest
-  path: $(MANIFESTS_FOLDER)
   persistCredentials: true
 
 - task: Bash@3        
@@ -37,6 +36,7 @@ steps:
   env:
     PR_USER_NAME: "Git Ops"
     PR_USER_EMAIL: "agent@gitops.com"  
+  workingDirectory: $(System.DefaultWorkingDirectory)/$(MANIFESTS_FOLDER)
 
 - script: |
    echo "Create a new branch ${{ parameters.DEPLOY_BRANCH_NAME }}"  
@@ -49,6 +49,7 @@ steps:
    git commit -m "deployment $(Build.BuildNumber)"
    git push --set-upstream origin ${{ parameters.DEPLOY_BRANCH_NAME }} 
   displayName: Add Generated Manifest to New Branch
+  workingDirectory: $(System.DefaultWorkingDirectory)/$(MANIFESTS_FOLDER)
 
 - script: |
    echo $(System.AccessToken) | az devops login
