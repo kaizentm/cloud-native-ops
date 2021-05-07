@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-while getopts "r:tb:t:pr:" option;
+while getopts "r:b:t:p:" option;
     do
     case "$option" in      
         r ) REPO=${OPTARG};;
-        tb ) TARGET_BRANCH=${OPTARG};;        
+        b ) TARGET_BRANCH=${OPTARG};;        
         t ) TOKEN=${OPTARG};;        
-        pr ) PR_ID=${OPTARG};;
+        p ) PR_ID=${OPTARG};;
     esac
 done
 echo "List input params"
