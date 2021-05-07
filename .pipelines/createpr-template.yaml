@@ -24,7 +24,8 @@ steps:
    git checkout -b ${{ parameters.DEPLOY_BRANCH_NAME }} 
    rm -f .git/index.lock
    mkdir -p $(MANIFESTS_FOLDER)
-   cp -r ${{ parameters.GENERATED_MANIFEST_FOLDER }}/* $(MANIFESTS_FOLDER)/
+  #  cp -r ${{ parameters.GENERATED_MANIFEST_FOLDER }}/* $(MANIFESTS_FOLDER)/
+   cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
    git add -A
    git commit -m "deployment $(Build.BuildNumber)"
    git push --set-upstream origin ${{ parameters.DEPLOY_BRANCH_NAME }} 
