@@ -4,7 +4,7 @@ steps:
 
 - script: |
    sudo apt install tree
-   tree -d $(System.DefaultWorkingDirectory)/az-vote/utils  
+   tree -d $(Pipeline.Workspace)  
   displayName: Add Generated Manifest to New Branch  
 
 - task: Bash@3        
