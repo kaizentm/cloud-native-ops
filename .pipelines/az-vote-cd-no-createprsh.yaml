@@ -70,7 +70,7 @@ stages:
       - template: pr-completion-task-template.yaml 
 
     - job: rollback_deployment
-      dependsOn: Deploy_to_dev
+      dependsOn: deploy_with_gitops
       displayName: Rollback Deployment      
       variables:
         pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
@@ -111,7 +111,7 @@ stages:
       - template: pr-completion-task-template.yaml
 
     - job: rollback_deployment
-      dependsOn: Deploy_to_stage
+      dependsOn: deploy_with_gitops
       displayName: Rollback Deployment      
       variables:
         pr_num: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.PR_NUM'] ]
