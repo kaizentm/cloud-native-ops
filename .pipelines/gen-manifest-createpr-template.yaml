@@ -9,10 +9,10 @@ parameters:
 
 steps:
 # - checkout: self
-- script: |
-   ls -ltr 
-   ls -ltr gen_manifests
-   ls -ltr $(Build.SourcesDirectory)/gen_manifests
+# - script: |
+#    ls -ltr 
+#    ls -ltr gen_manifests
+#    ls -ltr $(Build.SourcesDirectory)/gen_manifests
 
   
 - checkout: Manifest

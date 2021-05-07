@@ -14,7 +14,7 @@ steps:
   #     filePath: $(utils_artifact_path)/generate-manifests.sh
   #     arguments: '$(manifests_artifact_path) gen_manifests'
   
-  - template: createpr-template.yaml 
+  - template: gen-manifest-createpr-template.yaml 
 
   # - task: Bash@3        
   #   name: "Create_PR"
