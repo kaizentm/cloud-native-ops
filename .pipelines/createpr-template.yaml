@@ -19,31 +19,29 @@ steps:
   path: $(MANIFESTS_FOLDER)
   persistCredentials: true
 
-- script: |
-   ls -ltr 
-   ls -ltr gen_manifests
-   ls -ltr $(Build.SourcesDirectory)/gen_manifests
+# - script: |
+#    ls -ltr 
+#    ls -ltr gen_manifests
+#    ls -ltr $(Build.SourcesDirectory)/gen_manifests
 
 
 - script: git config --global user.email $PR_USER_EMAIL & git config --global user.name $PR_USER_NAME
   displayName: Configure Git
   env:
     PR_USER_NAME: "Git Ops"
-    PR_USER_EMAIL: "agent@gitops.com"
-  workingDirectory: $(System.DefaultWorkingDirectory)/$(MANIFESTS_FOLDER)
+    PR_USER_EMAIL: "agent@gitops.com"  
 
 - script: |
    echo "Create a new branch ${{ parameters.DEPLOY_BRANCH_NAME }}"  
    git checkout -b ${{ parameters.DEPLOY_BRANCH_NAME }} 
    rm -f .git/index.lock
    mkdir -p $(MANIFESTS_FOLDER)
-   # cp -r ${{ parameters.GENERATED_MANIFEST_FOLDER }}/* $(MANIFESTS_FOLDER)/
-   cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
+   cp -r ${{ parameters.GENERATED_MANIFEST_FOLDER }}/* $(MANIFESTS_FOLDER)/
+   #  cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
    git add -A
    git commit -m "deployment $(Build.BuildNumber)"
    git push --set-upstream origin ${{ parameters.DEPLOY_BRANCH_NAME }} 
   displayName: Add Generated Manifest to New Branch
-  workingDirectory: $(System.DefaultWorkingDirectory)/$(MANIFESTS_FOLDER)
 
 - script: |
    echo $(System.AccessToken) | az devops login
