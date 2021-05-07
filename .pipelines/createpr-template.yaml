@@ -10,7 +10,7 @@ parameters:
 steps:
 # - checkout: self
 - checkout: Manifest
-  path: $(System.DefaultWorkingDirectory)/$(MANIFESTS_FOLDER)
+  path: $(MANIFESTS_FOLDER)
   persistCredentials: true
 
 - script: git config --global user.email $PR_USER_EMAIL & git config --global user.name $PR_USER_NAME
