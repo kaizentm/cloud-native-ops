@@ -1,6 +1,14 @@
 # Pipeline Template to rollback deployment by reverting the pull request. 
 
-steps:              
+steps:
+
+- script: |
+   pwd
+   cd $(utils_artifact_path)
+   ls
+  displayName: Add Generated Manifest to New Branch
+  workingDirectory: $(MANIFEST_DIR)
+
 - task: Bash@3        
   name: "RevertPR"
   displayName: "Revert Pull request"
