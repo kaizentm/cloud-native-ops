@@ -22,7 +22,7 @@ spec:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         - name: Test
-          value: "test12"  
+          value: "test122"  
         ports:
         - containerPort: 6379
           name: redis
