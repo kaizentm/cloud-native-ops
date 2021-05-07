@@ -85,7 +85,7 @@ stages:
  
 
     - job: rollback_deployment       
-      dependsOn: waitForValidation | Deploy_to_dev
+      dependsOn: [waitForValidation, Deploy_to_dev]
       condition: succeeded()
       displayName: Rollback Deployment      
       variables:
@@ -140,7 +140,7 @@ stages:
           onTimeout: 'resume'
 
     - job: rollback_deployment      
-      dependsOn: waitForValidation | Deploy_to_stage
+      dependsOn: [waitForValidation, Deploy_to_stage]
       condition: succeeded()
       displayName: Rollback Deployment      
       variables:
