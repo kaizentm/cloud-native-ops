@@ -2,15 +2,10 @@
 
 steps:
 
-- script: |
-   sudo apt install tree
-   tree -d $(Pipeline.Workspace)  
-  displayName: Add Generated Manifest to New Branch  
-
 - task: Bash@3        
   name: "RevertPR"
   displayName: "Revert Pull request"
   inputs:
-    filePath: $(System.DefaultWorkingDirectory)/azure-vote/utils/revert-pr.sh
+    filePath: $(System.DefaultWorkingDirectory)/utils/revert-pr.sh
     arguments: '-r $(REPO_NAME) -tb $(MANIFESTS_BRANCH) -t $(PAT) -pr $(pr_num)'
     
