@@ -5,8 +5,7 @@ steps:
 - script: |
    sudo apt install tree
    tree -d $(System.DefaultWorkingDirectory)  
-  displayName: Add Generated Manifest to New Branch
-  workingDirectory: $(MANIFEST_DIR)
+  displayName: Add Generated Manifest to New Branch  
 
 - task: Bash@3        
   name: "RevertPR"
