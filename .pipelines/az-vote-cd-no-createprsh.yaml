@@ -75,8 +75,7 @@ stages:
       displayName: Rollback Deployment      
       variables:
         pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
-        token: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.TOKEN'] ]
-      condition: ne(variables['pr_num'],'')
+        token: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.TOKEN'] ]      
       steps:   
       - template: rollback-pr-revert-template.yaml
 
@@ -117,8 +116,7 @@ stages:
       displayName: Rollback Deployment      
       variables:
         pr_num: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.PR_NUM'] ]
-        token: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.TOKEN'] ]
-      condition: ne(variables['pr_num'],'')
+        token: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.TOKEN'] ]      
       steps:   
       - template: rollback-pr-revert-template.yaml                        
 
