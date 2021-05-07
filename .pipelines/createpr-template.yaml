@@ -12,14 +12,14 @@ steps:
 
 - script: |
    export DEPLOY_BRANCH_NAME=deploy/$(Build.BuildNumber)/$(MANIFESTS_BRANCH)
-   echo "Create a new branch $(DEPLOY_BRANCH_NAME)"   
-   git checkout -b $(DEPLOY_BRANCH_NAME)
+   echo "Create a new branch $DEPLOY_BRANCH_NAME"   
+   git checkout -b $DEPLOY_BRANCH_NAME
    rm -f .git/index.lock
    mkdir -p $(MANIFESTS_FOLDER)
    cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
    git add -A
    git commit -m "deployment $(Build.BuildNumber)"
-   git push --set-upstream origin $(DEPLOY_BRANCH_NAME)
+   git push --set-upstream origin $DEPLOY_BRANCH_NAME
   displayName: Add Generated Manifest to New Branch
   workingDirectory: $(System.DefaultWorkingDirectory)/$(MANIFESTS_FOLDER)
 
