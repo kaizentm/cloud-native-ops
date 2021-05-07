@@ -3,7 +3,7 @@ parameters:
     default: $(Build.SourcesDirectory)/gen_manifests
     type: string
   - name: DEPLOY_BRANCH_NAME
-    default: deploy/$(Build.BuildNumber)/$(MANIFESTS_BRANCH)
+    default: deploy/$(Build.BuildNumber)/eugene/$(MANIFESTS_BRANCH)
     type: string
 
 
@@ -18,6 +18,13 @@ steps:
 - checkout: Manifest
   path: $(MANIFESTS_FOLDER)
   persistCredentials: true
+
+- task: Bash@3        
+  name: "Generate_Manifests"
+  displayName: "Generate Manifests"
+  inputs:
+    filePath: $(utils_artifact_path)/generate-manifests.sh
+    arguments: '$(manifests_artifact_path) gen_manifests'
 
 # - script: |
 #    ls -ltr 
@@ -36,8 +43,8 @@ steps:
    git checkout -b ${{ parameters.DEPLOY_BRANCH_NAME }} 
    rm -f .git/index.lock
    mkdir -p $(MANIFESTS_FOLDER)
-   cp -r ${{ parameters.GENERATED_MANIFEST_FOLDER }}/* $(MANIFESTS_FOLDER)/
-   #  cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
+   # cp -r ${{ parameters.GENERATED_MANIFEST_FOLDER }}/* $(MANIFESTS_FOLDER)/
+   cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
    git add -A
    git commit -m "deployment $(Build.BuildNumber)"
    git push --set-upstream origin ${{ parameters.DEPLOY_BRANCH_NAME }} 
