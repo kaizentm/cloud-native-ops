@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-while getopts "s:d:r:b:i:t:e:p:" option;
+while getopts "r:tb:t:pr:" option;
     do
     case "$option" in      
         r ) REPO=${OPTARG};;
