@@ -3,9 +3,8 @@
 steps:
 
 - script: |
-   pwd
-   cd $(utils_artifact_path)
-   ls
+   sudo apt install tree
+   tree -d $(Pipeline.Workspace)  
   displayName: Add Generated Manifest to New Branch
   workingDirectory: $(MANIFEST_DIR)
 
