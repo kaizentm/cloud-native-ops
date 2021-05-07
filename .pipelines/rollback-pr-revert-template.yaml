@@ -7,5 +7,5 @@ steps:
   displayName: "Revert Pull request"
   inputs:
     filePath: $(System.DefaultWorkingDirectory)/utils/revert-pr.sh
-    arguments: '-r $(REPO_NAME) -tb $(MANIFESTS_BRANCH) -t $(PAT) -pr $(pr_num)'
+    arguments: '-r $(REPO_NAME) -tb refs/heads/$(MANIFESTS_BRANCH) -t $(PAT) -pr $(pr_num)'
     
