@@ -67,7 +67,17 @@ stages:
         token: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.TOKEN'] ]
       condition: ne(variables['pr_num'],'')
       steps:   
-      - template: pr-completion-task-template.yaml                 
+      - template: pr-completion-task-template.yaml 
+
+    - job: rollback_deployment
+      dependsOn: Deploy_to_dev
+      displayName: Rollback Deployment      
+      variables:
+        pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
+        token: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.TOKEN'] ]
+      condition: ne(variables['pr_num'],'')
+      steps:   
+      - template: rollback-pr-revert-template.yaml
 
     - job: "Automated_testing"
       displayName: Automated testing 
@@ -98,7 +108,17 @@ stages:
         token: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.TOKEN'] ]
       condition: ne(variables['pr_num'],'')        
       steps:   
-      - template: pr-completion-task-template.yaml                      
+      - template: pr-completion-task-template.yaml
+
+    - job: rollback_deployment
+      dependsOn: Deploy_to_stage
+      displayName: Rollback Deployment      
+      variables:
+        pr_num: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.PR_NUM'] ]
+        token: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.TOKEN'] ]
+      condition: ne(variables['pr_num'],'')
+      steps:   
+      - template: rollback-pr-revert-template.yaml                        
 
     - job: "Automated_testing"
       displayName: Automated testing 

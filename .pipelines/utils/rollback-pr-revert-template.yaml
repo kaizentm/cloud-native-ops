@@ -1,0 +1,18 @@
+# Pipeline Template to rollback deployment by reverting the pull request. 
+
+steps:
+- task: Bash@3        
+    name: "Read_Image_tags"
+    displayName: "Read Image Tags"
+    inputs:
+      targetType: 'inline'
+      script: |
+        for file in $(images_artifact_path)/*; do echo "##vso[task.setvariable variable=${file##*/}]$(cat $file)"; done
+                
+- task: Bash@3        
+    name: "RevertPR"
+    displayName: "Revert Pull request"
+    inputs:
+      filePath: $(utils_artifact_path)/revert-pr.sh
+      arguments: '-r $(REPO_NAME) -tb $(MANIFESTS_BRANCH) -t $(PAT) -pr $(pr_num)'
+    
