@@ -9,14 +9,6 @@ steps:
   displayName: Add Generated Manifest to New Branch
   workingDirectory: $(MANIFEST_DIR)
 
-- task: ManualValidation@0
-  timeoutInMinutes: 1440 # task times out in 1 day
-  inputs:
-    notifyUsers: |      
-      sudivate@microsoft.com
-    instructions: 'Please validate the build configuration and resume'
-    onTimeout: 'resume' 
-
 - task: Bash@3        
   name: "RevertPR"
   displayName: "Revert Pull request"
