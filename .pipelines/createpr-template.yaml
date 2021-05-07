@@ -1,7 +1,11 @@
 parameters:
+  - name: GENERATED_MANIFEST_FOLDER
+    default: $(Build.SourcesDirectory)/gen_manifests
+    type: string
   - name: DEPLOY_BRANCH_NAME
     default: deploy/$(Build.BuildNumber)/$(MANIFESTS_BRANCH)
     type: string
+
 
 steps:
 # - checkout: self
@@ -16,11 +20,11 @@ steps:
   workingDirectory: $(System.DefaultWorkingDirectory)/$(MANIFESTS_FOLDER)
 
 - script: |
-   echo "Create a new branch ${{ parameters.DEPLOY_BRANCH_NAME }}  
+   echo "Create a new branch ${{ parameters.DEPLOY_BRANCH_NAME }}"  
    git checkout -b ${{ parameters.DEPLOY_BRANCH_NAME }} 
    rm -f .git/index.lock
    mkdir -p $(MANIFESTS_FOLDER)
-   cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
+   cp -r ${{ parameters.GENERATED_MANIFEST_FOLDER }}/* $(MANIFESTS_FOLDER)/
    git add -A
    git commit -m "deployment $(Build.BuildNumber)"
    git push --set-upstream origin ${{ parameters.DEPLOY_BRANCH_NAME }} 
