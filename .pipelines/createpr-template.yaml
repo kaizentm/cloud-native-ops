@@ -1,23 +1,25 @@
+resources:
+  repositories:
+  - repository: Manifest
+    type: git # Set to 'github' for a GitHub repository 
+    name: azure-vote-app-deployment
+    ref: 'refs/heads/dev'
+
+
 steps:
 - checkout: self
 - checkout: Manifest
   persistCredentials: true
-
-- task: Bash@3        
-  name: "Generate_Manifests"
-  displayName: "Generate Manifests"
-  inputs:
-    filePath: $(utils_artifact_path)/generate-manifests.sh
-    arguments: '$(manifests_artifact_path) gen_manifests'
 
 - script: git config --global user.email $PR_USER_EMAIL & git config --global user.name $PR_USER_NAME
   displayName: Configure Git
   env:
     PR_USER_NAME: "Git Ops"
     PR_USER_EMAIL: "agent@gitops.com"
-  workingDirectory: $(MANIFEST_DIR)
+  workingDirectory: $(System.DefaultWorkingDirectory)/$(MANIFESTS_FOLDER)
 
 - script: |
+   export DEPLOY_BRANCH_NAME=deploy/$(Build.BuildNumber)/$(MANIFESTS_BRANCH)
    echo "Create a new branch $(DEPLOY_BRANCH_NAME)"   
    git checkout -b $(DEPLOY_BRANCH_NAME)
    rm -f .git/index.lock
@@ -31,8 +33,8 @@ steps:
 
 - script: |
    echo $(System.AccessToken) | az devops login
-   az devops configure --defaults organization=https://dev.azure.com/$(OrganizationName) project="$(PROJECT_NAME)" --use-git-aliases true
-   pr_response=$(az repos pr create --project $(PROJECT_NAME) --repository $(REPO_NAME) --target-branch $(MANIFESTS_BRANCH) --source-branch $DEPLOY_BRANCH_NAME --title "deployment $(Build.BuildNumber)" --squash -o json)
+   az devops configure --defaults organization=$(System.CollectionUri) project=$(System.TeamProject) --use-git-aliases true
+   pr_response=$(az repos pr create --project $(System.TeamProject) --repository $(MANIFESTS_REPO) --target-branch $(MANIFESTS_BRANCH) --source-branch $DEPLOY_BRANCH_NAME --title "deployment $(Build.BuildNumber)" --squash -o json)
    export pr_num=$(echo $pr_response | jq '.pullRequestId')
    echo "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num"
    B64_PAT=$(printf ":$(PAT)" | base64) 
