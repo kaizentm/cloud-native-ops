@@ -21,7 +21,7 @@ steps:
    git commit -m "deployment $(Build.BuildNumber)"
    git push --set-upstream origin $(DEPLOY_BRANCH_NAME)
   displayName: Add Generated Manifest to New Branch
-  workingDirectory: $(MANIFEST_DIR)
+  workingDirectory: $(System.DefaultWorkingDirectory)/$(MANIFESTS_FOLDER)
 
 - script: |
    echo $(System.AccessToken) | az devops login
