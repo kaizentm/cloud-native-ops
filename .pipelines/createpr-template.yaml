@@ -19,6 +19,12 @@ steps:
   path: $(MANIFESTS_FOLDER)
   persistCredentials: true
 
+- script: |
+   ls -ltr 
+   ls -ltr gen_manifests
+   ls -ltr $(Build.SourcesDirectory)/gen_manifests
+
+
 - script: git config --global user.email $PR_USER_EMAIL & git config --global user.name $PR_USER_NAME
   displayName: Configure Git
   env:
