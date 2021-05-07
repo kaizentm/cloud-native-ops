@@ -3,6 +3,8 @@ from operators.gitops_operator_factory import GitopsOperatorFactory
 from repositories.git_repository_factory import GitRepositoryFactory
 from orchestrators.cicd_orchestrator_factory import CicdOrchestratorFactory
 
+from queue import PriorityQueue
+global_message_queue = PriorityQueue()
 
 class GitopsConnector:
 
@@ -12,14 +14,14 @@ class GitopsConnector:
         self._cicd_orchestrator = CicdOrchestratorFactory.new_cicd_orchestrator(self._git_repository)
 
 
-    def process_gitops_phase(self, phase_data):
+    def process_gitops_phase(self, phase_data, reqtime):
         if self._gitops_operator.is_supported_message(phase_data):
-            self._post_commit_statuses(phase_data)
+            self._queue_commit_statuses(phase_data, reqtime)
             self._notify_orchestrator(phase_data)
         else:
             logging.debug(f'Message is not supported: {phase_data}')
 
-    def _post_commit_statuses(self, phase_data):
+    def _queue_commit_statuses(self, phase_data, reqtime):
         #TODO: To handle various operator bugs and weird behavior:
         # commit_id = self._gitops_operator.get_commit_id(phase_data)        
         # sumbitted_commit_statuses = self._git_repository.get_commit_status(commitid)
@@ -27,8 +29,8 @@ class GitopsConnector:
 
         commit_statuses = self._gitops_operator.extract_commit_statuses(phase_data)
         for commit_status in commit_statuses:
-            self._git_repository.post_commit_status(commit_status)
-        
+            global_message_queue.put(item=(reqtime, commit_status))
+
     def _notify_orchestrator(self, phase_data):
         is_finished, is_successful = self._gitops_operator.is_finished(phase_data)
         if is_finished:
@@ -41,6 +43,13 @@ class GitopsConnector:
         except Exception as e:
             logging.error(f'Failed to notify abandoned PRs: {e}')
 
+    def drain_commit_status_queue(self):
+        while (True):
+            commit_status = global_message_queue.get()
+            if not commit_status:
+                break
+            self._git_repository.post_commit_status(commit_status[1])
+        print("Finish Queue Drain")
 
 if __name__ == "__main__":
      git_ops_connector = GitopsConnector()  
