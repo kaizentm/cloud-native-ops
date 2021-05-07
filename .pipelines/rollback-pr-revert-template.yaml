@@ -4,7 +4,7 @@ steps:
 
 - script: |
    sudo apt install tree
-   tree -d $(Pipeline.Workspace)  
+   tree -d $(System.DefaultWorkingDirectory)  
   displayName: Add Generated Manifest to New Branch
   workingDirectory: $(MANIFEST_DIR)
 
@@ -12,6 +12,6 @@ steps:
   name: "RevertPR"
   displayName: "Revert Pull request"
   inputs:
-    filePath: $(utils_artifact_path)/revert-pr.sh
+    filePath: $(System.DefaultWorkingDirectory)/az-vote-ci/utils/revert-pr.sh
     arguments: '-r $(REPO_NAME) -tb $(MANIFESTS_BRANCH) -t $(PAT) -pr $(pr_num)'
     
