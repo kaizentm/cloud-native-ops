@@ -70,6 +70,7 @@ stages:
     #   - template: pr-completion-task-template.yaml 
 
     - job: rollback_deployment
+       dependsOn: Deploy_to_dev
       # dependsOn: deploy_with_gitops
       # condition: succeeded()
       displayName: Rollback Deployment      
@@ -111,6 +112,7 @@ stages:
     #   - template: pr-completion-task-template.yaml
 
     - job: rollback_deployment
+      dependsOn: Deploy_to_stage
       # dependsOn: deploy_with_gitops
       # condition: succeeded()
       displayName: Rollback Deployment      
