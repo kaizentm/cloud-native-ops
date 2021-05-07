@@ -31,7 +31,7 @@ steps:
 
 - script: |
    az devops logout
-   echo $(AZURE_DEVOPS_EXT_PAT) | az devops login --organization https://dev.azure.com/$(OrganizationName)
+   echo $(System.AccessToken) | az devops login --organization https://dev.azure.com/$(OrganizationName)
    az devops configure --defaults organization=https://dev.azure.com/$(OrganizationName) project="$(PROJECT_NAME)" --use-git-aliases true
    pr_response=$(az repos pr create --project $(PROJECT_NAME) --repository $(REPO_NAME) --target-branch $(MANIFESTS_BRANCH) --source-branch $DEPLOY_BRANCH_NAME --title "deployment $(Build.BuildNumber)" --squash -o json)
    export pr_num=$(echo $pr_response | jq '.pullRequestId')
@@ -40,5 +40,3 @@ steps:
    echo "##vso[task.setvariable variable=TOKEN;isOutput=true]$B64_PAT"
   name: "Create_PR" 
   displayName: Create Pull Request
-  env:
-    AZURE_DEVOPS_EXT_PAT = '$(System.AccessToken)' 
