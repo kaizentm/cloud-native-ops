@@ -71,6 +71,7 @@ stages:
 
     - job: rollback_deployment
       dependsOn: deploy_with_gitops
+      condition: succeeded()
       displayName: Rollback Deployment      
       variables:
         pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
@@ -112,6 +113,7 @@ stages:
 
     - job: rollback_deployment
       dependsOn: deploy_with_gitops
+      condition: succeeded()
       displayName: Rollback Deployment      
       variables:
         pr_num: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.PR_NUM'] ]
