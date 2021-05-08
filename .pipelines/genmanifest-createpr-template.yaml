@@ -20,7 +20,6 @@ steps:
 - script: |
    echo "Create a new branch $(DEPLOY_BRANCH_NAME)"   
    git checkout -b $(DEPLOY_BRANCH_NAME)
-   rm -f .git/index.lock
    mkdir -p $(MANIFESTS_FOLDER)
    cp -r $(Build.SourcesDirectory)/gen_manifests/* $(MANIFESTS_FOLDER)/
    git add -A
@@ -33,10 +32,11 @@ steps:
    az devops logout
    echo $(System.AccessToken) | az devops login --organization https://dev.azure.com/$(OrganizationName)
    az devops configure --defaults organization=https://dev.azure.com/$(OrganizationName) project="$(PROJECT_NAME)" --use-git-aliases true
-   pr_response=$(az repos pr create --project $(PROJECT_NAME) --repository $(REPO_NAME) --target-branch $(MANIFESTS_BRANCH) --source-branch $DEPLOY_BRANCH_NAME --title "deployment $(Build.BuildNumber)" --squash -o json)
+   pr_response=$(az repos pr create --project $(PROJECT_NAME) --repository $(REPO_NAME) --target-branch $(MANIFESTS_BRANCH) --source-branch $DEPLOY_BRANCH_NAME --title "deployment $(Build.BuildNumber)" --auto-complete --squash -o json)
    export pr_num=$(echo $pr_response | jq '.pullRequestId')
    echo "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num"
-   B64_PAT=$(printf ":$(PAT)" | base64) 
-   echo "##vso[task.setvariable variable=TOKEN;isOutput=true]$B64_PAT"
+  env:
+    AZURE_DEVOPS_CLI_PAT: $(System.AccessToken)
   name: "Create_PR" 
   displayName: Create Pull Request
+  

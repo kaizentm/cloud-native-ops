@@ -4,6 +4,12 @@ resources:
   pipelines:
   - pipeline: az-vote-ci
     source: 'Azure vote app CI GH'
+  repositories:
+  - repository: Manifest
+    type: git # Set to 'github' for a GitHub repository 
+    name: azure-vote-app-deployment
+    ref: 'refs/heads/dev'
+
 
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
