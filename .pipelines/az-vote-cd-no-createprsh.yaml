@@ -58,35 +58,35 @@ stages:
             steps:  
             - template: deployment-template-no-createprsh.yaml         
 
-    # - job: deploy_with_gitops
-    #   dependsOn: Deploy_to_dev
-    #   displayName: Wait for changes to be applied
-    #   pool: server          
-    #   variables:
-    #     pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
-    #     token: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.TOKEN'] ]
-    #   condition: ne(variables['pr_num'],'')
-    #   steps:   
-    #   - template: pr-completion-task-template.yaml
-
-    - job: waitForValidation
-      displayName: Wait for external validation
+    - job: deploy_with_gitops
       dependsOn: Deploy_to_dev
-      pool: server
-      timeoutInMinutes: 4320 # job times out in 3 days
-      steps:
-      - task: ManualValidation@0
-        timeoutInMinutes: 1440 # task times out in 1 day
-        inputs:
-          notifyUsers: |
-            sudivate@microsoft.com          
-          instructions: 'Please validate the build configuration and resume'
-          onTimeout: 'resume'
+      displayName: Wait for changes to be applied
+      pool: server          
+      variables:
+        pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
+        token: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.TOKEN'] ]
+      condition: ne(variables['pr_num'],'')
+      steps:   
+      - template: pr-completion-task-template.yaml
+
+    # - job: waitForValidation
+    #   displayName: Wait for external validation
+    #   dependsOn: Deploy_to_dev
+    #   pool: server
+    #   timeoutInMinutes: 4320 # job times out in 3 days
+    #   steps:
+    #   - task: ManualValidation@0
+    #     timeoutInMinutes: 1440 # task times out in 1 day
+    #     inputs:
+    #       notifyUsers: |
+    #         alias@microsoft.com          
+    #       instructions: 'Please validate the build configuration and resume'
+    #       onTimeout: 'resume'
  
 
     - job: rollback_deployment       
-      dependsOn: [waitForValidation, Deploy_to_dev]
-      condition: succeeded()
+      dependsOn: deploy_with_gitops
+      condition: failed()
       displayName: Rollback Deployment      
       variables:
         pr_num: $[ dependencies.Deploy_to_dev.outputs['Deploy_to_dev.Create_PR.PR_NUM'] ]
@@ -96,7 +96,8 @@ stages:
 
     - job: "Automated_testing"
       displayName: Automated testing 
-      #dependsOn: deploy_with_gitops
+      dependsOn: deploy_with_gitops
+      condition: succeeded()
       steps:
       - template: post-deployment-test-template.yaml
             
@@ -114,34 +115,34 @@ stages:
             - template: deployment-template-no-createprsh.yaml                      
             
 
-    # - job: deploy_with_gitops
-    #   dependsOn: Deploy_to_stage
-    #   displayName: Wait for changes to be applied
-    #   pool: server          
-    #   variables:
-    #     pr_num: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.PR_NUM'] ]
-    #     token: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.TOKEN'] ]
-    #   condition: ne(variables['pr_num'],'')        
-    #   steps:   
-    #   - template: pr-completion-task-template.yaml
-
-    - job: waitForValidation
-      displayName: Wait for external validation
+    - job: deploy_with_gitops
       dependsOn: Deploy_to_stage
-      pool: server
-      timeoutInMinutes: 4320 # job times out in 3 days
-      steps:
-      - task: ManualValidation@0
-        timeoutInMinutes: 1440 # task times out in 1 day
-        inputs:
-          notifyUsers: |
-            sudivate@microsoft.com          
-          instructions: 'Please validate the build configuration and resume'
-          onTimeout: 'resume'
+      displayName: Wait for changes to be applied
+      pool: server          
+      variables:
+        pr_num: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.PR_NUM'] ]
+        token: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.TOKEN'] ]
+      condition: ne(variables['pr_num'],'')        
+      steps:   
+      - template: pr-completion-task-template.yaml
+
+    # - job: waitForValidation
+    #   displayName: Wait for external validation
+    #   dependsOn: Deploy_to_stage
+    #   pool: server
+    #   timeoutInMinutes: 4320 # job times out in 3 days
+    #   steps:
+    #   - task: ManualValidation@0
+    #     timeoutInMinutes: 1440 # task times out in 1 day
+    #     inputs:
+    #       notifyUsers: |
+    #         alias@microsoft.com          
+    #       instructions: 'Please validate the build configuration and resume'
+    #       onTimeout: 'resume'
 
     - job: rollback_deployment      
-      dependsOn: [waitForValidation, Deploy_to_stage]
-      condition: succeeded()
+      dependsOn: deploy_with_gitops
+      condition: failed()
       displayName: Rollback Deployment      
       variables:
         pr_num: $[ dependencies.Deploy_to_stage.outputs['Deploy_to_stage.Create_PR.PR_NUM'] ]
@@ -151,7 +152,8 @@ stages:
 
     - job: "Automated_testing"
       displayName: Automated testing 
-      # dependsOn: deploy_with_gitops
+      dependsOn: deploy_with_gitops
+      condition: succeeded()
       steps:
       - template: post-deployment-test-template.yaml                 
            
