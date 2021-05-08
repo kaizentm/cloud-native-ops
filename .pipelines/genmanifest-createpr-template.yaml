@@ -29,7 +29,8 @@ steps:
   workingDirectory: $(MANIFEST_DIR)
 
 - script: |
-   echo $(System.AccessToken) | az devops login
+   az devops logout
+   echo $(System.AccessToken) | az devops login --organization https://dev.azure.com/$(OrganizationName)
    az devops configure --defaults organization=https://dev.azure.com/$(OrganizationName) project="$(PROJECT_NAME)" --use-git-aliases true
    pr_response=$(az repos pr create --project $(PROJECT_NAME) --repository $(REPO_NAME) --target-branch $(MANIFESTS_BRANCH) --source-branch $DEPLOY_BRANCH_NAME --title "deployment $(Build.BuildNumber)" --auto-complete --squash -o json)
    export pr_num=$(echo $pr_response | jq '.pullRequestId')
@@ -37,4 +38,5 @@ steps:
   env:
     AZURE_DEVOPS_CLI_PAT: $(System.AccessToken)
   name: "Create_PR" 
-  displayName: Create Pull Request   
+  displayName: Create Pull Request
+  
