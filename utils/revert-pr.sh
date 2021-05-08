@@ -16,7 +16,8 @@ echo $PR_ID
 echo "end of list"
 
 
-B64_PAT=$(printf ":$TOKEN" | base64)
+B64_PAT=$(printf ":$SYSTEM_ACCESSTOKEN" | base64)
+echo $B64_PAT
 export REVERT_BRANCH='refs/heads/revert-'$PR_ID
 
 # https://docs.microsoft.com/en-us/rest/api/azure/devops/git/repositories/get%20repository?view=azure-devops-rest-6.0
