@@ -22,7 +22,7 @@ export REVERT_BRANCH='refs/heads/revert-'$PR_ID
 
 # https://docs.microsoft.com/en-us/rest/api/azure/devops/git/repositories/get%20repository?view=azure-devops-rest-6.0
 git_repo=$(curl -v -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail \
-           "$SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$REPO?api-version=6.0")
+           "$SYSTEM_COLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$REPO?api-version=6.0")           
 
 
 # https://docs.microsoft.com/en-us/rest/api/azure/devops/git/reverts/create?view=azure-devops-rest-6.0
