@@ -9,6 +9,6 @@ steps:
     filePath: $(System.DefaultWorkingDirectory)/utils/revert-pr.sh
     arguments: '-r $(REPO_NAME) -b refs/heads/$(MANIFESTS_BRANCH) -t $(PAT) -p $(pr_num)'
   env:
-    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    SYSTEM_ACCESSTOKEN: $(PAT)
 
     
