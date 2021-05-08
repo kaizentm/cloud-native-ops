@@ -28,7 +28,7 @@ git_repo=$(curl -v -H "Authorization: Basic $B64_PAT" -H "Content-Type: applicat
 revert_response=$(curl -v -X POST -H "Authorization: Basic $B64_PAT" -H "Content-Type: application/json" --fail -d '{"repository":'$git_repo',"source":{"pullRequestId":"'$PR_ID'"},"ontoRefName":"'$TARGET_BRANCH'","generatedRefName":"'$REVERT_BRANCH'"}' "https://dev.azure.com/$SYSTEM_COLLECTIONURI/$SYSTEM_TEAMPROJECT/_apis/git/repositories/$REPO/reverts?api-version=6.0-preview.1")
 export REVERT_ID=$(echo $revert_response | jq '.revertId')
 
-echo $(System.AccessToken) | az devops login
+echo $SYSTEM_ACCESSTOKEN | az devops login
 az devops configure --defaults organization=https://dev.azure.com/$SYSTEM_COLLECTIONURI project=$SYSTEM_TEAMPROJECT --use-git-aliases true
 
 pr_response=$(az repos pr create --project $SYSTEM_TEAMPROJECT --repository $REPO --target-branch $TARGET_BRANCH --source-branch $REVERT_BRANCH --title Rollback --squash -o json)
