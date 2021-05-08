@@ -20,9 +20,7 @@ spec:
         image: {{  .Values.imageRepo}}/azure-vote-back:6.0.8
         env:
         - name: ALLOW_EMPTY_PASSWORD
-          value: "yes"
-        - name: Test
-          value: "test12211"  
+          value: "yes"        
         ports:
         - containerPort: 6379
           name: redis
